@@ -1,0 +1,6 @@
+{
+  "name": "Impulsy",
+  "description": "",
+  "repository": "https://github.com/Qayou/impulsy",
+  "image": "heroku/nodejs"
+}

@@ -1,0 +1,22 @@
+{
+  "name": "impulsy",
+  "version": "0.0.0",
+  "description": "",
+  "engines": {
+    "node": "6.11.1"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "express": "4.15.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Qayou/impulsy"
+  },
+  "keywords": [],
+  "license": "MIT"
+}
