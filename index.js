@@ -4,11 +4,12 @@ var app = express();
 const youtubeRouter = require('./router/youtube');
 
 app.set('port', (process.env.PORT || 5000));
+app.set('view engine', 'hbs');
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/assets'));
 
 app.get('/', function(req, res) {
-  res.send("Hello World!");
+  res.render('index', { message: "Hello World!" });
 });
 
 app.use('/youtube', youtubeRouter);
