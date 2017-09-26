@@ -24,21 +24,31 @@ var game = { "pos_player" : 1,  // ici 0, 1, 2, 3 --- 0 upper and 3 lowest
 
 
 
-function get_random(limit) 
+function get_random(array_spectrum) 
 {
   //Example, including customisable intervals [lower_bound, upper_bound)
   var lower_bound = 0;
-  var upper_bound = 3;
+  var upper_bound = 0;
   var unique_random_numbers = [];
-
-  while (unique_random_numbers.length < limit) 
+  var i = 0
+  while (unique_random_numbers.length <= array_spectrum.length) 
   {
-  var random_number = Math.round(Math.random()*(upper_bound - lower_bound) + lower_bound);
+    if (array_spectrum[i] == 0)
+    {
+      var lower_bound = 1;
+      var upper_bound = 2;
+    }
+    else 
+    {
+      var lower_bound = 0;
+      var upper_bound = 3;
+    }
+    var random_number = Math.round(Math.random()*(upper_bound - lower_bound) + lower_bound);
     if (unique_random_numbers.indexOf(random_number) == -1) 
-    { 
+    {
         // Yay! new random number
         unique_random_numbers.push( random_number );
     }
   }
-  // unique_random_numbers is an array containing 3 unique numbers in the given range
+  return unique_random_numbers
 }
