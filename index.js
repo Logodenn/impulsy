@@ -1,8 +1,6 @@
 var express = require('express');
 var app = express();
 
-const youtubeRouter = require('./router/youtube');
-
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
 
