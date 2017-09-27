@@ -12,8 +12,6 @@ app.get('/', function(req, res) {
   res.render('index', { message: "Hello World!" });
 });
 
-app.use('/youtube', youtubeRouter);
-
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
