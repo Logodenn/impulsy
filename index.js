@@ -40,9 +40,11 @@ app.get('/', function(req, res)
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
-/*
-var game = { "pos_player" : 1,  // ici 0, 1, 2, 3 --- 0 upper and 3 lowest 
-              "array_spectrum" : new Array(), // array of 0 and 1 --- 0 : small and 1 big
-              "array_artefacts": new Array() // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-}; 
-*/
+
+var io = require('socket.io').listen(server);
+
+// Listen for Socket.IO Connections. Once connected, start the game logic.
+io.sockets.on('connection', function (socket) {
+  //console.log('client connected');
+  agx.initGame(io, socket);
+});
