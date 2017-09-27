@@ -41,65 +41,58 @@ function startGame() {
 
 	console.log("game started !");
 
-	var i = 0;
-	var left;
+	// ******************** Get key position ******************** //
 
-	var gameSpan = setInterval(function(){
+	window.onkeyup = function(e) {
+		
+		// TODO: bind with cancas drawing
+		fill(COLOR.player);
+		rect(left, top, blocUnit, height);
 
-		left = i * blocUnit;
+		var key = e.keyCode ? e.keyCode : e.which;
+		// a : top = 65
+		// z : midtop = 90
+		// e : midbot = 69
+		// r : bot = 82
+		// Up: 38
+		// Down: 40
+		switch (key) {
+			case 65:
+				// Top
+				playerPosition = 0;
+				break;
+			case 90:
+				// Midtop
+				playerPosition = 1;
+				break;
+			case 69:
+				// Midbot
+				playerPosition = 2;
+				break;
+			case 82:
+				// Bot
+				playerPosition = 3;
+				break;
+			case 38:
+				// Up arrow
+				if(playerPosition != 0) {
 
-		// ******************** Get key position ******************** //
+					playerPosition--;
+				}
+				break;
+			case 40:
+				// Down arrow
+				if(playerPosition != 3) {
 
-		window.onkeyup = function(e) {
-			
-			// TODO: bind with cancas drawing
-			fill(COLOR.player);
-			rect(left, top, blocUnit, height);
-
-			var key = e.keyCode ? e.keyCode : e.which;
-			// 8 : top = 104
-			// 5 : midtop = 101
-			// 2 : midbot = 98
-			// 0 : bot = 96
-			switch (key) {
-				case 104:
-					console.log("top");
-					playerPosition = 0;
-					break;
-				case 101:
-					console.log("midtop");
-					playerPosition = 1;
-					break;
-				case 98:
-					console.log("midbot");
-					playerPosition = 2;
-					break;
-				case 96:
-					console.log("bot");
-					playerPosition = 3;
-					break;
-			}
+					playerPosition++;
+				}
+				break;
 		}
+	}
 
-		// ******************** Check positions ******************** //
+	// ******************** Check positions ******************** //
 
- 		if(i < songPositions.length) {
-
- 			if(playerPosition == songPositions[i]) {
- 				console.log("yeah");
- 			} else {
- 				console.log("missed");
- 			}
-
- 			i++;
-
-		} else {
-			// Stop the interval as we parsed the whole song
-			clearInterval(gameSpan);
-
-			// TODO: Callback here
-		}
- 	}, 1000);
+		
 }
 
 // *********************************************** //
