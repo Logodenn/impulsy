@@ -1,7 +1,8 @@
 var express = require('express');
 var app = express();
+var http = require('http').Server(app);
 
-const youtubeRouter = require('./router/youtube');
+//const youtubeRouter = require('./router/youtube');
 
 // var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
 
@@ -41,7 +42,7 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(http);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
