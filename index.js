@@ -1,6 +1,19 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+var game = require("./modules/game.js");
+
+var io = require('socket.io').listen(http);;
+// var io = require('socket.io');
+
+// var io = require("socket.io")(http);
+// io.listen(http);
+
+// Listen for Socket.IO Connections. Once connected, start the game logic.
+io.sockets.on('connection', function (socket) {
+  console.log('client connected');
+  game.initGame(io, socket);
+});
 
 //const youtubeRouter = require('./router/youtube');
 
@@ -38,14 +51,18 @@ app.get('/', function(req, res)
   res.render('index', { message: "Hello World!" });
 });
 
+app.get('/trackSelection', function(req, res) 
+{
+  res.render('trackSelection', { message: "Hello World!" });
+});
+
+app.get('/game', function(req, res) 
+{
+  res.render('game', { message: "Hello World!" });
+});
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-var io = require('socket.io').listen(http);
 
-// Listen for Socket.IO Connections. Once connected, start the game logic.
-io.sockets.on('connection', function (socket) {
-  //console.log('client connected');
-  agx.initGame(io, socket);
-});

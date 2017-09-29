@@ -31,6 +31,172 @@ var COLOR = {
 	player 		: [200, 10, 100] //
 }
 
+// ******************** Websocket handlers ******************** //
+
+jQuery(function($){    
+'use strict';
+
+var IO = {
+
+    init: function() {
+        // io.connect("http://localhost");
+        IO.socket = io.connect();
+        IO.bindEvents();
+    },
+
+    bindEvents : function() {
+        IO.socket.on('connected', IO.onConnected );
+        IO.socket.on('newGameCreated', IO.onNewGameCreated );
+        // IO.socket.on('beginNewGame', IO.beginNewGame );
+        IO.socket.on('playerMove', IO.onNewWordData);
+        // IO.socket.on('hostCheckAnswer', IO.hostCheckAnswer);
+        // IO.socket.on('gameOver', IO.gameOver);
+        // IO.socket.on('error', IO.error );
+    },
+
+    onConnected : function() {
+        // Cache a copy of the client's socket.IO session ID on the App
+        App.mySocketId = IO.socket.socket.sessionid;
+        // console.log(data.message);
+    },
+
+    /**
+     * A new game has been created and a random game ID has been generated.
+     * @param data {{ gameId: int, mySocketId: * }}
+     */
+    onNewGameCreated : function(data) {
+        App.Host.gameInit(data);
+    },
+
+    /**
+     * Both players have joined the game.
+     * @param data
+     */
+    beginNewGame : function(data) {
+        // App[App.myRole].gameCountdown(data);
+    },
+
+    playerMove : function(data) {
+        // Update the current round
+        // App.currentRound = data.round;
+
+        // Change the word for the Host and Player
+        // App[App.myRole].newWord(data);
+    }
+};
+
+var App = {
+
+    gameId: 0,
+    myRole: '',   // 'Player' or 'Host'
+
+    /**
+     * The Socket.IO socket object identifier. This is unique for
+     * each player and host. It is generated when the browser initially
+     * connects to the server when the page loads for the first time.
+     */
+    mySocketId: '',
+
+    /* *************************************
+     *                Setup                *
+     * *********************************** */
+
+    init: function () {
+        App.cacheElements();
+        App.bindEvents();
+
+        // Initialize the fastclick library
+        FastClick.attach(document.body);
+    },
+
+    /**
+     * Create some click handlers for the various buttons that appear on-screen.
+     */
+    bindEvents: function () {
+        // Host
+        //App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
+
+        // Player
+        // App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
+        App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);
+        // App.$doc.on('click', '.btnAnswer',App.Player.onPlayerAnswerClick);
+    },
+
+    /* *******************************
+       *         HOST CODE           *
+       ******************************* */
+    Host : {
+
+        players : [],
+        currentCorrectAnswer: '',
+
+        /**
+         * Handler for the "Start" button on the Title Screen.
+         */
+        onCreateClick: function () {
+            // console.log('Clicked "Create A Game"');
+            IO.socket.emit('hostCreateNewGame');
+        },
+
+        gameInit: function (data) {
+            App.gameId = data.gameId;
+            App.mySocketId = data.mySocketId;
+            App.myRole = 'Host';
+            // App.Host.numPlayersInRoom = 0;
+
+            // App.Host.displayNewGameScreen();
+            // console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
+        },
+
+        playerMove : function(data) {
+
+            // Update the data for the current round
+            //App.Host.currentCorrectAnswer = data.answer;
+            //App.Host.currentRound = data.round;
+        }
+    }
+
+};
+
+IO.init();
+App.init();
+
+
+}($));
+
+
+
+
+
+
+
+
+
+
+
+// var io;
+// var gameSocket;
+// var game;
+
+// conncetion
+
+// // exports.init_game = function (sio, socket) {
+// function wsGenerator(sio, socket) {
+//   io = sio;
+//   gameSocket = socket;
+//   gameSocket.emit('connected', {message: "You are connected!"});
+
+//   console.log("ouverture webs");
+
+//   // Host Events
+//   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
+
+//   // Player Events
+//   gameSocket.on('playerMove', playerMove);
+// }
+
+// wsGenerator();
+
 // ***************************************************** //
 // ******************** START GAME ******************** //
 // *************************************************** //
@@ -46,8 +212,8 @@ function startGame() {
 	window.onkeyup = function(e) {
 		
 		// TODO: bind with cancas drawing
-		fill(COLOR.player);
-		rect(left, top, blocUnit, height);
+		// fill(COLOR.player);
+		// rect(left, top, blocUnit, height);
 
 		var key = e.keyCode ? e.keyCode : e.which;
 		// a : top = 65
@@ -88,10 +254,11 @@ function startGame() {
 				}
 				break;
 		}
+
+		// ******************** Notify websocket ******************** //
+		console.log("trying to emit new position through ws");
+		gameSocket.emit('playerMove', {message: "The player position is now:" + playerPosition});
 	}
-
-	// ******************** Check positions ******************** //
-
 		
 }
 
