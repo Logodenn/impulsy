@@ -45,12 +45,12 @@ function playerMove(position)
  * Partie pour vérifier toute les secondes la position du joueur par rapport à l'arthéfact 
  * A revoir il y a surement des bugs
  */
-var new_positions = setInterval(function () {
-  get_new_position(function () {
-    io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
-  });
-}, 1000);
+// var new_positions = setInterval(function () {
+//   get_new_position(function () {
+//     io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
+//   });
+// }, 1000);
 
-socket.on('death', function () {
-  clearInterval(new_positions);
-});
+// socket.on('death', function () {
+//   clearInterval(new_positions);
+// });
