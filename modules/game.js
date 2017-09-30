@@ -2,7 +2,7 @@ var io;
 var gameSocket;
 var game;
 
-exports.init_game = function (sio, socket) {
+exports.initGame = function (sio, socket) {
   io = sio;
   gameSocket = socket;
   gameSocket.emit('connected', {message: "You are connected!"});
