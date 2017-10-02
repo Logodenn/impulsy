@@ -16,8 +16,8 @@ var IO = {
         IO.socket.on('connected', IO.onConnected);
         IO.socket.on('newGameCreated', IO.onNewGameCreated);
         IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('playerMove', IO.playerMove);
-        IO.socket.on('gameOver', IO.gameOver);
+        IO.socket.on('playerMove', IO.onPlayerMove);
+        IO.socket.on('gameOver', IO.onGameOver);
         // IO.socket.on('error', IO.error );
     },
 
@@ -38,7 +38,7 @@ var IO = {
 		// TODO
     },
 
-    playerMove : function(data) {
+    onPlayerMove : function(data) {
 		// TODO
 		// Notify players that a player has moved
 	},
@@ -91,8 +91,8 @@ var App = {
 		},
 		
 		onStartClick: function () {
-            // console.log('Clicked "Create A Game"');
-            IO.socket.emit('hostCreateNewGame');
+            // console.log('Clicked "Start A Game"');
+            IO.socket.emit('hostStartGame');
         },
 
         gameInit: function (data) {
@@ -106,7 +106,7 @@ var App = {
 	// ********** Player ********** //
     Player : {
 		onMove : function(data) {
-			IO.socket.emit('hostCreateNewGame');
+			IO.socket.emit('playerMove', {playerPosition: playerPosition});
 		}
 	}
 };
@@ -192,7 +192,8 @@ function startGameTmp() {
 	
 		// ******************** Notify websocket ******************** //
 		console.log("trying to emit new position through ws");
-		gameSocket.emit('playerMove', {message: "The player position is now:" + playerPosition});
+		App.player.onMove(playerPosition);
+		// gameSocket.emit('playerMove', {message: "The player position is now:" + playerPosition});
 	}
 }
 
