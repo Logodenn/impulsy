@@ -9,6 +9,7 @@ exports.initGame = function (sio, socket) {
 
   // Host Events
   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
+  gameSocket.on('hostStartGame', hostCreateNewGame);
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
