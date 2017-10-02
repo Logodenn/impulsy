@@ -30,8 +30,6 @@ var COLOR = {
 
 // ******************** Websocket handlers ******************** //
 
-jQuery(function($){    
-'use strict';
 
 var IO = {
 
@@ -53,7 +51,7 @@ var IO = {
 
     onConnected : function() {
         // Cache a copy of the client's socket.IO session ID on the App
-        App.mySocketId = IO.socket.socket.sessionid;
+        App.mySocketId = IO.socket.sessionid;
         // console.log(data.message);
     },
 
@@ -99,11 +97,11 @@ var App = {
      * *********************************** */
 
     init: function () {
-        App.cacheElements();
+        // App.cacheElements();
         App.bindEvents();
 
         // Initialize the fastclick library
-        FastClick.attach(document.body);
+        // FastClick.attach(document.body);
     },
 
     /**
@@ -115,7 +113,7 @@ var App = {
 
         // Player
         // App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
-        App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);
+        // App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);
         // App.$doc.on('click', '.btnAnswer',App.Player.onPlayerAnswerClick);
     },
 
@@ -157,9 +155,6 @@ var App = {
 
 IO.init();
 App.init();
-
-
-}($));
 
 
 
