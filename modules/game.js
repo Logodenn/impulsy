@@ -22,11 +22,11 @@ exports.initGame = function (sio, socket) {
  * @param sound The sound selected by the player
  * @param difficulty The difficulty selected by the player
  */
-function hostCreateNewGame(sound, difficulty) {
+function hostCreateNewGame(youtubeVideoId, difficulty) {
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  createGame(sound, difficulty, thisGameId, this.id, function (error, game) {
+  createGame(youtubeVideoId, difficulty, thisGameId, this.id, function (error, game) {
     if (error) console.log(error);
     else this.emit('NewGameCreated', {
       game
