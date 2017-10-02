@@ -11,7 +11,7 @@ module.exports.checkRightPosition = function checkRightPosition(game, t) {
 
 // var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
 
-	module.exports.getRandom = function getRandom(array_spectrum) {
+function getRandom(array_spectrum) {
 	//Example, including customisable intervals [lower_bound, upper_bound)
 	var random_numbers = [];
 	array_spectrum.forEach(function (element) {
