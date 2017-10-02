@@ -5,14 +5,17 @@ var game;
 exports.initGame = function (sio, socket) {
   io = sio;
   gameSocket = socket;
-  gameSocket.emit('connected', {message: "You are connected!"});
+  gameSocket.emit('connected', {
+    message: "You are connected!"
+  });
 
   // Host Events
   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
-  gameSocket.on('hostStartGame', hostCreateNewGame);
+  gameSocket.on('hostStartGame', hostStartGame);
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
+  gameSocket.on('gameOver', gameOver);
 }
 
 /*
@@ -21,24 +24,40 @@ exports.initGame = function (sio, socket) {
  * @param sound The sound selected by the player
  * @param difficulty The difficulty selected by the player
  */
-function hostCreateNewGame(sound, difficulty) {
+function hostCreateNewGame(youtubeVideoId, difficulty) {
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  game = createGame(sound, difficulty, thisGameId, this.id)
-  this.emit('NewGameCreated', {game});
-
+  createGame(youtubeVideoId, difficulty, thisGameId, this.id, function (error, game) {
+    if (error) console.log(error);
+    else this.emit('NewGameCreated', {
+      game
+    });
+  });
   // Join the Room and wait for the players
   this.join(thisGameId.toString());
   var sock = this;
 };
 
+/*
+ * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
+ * Create the game 
+ * @param sound The sound selected by the player
+ * @param difficulty The difficulty selected by the player
+ */
+function hostStartGame() {
+  console.log("START GAAAAAME");
+};
 
-function playerMove(position)
-{
-    game.position = position;
+
+function playerMove(position) {    
+  game.position = position;
 }
 
+function gameOver()
+{
+    clearInterval(new_positions);
+}
 
 
 /**
@@ -51,7 +70,3 @@ function playerMove(position)
 //     io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
 //   });
 // }, 1000);
-
-// socket.on('death', function () {
-//   clearInterval(new_positions);
-// });
