@@ -34,7 +34,6 @@ var COLOR = {
 var IO = {
 
     init: function() {
-        // io.connect("http://localhost");
         IO.socket = io.connect();
         IO.bindEvents();
     },
