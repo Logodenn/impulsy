@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var game = require("./modules/game.js");
+const mainRouter = require('./routers/main');
+const gameRouter = require('./routers/game');
 
 var io = require('socket.io').listen(http);;
 // var io = require('socket.io');
@@ -46,23 +48,17 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(__dirname + '/assets'));
 
-app.get('/', function(req, res) 
-{
-  res.render('index', { message: "Hello World!" });
-});
+app.use('/', mainRouter);
+app.use('/game', gameRouter);
 
 app.get('/trackSelection', function(req, res) 
 {
   res.render('trackSelection', { message: "Hello World!" });
 });
 
-app.get('/game', function(req, res) 
-{
-  res.render('game', { message: "Hello World!" });
-});
-
 http.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+  console.log('Impulsy is running on port', app.get('port'));
+  console.log('Go to: http://localhost:5000/ to see the app.');
 });
 
 
