@@ -61,7 +61,7 @@ app.get('/game', function(req, res)
   res.render('game', { message: "Hello World!" });
 });
 
-app.listen(app.get('port'), function() {
+http.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
