@@ -86,12 +86,15 @@ var App = {
         currentCorrectAnswer: '',
 
         onCreateClick: function () {
-            // console.log('Clicked "Create A Game"');
-            IO.socket.emit('hostCreateNewGame');
+            console.log('Clicked "Create A Game"');
+            IO.socket.emit('hostCreateNewGame', {
+				youtubeVideoId	: youtubeVideoId, 
+				difficulty		: difficulty 
+			});
 		},
 		
 		onStartClick: function () {
-            // console.log('Clicked "Start A Game"');
+            console.log('Clicked "Start A Game"');
             IO.socket.emit('hostStartGame');
         },
 
@@ -99,13 +102,14 @@ var App = {
             App.gameId 		= data.gameId;
             App.mySocketId 	= data.mySocketId;
             App.myRole 		= 'Host';
-            // console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
+            console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
         }
 	},
 	
 	// ********** Player ********** //
     Player : {
 		onMove : function(data) {
+			console.log('Player moved');
 			IO.socket.emit('playerMove', {playerPosition: playerPosition});
 		}
 	}
@@ -113,6 +117,11 @@ var App = {
 
 IO.init();
 App.init();
+
+// Dummy values for testing purpose
+
+var youtubeVideoId 	= "8aJw4chksqM";
+var difficulty 		= "lazy";
 
 // ******************************************************* //
 // ******************** CANVAS SETUP ******************** //
