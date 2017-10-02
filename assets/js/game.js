@@ -72,7 +72,7 @@ var App = {
     // Event handlers for buttons
     bindEvents: function () {
 		// Host
-		document.querySelector("#startGameButton").on('click', App.Host.onCreateClick);
+		// document.querySelector("#startGameButton").on('click', App.Host.onCreateClick);
 
         // Player
 		// App.$doc.on('click', '.btnAnswer',App.Player.onPlayerAnswerClick);
@@ -86,6 +86,11 @@ var App = {
         currentCorrectAnswer: '',
 
         onCreateClick: function () {
+            // console.log('Clicked "Create A Game"');
+            IO.socket.emit('hostCreateNewGame');
+		},
+		
+		onStartClick: function () {
             // console.log('Clicked "Create A Game"');
             IO.socket.emit('hostCreateNewGame');
         },
