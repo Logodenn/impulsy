@@ -30,8 +30,6 @@ var COLOR = {
 
 // ******************** Websocket handlers ******************** //
 
-jQuery(function($){    
-'use strict';
 
 var IO = {
 
@@ -157,9 +155,6 @@ var App = {
 
 IO.init();
 App.init();
-
-
-}($));
 
 
 
