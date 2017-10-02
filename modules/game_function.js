@@ -2,7 +2,7 @@
 
 
 
-function checkRightPosition(game, t) {
+module.exports.checkRightPosition = function checkRightPosition(game, t) {
 	if ((game.position != game.artefact[t] & game.difficulty == "easy") | (game.position == game.artefact[t] & game.difficulty == "crazy")) game.energy = game.energy - 1
 	else if (game.position != game.artefact[t] & game.difficulty == "crazy") game.energy = game.energy - 2
 	else if (game.position == game.artefact[t] & game.difficulty == "easy") game.energy = game.energy
@@ -14,7 +14,7 @@ function checkRightPosition(game, t) {
 
   // var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
 
-function getRandom(array_spectrum) {
+	module.exports.getRandom = function getRandom(array_spectrum) {
 	//Example, including customisable intervals [lower_bound, upper_bound)
 	var random_numbers = [];
 	array_spectrum.forEach(function (element) {
@@ -32,7 +32,7 @@ function getRandom(array_spectrum) {
 	return random_numbers;
   }
 
-function createGame(sound, difficulty, gameId, socketId)
+	module.exports.createGame = function createGame(sound, difficulty, gameId, socketId)
 {
 	// fonction pierre pour array_spectrum sound en param
 var game = {
