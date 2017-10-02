@@ -52,7 +52,7 @@ function getRandom(array_spectrum) {
 	return random_numbers;
 }
 
-function createGame(sound, difficulty, gameId, socketId, callback) {
+function createGame(youtubeVideoId, difficulty, gameId, socketId, callback) {
 	var game = {
 		gameId: gameId,
 		socketId: socketId,
