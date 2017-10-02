@@ -3,8 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var game = require("./modules/game.js");
 
-<<<<<<< HEAD
-=======
 var io = require('socket.io').listen(http);;
 // var io = require('socket.io');
 
@@ -43,7 +41,6 @@ function get_random(array_spectrum)
   return random_numbers;
 };
 
->>>>>>> positionListener
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
 
