@@ -6,17 +6,10 @@
 /*var context = {gameName: "Impulsy", catchPhrase: "Ride the music!"};
 var html    = template(context);*/
 
-// ******************** Globals ******************** //
-
-var canvas;
-
-var playerPosition = 0;
-// Normalized spectrum for Have A Cigar is : [0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
-var songPositions = [1, 0, 2, 3, 1, 1, 2, 2, 1, 1, 2, 3, 3, 2, 1, 0, 2, 2, 1, 2, 1, 2];
 
 // ******************** Canvas units ******************** //
 
-var blocUnit 		= 20;
+var blocUnit 		= 50;
 var bigBarHeight 	= blocUnit * 4;
 var bigBarTop 		= blocUnit;
 var smallBarHeight 	= blocUnit * 2;
@@ -35,130 +28,352 @@ var COLOR = {
 // ******************** START GAME ******************** //
 // *************************************************** //
 
+// ******************** Websocket handlers ******************** //
+
+jQuery(function($){    
+'use strict';
+
+var IO = {
+
+    init: function() {
+        // io.connect("http://localhost");
+        IO.socket = io.connect();
+        IO.bindEvents();
+    },
+
+    bindEvents : function() {
+        IO.socket.on('connected', IO.onConnected );
+        IO.socket.on('newGameCreated', IO.onNewGameCreated );
+        // IO.socket.on('beginNewGame', IO.beginNewGame );
+        IO.socket.on('playerMove', IO.onNewWordData);
+        // IO.socket.on('hostCheckAnswer', IO.hostCheckAnswer);
+        // IO.socket.on('gameOver', IO.gameOver);
+        // IO.socket.on('error', IO.error );
+    },
+
+    onConnected : function() {
+        // Cache a copy of the client's socket.IO session ID on the App
+        App.mySocketId = IO.socket.socket.sessionid;
+        // console.log(data.message);
+    },
+
+    /**
+     * A new game has been created and a random game ID has been generated.
+     * @param data {{ gameId: int, mySocketId: * }}
+     */
+    onNewGameCreated : function(data) {
+        App.Host.gameInit(data);
+    },
+
+    /**
+     * Both players have joined the game.
+     * @param data
+     */
+    beginNewGame : function(data) {
+        // App[App.myRole].gameCountdown(data);
+    },
+
+    playerMove : function(data) {
+        // Update the current round
+        // App.currentRound = data.round;
+
+        // Change the word for the Host and Player
+        // App[App.myRole].newWord(data);
+    }
+};
+
+var App = {
+
+    gameId: 0,
+    myRole: '',   // 'Player' or 'Host'
+
+    /**
+     * The Socket.IO socket object identifier. This is unique for
+     * each player and host. It is generated when the browser initially
+     * connects to the server when the page loads for the first time.
+     */
+    mySocketId: '',
+
+    /* *************************************
+     *                Setup                *
+     * *********************************** */
+
+    init: function () {
+        App.cacheElements();
+        App.bindEvents();
+
+        // Initialize the fastclick library
+        FastClick.attach(document.body);
+    },
+
+    /**
+     * Create some click handlers for the various buttons that appear on-screen.
+     */
+    bindEvents: function () {
+        // Host
+        //App.$doc.on('click', '#btnCreateGame', App.Host.onCreateClick);
+
+        // Player
+        // App.$doc.on('click', '#btnJoinGame', App.Player.onJoinClick);
+        App.$doc.on('click', '#btnStart',App.Player.onPlayerStartClick);
+        // App.$doc.on('click', '.btnAnswer',App.Player.onPlayerAnswerClick);
+    },
+
+    /* *******************************
+       *         HOST CODE           *
+       ******************************* */
+    Host : {
+
+        players : [],
+        currentCorrectAnswer: '',
+
+        /**
+         * Handler for the "Start" button on the Title Screen.
+         */
+        onCreateClick: function () {
+            // console.log('Clicked "Create A Game"');
+            IO.socket.emit('hostCreateNewGame');
+        },
+
+        gameInit: function (data) {
+            App.gameId = data.gameId;
+            App.mySocketId = data.mySocketId;
+            App.myRole = 'Host';
+            // App.Host.numPlayersInRoom = 0;
+
+            // App.Host.displayNewGameScreen();
+            // console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
+        },
+
+        playerMove : function(data) {
+
+            // Update the data for the current round
+            //App.Host.currentCorrectAnswer = data.answer;
+            //App.Host.currentRound = data.round;
+        }
+    }
+
+};
+
+IO.init();
+App.init();
+
+
+}($));
+
+
+
+
+
+
+
+
+
+
+
+// var io;
+// var gameSocket;
+// var game;
+
+// conncetion
+
+// // exports.init_game = function (sio, socket) {
+// function wsGenerator(sio, socket) {
+//   io = sio;
+//   gameSocket = socket;
+//   gameSocket.emit('connected', {message: "You are connected!"});
+
+//   console.log("ouverture webs");
+
+//   // Host Events
+//   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
+
+//   // Player Events
+//   gameSocket.on('playerMove', playerMove);
+// }
+
+// wsGenerator();
+
+var amplitudes = [0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0];
+var artefacts =  [1, 0, 2, 3, 0, 1, 2, 2, 0, 1, 2, 1, 1, 2, 2, 3, 0, 1, 2, 1, 1, 0, 2, 2, 1, 1, 1, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2, 1, 1, 1, 2, 3, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1];
+var time = 0;
+var listeBarres = [];
+var listeArtefacts = [];
+var player;
+
+
 function startGame() {
-
-	// Should be called by back
-
-	console.log("game started !");
-
-	var i = 0;
-	var left;
-
-	var gameSpan = setInterval(function(){
-
-		left = i * blocUnit;
-
-		// ******************** Get key position ******************** //
-
-		window.onkeyup = function(e) {
-			
-			// TODO: bind with cancas drawing
-			fill(COLOR.player);
-			rect(left, top, blocUnit, height);
-
-			var key = e.keyCode ? e.keyCode : e.which;
-			// 8 : top = 104
-			// 5 : midtop = 101
-			// 2 : midbot = 98
-			// 0 : bot = 96
-			switch (key) {
-				case 104:
-					console.log("top");
-					playerPosition = 0;
-					break;
-				case 101:
-					console.log("midtop");
-					playerPosition = 1;
-					break;
-				case 98:
-					console.log("midbot");
-					playerPosition = 2;
-					break;
-				case 96:
-					console.log("bot");
-					playerPosition = 3;
-					break;
-			}
-		}
-
-		// ******************** Check positions ******************** //
-
- 		if(i < songPositions.length) {
-
- 			if(playerPosition == songPositions[i]) {
- 				console.log("yeah");
- 			} else {
- 				console.log("missed");
- 			}
-
- 			i++;
-
-		} else {
-			// Stop the interval as we parsed the whole song
-			clearInterval(gameSpan);
-
-			// TODO: Callback here
-		}
- 	}, 1000);
+	myGameArea.start();
+	player = new Player()
 }
 
-// *********************************************** //
-// ******************** DRAW ******************** //
-// ********************************************* //
-
-function drawSpectrum(normalizedSpectrum) {
-	// Draw spectrum
-	canvas = createCanvas(window.innerWidth, canvasHeight);
-
-	background(0);
-
-	var leftPosition = 0;
-
-	for(var i = 0; i < normalizedSpectrum.length; i++) {
-
-		// ******************** Bars ******************** //
-
-		var left = leftPosition + blocUnit * i;
-		var top;
-
-		// Set top and height
-		if(normalizedSpectrum[i] == 1) {
-			// Big bar
-			top 	= bigBarTop;
-			height 	= bigBarHeight;
-		} else {
-			// Small bar
-			top 	= smallBarTop;
-			height 	= smallBarHeight
-		}
-
-		// Draw on canvas
-  		fill(COLOR.bar);
-		rect(left, top, blocUnit, height);
-
-		// ******************** Artefacts ******************** //
-
-		var artefact 	= songPositions[i];
-		height 			= blocUnit;
-
-		// Set top
-		switch(artefact) {
-			case 0:
-				top = blocUnit;
-				break;
-			case 1:
-				top = blocUnit * 2;
-				break;
-			case 2:
-				top = blocUnit * 3;
-				break;
-			case 3:
-				top = blocUnit * 4;
-				break;
-		}
-
-		// Draw on canvas
-		fill(COLOR.artefact);
-		rect(left, top, blocUnit, height);
+var myGameArea = {
+	canvas : document.createElement("canvas"),
+	start : function() {
+			this.canvas.width = 1000;
+			this.canvas.height = canvasHeight;
+			this.context = this.canvas.getContext("2d");
+			document.body.insertBefore(this.canvas, document.querySelector("#canvasWrapper"));
+			this.intervalAddAmplitude = setInterval("addAmplitudeAndArtefact();",500);
+			this.intervalUpdate = setInterval("updateGameArea();", 10);
+	},
+	clear : function() {
+			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	},
+	stop : function() {
+			clearInterval(this.intervalAddAmplitude);
+			clearInterval(this.intervalUpdate);
 	}
+}
+
+
+function Player() {
+	var self = this;
+	self.x = 400;
+	self.y = 225;
+	self.img = new Image();
+	self.img.src = "licorne.png";
+	self.update = function() {
+		ctx = myGameArea.context;
+		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	}
+
+	self.ctx = myGameArea.context;
+	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+function Artefact(posY) {
+	var self = this;
+	self.x = myGameArea.canvas.width;
+	self.y = posY;
+	self.img = new Image();
+	self.img.src = "artefact.png";
+	self.update = function() {
+			this.x -= 1;
+			ctx = myGameArea.context;
+			ctx.drawImage(self.img, self.x, self.y, 20, 34);
+	}
+
+	self.ctx = myGameArea.context;
+	ctx.drawImage(self.img, self.x, self.y, 40, 38);
+}
+
+function Amplitude(height) {
+	this.color = "#11CADC";
+	this.width = 15;
+	this.height = height ? bigBarHeight : smallBarHeight;
+	this.x = myGameArea.canvas.width;
+	this.y = canvasHeight / 2 - this.height / 2;
+	this.update = function() {
+			this.x -= 1;
+			ctx = myGameArea.context;
+			ctx.fillStyle = this.color;
+			ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+
+	this.ctx = myGameArea.context;
+	this.ctx.fillStyle = this.color;
+	this.ctx.fillRect(this.x, this.y, this.width, this.height);
+}
+
+
+function updateGameArea() {
+	myGameArea.clear();
+	console.log(listeBarres);
+	for (i = 0; i < listeBarres.length; i++) {
+		listeBarres[i].update();
+		listeArtefacts[i].update();
+		console.log("update");
+	}
+
+	if (myGameArea.keys && myGameArea.keys[65]) {}
+	if (myGameArea.keys && myGameArea.keys[90]) {player.y = 263; }
+	if (myGameArea.keys && myGameArea.keys[69]) {player.y= 363; }
+	if (myGameArea.keys && myGameArea.keys[82]) {player.y= 463; }
+
+	player.update();
+}
+
+
+function addAmplitudeAndArtefact() {
+	var amplitude  = new Amplitude(amplitudes[time]);
+	listeBarres.push(amplitude);
+
+	var artefact;
+	switch (artefacts[time]) {
+		case 0:
+			artefact  = new Artefact(blocUnit);
+			break;
+		case 1:
+			artefact  = new Artefact(2 * blocUnit);
+			break;
+		case 2:
+			artefact  = new Artefact(3 * blocUnit);
+			break;
+		case 3:
+			artefact  = new Artefact(4 * blocUnit);
+			break;
+	}
+	listeArtefacts.push(artefact);
+
+	console.log(time);
+	time++;
+
+	if(time > artefacts.length) {
+		myGameArea.stop();
+	}
+}
+
+
+
+window.onkeyup = function(e) {
+
+	// TODO: bind with cancas drawing
+	// fill(COLOR.player);
+	// rect(left, top, blocUnit, height);
+
+	var key = e.keyCode ? e.keyCode : e.which;
+	// a : top = 65
+	// z : midtop = 90
+	// e : midbot = 69
+	// r : bot = 82
+	// Up: 38
+	// Down: 40
+	switch (key) {
+		case 65:
+			// Top
+			playerPosition = 0;
+			player.y = 163;
+			break;
+		case 90:
+			// Midtop
+			playerPosition = 1;
+			break;
+		case 69:
+			// Midbot
+			playerPosition = 2;
+			break;
+		case 82:
+			// Bot
+			playerPosition = 3;
+			break;
+		case 38:
+			// Up arrow
+			if(playerPosition != 0) {
+
+				playerPosition--;
+			}
+			break;
+		case 40:
+			// Down arrow
+			if(playerPosition != 3) {
+
+				playerPosition++;
+			}
+			break;
+	}
+
+    // ******************** Notify websocket ******************** //
+    console.log("trying to emit new position through ws");
+    gameSocket.emit('playerMove', {message: "The player position is now:" + playerPosition});
 }
