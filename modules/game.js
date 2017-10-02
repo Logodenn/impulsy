@@ -1,3 +1,4 @@
+var gameFunctions = require('./game_function');
 var io;
 var gameSocket;
 var game;
@@ -11,9 +12,11 @@ exports.initGame = function (sio, socket) {
 
   // Host Events
   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
+  gameSocket.on('hostStartGame', hostStartGame);
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
+  gameSocket.on('gameOver', gameOver);
 }
 
 /*
@@ -26,7 +29,7 @@ function hostCreateNewGame(youtubeVideoId, difficulty) {
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  createGame(youtubeVideoId, difficulty, thisGameId, this.id, function (error, game) {
+  gameFunctions.createGame(youtubeVideoId, difficulty, thisGameId, this.id, function (error, game) {
     if (error) console.log(error);
     else this.emit('NewGameCreated', {
       game
@@ -37,11 +40,28 @@ function hostCreateNewGame(youtubeVideoId, difficulty) {
   var sock = this;
 };
 
+/*
+ * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
+ * Create the game 
+ * @param sound The sound selected by the player
+ * @param difficulty The difficulty selected by the player
+ */
+function hostStartGame() {
+  console.log("START GAAAAAME");
+};
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> dev
 function playerMove(position) {    
   game.position = position;
 }
 
+function gameOver()
+{
+    clearInterval(new_positions);
+}
 
 
 /**
@@ -54,7 +74,3 @@ function playerMove(position) {    
 //     io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
 //   });
 // }, 1000);
-
-// socket.on('death', function () {
-//   clearInterval(new_positions);
-// });
