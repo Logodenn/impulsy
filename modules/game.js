@@ -50,10 +50,6 @@ function hostStartGame() {
   console.log("START GAAAAAME");
 };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
 function playerMove(position) {    
   game.position = position;
 }
