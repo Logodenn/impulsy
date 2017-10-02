@@ -26,6 +26,9 @@ exports.initGame = function (sio, socket) {
  * @param data.difficulty The difficulty selected by the player
  */
 function hostCreateNewGame(data) {
+  var youtubeVideoId  = data.youtubeVideoId;
+  var difficulty      = data.difficulty;
+
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
@@ -57,9 +60,11 @@ function hostStartGame() {
 /*
  * The player has moved
  * Update the position of the player in the game object
- * @param position new position of the player
+ * @param data.position new position of the player
  */
-function playerMove(position) {    
+function playerMove(data) {
+  var position = data.position;
+  
   game.position = position;
 }
 
