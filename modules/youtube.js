@@ -1,33 +1,52 @@
-const fs = require('fs');
 const util = require('util');
 const ffmpeg = require('fluent-ffmpeg');
 const ytdl = require('ytdl-core');
 const streamTo = require('stream-to-array');
-var AudioContext = require('web-audio-api').AudioContext;
-context = new AudioContext;
+const AudioContext = require('web-audio-api').AudioContext;
 
-const stream = ytdl('https://www.youtube.com/watch?v=kJQP7kiw5Fk');
-proc = ffmpeg({ source: stream });
-proc.noVideo(stream)
-    .audioBitrate(0)
-    .format('mp3');
+const context = new AudioContext;
 
-let s = proc.pipe();
-
-streamTo(s, (err, parts) => {
-  const buffers = parts.map(part => util.isBuffer(part) ? part : Buffer.from(part));
-  const buff = Buffer.concat(buffers);
-
-  context.decodeAudioData(buff, function(audioBuffer) {
-    const pcmdata = audioBuffer.getChannelData(0);
-    const sampleRate = audioBuffer.sampleRate;
-    const duration = audioBuffer.duration;
-
-    displayAmplitudes(pcmdata, sampleRate, .5);
+module.exports.getAudioStream = (youtubeVideoId, callback) => {
+  const youtubeStream = ytdl('https://www.youtube.com/watch?v=' + youtubeVideoId, { quality: 'lowest', format: 'audioonly' });
+  
+  youtubeStream.on('error', (err) => {
+    callback(err);
+    return;
   });
-});
 
-function displayAmplitudes(pcmdata, sampleRate, interval) {
+  let stream = ffmpeg({ source: youtubeStream });
+  stream.noVideo()
+      .audioBitrate('1k')
+      .format('mp3');
+
+  callback(null, stream);
+};
+
+module.exports.getBars = (stream, frequency, callback) => {
+  let pipe = stream.pipe();
+
+  streamTo(pipe, (err, parts) => {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    const buffers = parts.map(part => util.isBuffer(part) ? part : Buffer.from(part));
+    const buff = Buffer.concat(buffers);
+
+    context.decodeAudioData(buff, function(audioBuffer) {
+      const pcmdata = audioBuffer.getChannelData(0);
+      const sampleRate = audioBuffer.sampleRate;
+      const duration = audioBuffer.duration;
+
+      const bars = computeBars(pcmdata, sampleRate, 1.0 / frequency);
+
+      callback(null, bars);
+    });
+  });
+}
+
+function computeBars(pcmdata, sampleRate, interval) {
   step = sampleRate * interval
   n = Math.floor(pcmdata.length / step);
   amplitudes = [];
@@ -36,16 +55,19 @@ function displayAmplitudes(pcmdata, sampleRate, interval) {
     max = -Infinity;
     sum = 0;
     for (let k = 0; k < step; k++) {
-      max = pcmdata[(i + 1) * k] > max ? pcmdata[(i + 1) * k].toFixed(1) : max;
-      //sum += pcmdata[(i + 1) * k];
+      //max = pcmdata[(i + 1) * k] > max ? pcmdata[(i + 1) * k].toFixed(1) : max;
+      sum += pcmdata[(i + 1) * k];
     }
-    //amplitudes.push(Math.abs(sum/step));
-    amplitudes.push(max);
+    amplitudes.push(Math.abs(sum/step));
+    //amplitudes.push(max);
   }
 
-  let average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+  let average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
   let a = average(amplitudes);
   amplitudes = amplitudes.map((value, index) => {
     let n = value > a ? 1 : 0;
+    return n;
   });
+
+  return amplitudes;
 }
