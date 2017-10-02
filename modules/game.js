@@ -20,16 +20,16 @@ exports.initGame = function (sio, socket) {
 }
 
 /*
- * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
+ * The 'CREATE' button was clicked and 'hostCreateNewGame' event occurred.
  * Create the game 
- * @param sound The sound selected by the player
- * @param difficulty The difficulty selected by the player
+ * @param data.youtubeVideoId The sound selected by the player
+ * @param data.difficulty The difficulty selected by the player
  */
-function hostCreateNewGame(youtubeVideoId, difficulty) {
+function hostCreateNewGame(data) {
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  gameFunctions.createGame(youtubeVideoId, difficulty, thisGameId, this.id, function (error, game) {
+  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (error, game) {
     if (error) console.log(error);
     else this.emit('NewGameCreated', {
       game
@@ -42,31 +42,32 @@ function hostCreateNewGame(youtubeVideoId, difficulty) {
 
 /*
  * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
- * Create the game 
- * @param sound The sound selected by the player
- * @param difficulty The difficulty selected by the player
+ * Launch the game 
  */
 function hostStartGame() {
-  console.log("START GAAAAAME");
+  console.log("Game starting");
+  // peut être faire un wait avant de matter directement le son ? 
+  var new_positions = setInterval(function () {
+    get_new_position(function () {
+      io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
+    });
+  }, 1000);
 };
 
+/*
+ * The player has moved
+ * Update the position of the player in the game object
+ * @param position new position of the player
+ */
 function playerMove(position) {    
   game.position = position;
 }
 
-function gameOver()
-{
-    clearInterval(new_positions);
-}
-
-
-/**
- * TODO : voir t qui est envoyé par client ça devrait être géré ici 
- * Partie pour vérifier toute les secondes la position du joueur par rapport à l'arthéfact 
- * A revoir il y a surement des bugs
+/*
+ * The player finish or die.
+ * Close the interval created before and sava date in database.
  */
-// var new_positions = setInterval(function () {
-//   get_new_position(function () {
-//     io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
-//   });
-// }, 1000);
+function gameOver() {
+  clearInterval(new_positions);
+  // save du score ici pour la db
+}
