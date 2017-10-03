@@ -18,6 +18,8 @@ exports.initGame = function (sio, socket) {
   // Player Events
   gameSocket.on('playerMove', playerMove);
   gameSocket.on('gameOver', gameOver);
+
+  socket.on('disconnect', socket.disconnect(true));
 }
 
 /**
@@ -85,11 +87,7 @@ function playerMove(data) {
  */
 function gameOver() {
   clearInterval(new_positions);
-  
+  io.sockets.in(game.gameId).emit('enfOfGame');
   // save du score ici pour la db
 }
 
-function disconnect()
-{
-  console.log("FUCK YOU")
-}
