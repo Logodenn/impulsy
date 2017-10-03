@@ -1,11 +1,14 @@
 var gameFunctions = require('./game_function');
+const logger = require('winston');
+logger.level = 'debug';
 var io;
 var gameSocket;
 var game;
-var vitesse_game = 1000; //vitesse du jeu
+var vitesse_game = 500; //vitesse du jeu
 var new_positions
 
 exports.initGame = function (sio, socket) {
+  logger.debug('Initilization of the game');
   io = sio;
   gameSocket = socket;
   gameSocket.emit('connected', {
@@ -21,7 +24,7 @@ exports.initGame = function (sio, socket) {
   gameSocket.on('gameOver', gameOver);
 
   socket.on('disconnect', function(){
-    console.log("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    logger.info("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId);
     gameOver();
     gameSocket.disconnect(true)
   });
@@ -34,16 +37,16 @@ exports.initGame = function (sio, socket) {
  * @param data.difficulty The difficulty selected by the player
  */
 function hostCreateNewGame(data) {
+  logger.debug('Creation of the game');  
   var youtubeVideoId = data.youtubeVideoId;
   var difficulty = data.difficulty;
   var gameCreate;
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (error, gameCreate) {
+  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
-    console.log(game);
-    if (error) console.log(error);
+    if (err) logger.error(err);
     else gameSocket.emit('newGameCreated', {
       game
     });
@@ -58,6 +61,7 @@ function hostCreateNewGame(data) {
  * @param {int} currentBar bar at this moment in the client side 
  */
 function verificationEnergy (game, currentBar) {
+  logger.debug('Verification of the energy for this bar : '+currentBar);
   io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, currentBar));
 };
 
@@ -66,7 +70,7 @@ function verificationEnergy (game, currentBar) {
  * Launch the game 
  */
 function hostStartGame() {
-  console.log("Game starting");
+  logger.debug('Starting the game');
   // peut être faire un wait avant de matter directement le son ? 
   io.sockets.in(game.gameId).emit('GameStarted');
   currentBar = 0
