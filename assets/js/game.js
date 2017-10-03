@@ -1,4 +1,12 @@
 
+// var model = {
+// 	gameName	: "Impulsy",
+// 	catchPhrase	: "Ride the music!"
+// }
+
+/*var context = {gameName: "Impulsy", catchPhrase: "Ride the music!"};
+var html    = template(context);*/
+
 // ******************************************************************* //
 // ******************** WEBSOCKET INITIALIZATION ******************** //
 // ***************************************************************** //
@@ -152,9 +160,9 @@ var counterForAmplitudeColor = 0;
 var counterForColorTab = 0;
 var tabColorToChange = ["g-", "r+", "r-", "g+"];
 
+// ******************************************************* //
+// ******************** CONSTRUCTORS ******************** //
 // ***************************************************** //
-// ******************** GAME LOGIC ******************** //
-// *************************************************** //
 
 // ******************** Game variables ******************** //
 
@@ -169,6 +177,138 @@ var energyBar;
 var pulsers;
 var listeBarres = [];
 var listeArtefacts = [];
+
+// ******************** Player ******************** //
+
+function Player() {
+	var self = this;
+	self.x = 400;
+	self.y = smallBarTop;
+	self.img = new Image();
+	self.img.src = "licorne.png";
+	self.update = function() {
+		ctx = myGameArea.context;
+		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	}
+
+	self.ctx = myGameArea.context;
+	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+// ******************** Pulsers ******************** //
+
+function Pulsers() {
+	var self = this;
+	self.x = 890;
+	self.y = 150;
+	self.img = new Image();
+	self.img.src = "pulsers.png";
+	self.update = function() {
+		ctx = myGameArea.context;
+		ctx.drawImage(self.img, self.x, self.y, 103, 406);
+	}
+
+	self.ctx = myGameArea.context;
+	self.ctx.drawImage(self.img, self.x, self.y, 103, 406);
+}
+
+// ******************** Artefact ******************** //
+
+function Artefact(posY) {
+	var self = this;
+	self.x = myGameArea.canvas.width - 145;
+	self.y = posY;
+	self.img = new Image();
+	self.img.src = "artefact.png";
+	self.update = function() {
+		this.x -= 1;
+		ctx = myGameArea.context;
+		ctx.drawImage(self.img, self.x, self.y, 20, 34);
+	}
+
+	self.ctx = myGameArea.context;
+	ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+// ******************** Amplitude ******************** //
+
+function Amplitude(height) {
+	switch (tabColorToChange[counterForColorTab]) {
+		case "r+":
+		r += 15;
+		break;
+		case "r-":
+		r -= 15;
+		break;
+		case "g+":
+		g += 15;
+		break;
+		case "g-":
+		g -= 15;
+		break;
+		case "b+":
+		b += 15;
+		break;
+		case "b-":
+		b -= 15;
+		break;
+		default:
+	}
+
+	if (counterForAmplitudeColor == 9) {
+		counterForAmplitudeColor = 0;
+
+		if (counterForColorTab == 3) {
+			counterForColorTab = 0;
+		} else {
+			counterForColorTab++;
+		}
+	} else {
+		counterForAmplitudeColor++;
+	}
+
+	this.color = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
+	console.log(this.color);
+	this.width = 25;
+	this.height = height ? bigBarHeight : smallBarHeight;
+	this.x = myGameArea.canvas.width - 130;
+	this.y = canvasHeight / 2 - this.height / 2;
+	this.update = function() {
+		this.x -= 1;
+		ctx = myGameArea.context;
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+
+	this.ctx = myGameArea.context;
+	this.ctx.fillStyle = this.color;
+	this.ctx.fillRect(this.x, this.y, this.width, this.height);
+}
+
+// ******************** EnergyBar ******************** //
+
+function EnergyBar() {
+	this.color = "#FFD51D";
+	this.width = 500;
+	this.height = 25;
+	this.x = 250;
+	this.y = 25;
+	this.update = function() {
+		ctx = myGameArea.context;
+		ctx.fillStyle = this.color;
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+
+	this.ctx = myGameArea.context;
+	this.ctx.fillStyle = this.color;
+	this.ctx.fillRect(this.x, this.y, this.width, this.height);
+}
+
+// ***************************************************** //
+// ******************** GAME LOGIC ******************** //
+// *************************************************** //
+
+// TODO merge startGameTmp with startGame
 
 function startGameTmp() {
 
@@ -228,23 +368,6 @@ function startGameTmp() {
 	}
 }
 
-
-// var model = {
-// 	gameName	: "Impulsy",
-// 	catchPhrase	: "Ride the music!"
-// }
-
-/*var context = {gameName: "Impulsy", catchPhrase: "Ride the music!"};
-var html    = template(context);*/
-
-
-
-
-// ***************************************************** //
-// ******************** GAME LOGIC ******************** //
-// *************************************************** //
-
-
 function startGame() {
 	myGameArea.start();
 	player = new Player()
@@ -273,124 +396,6 @@ var myGameArea = {
 		clearInterval(this.intervalAddAmplitude);
 	}
 }
-
-
-function Player() {
-	var self = this;
-	self.x = 400;
-	self.y = smallBarTop;
-	self.img = new Image();
-	self.img.src = "licorne.png";
-	self.update = function() {
-		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
-	}
-
-	self.ctx = myGameArea.context;
-	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
-}
-
-function Pulsers() {
-	var self = this;
-	self.x = 890;
-	self.y = 150;
-	self.img = new Image();
-	self.img.src = "pulsers.png";
-	self.update = function() {
-		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, 103, 406);
-	}
-
-	self.ctx = myGameArea.context;
-	self.ctx.drawImage(self.img, self.x, self.y, 103, 406);
-}
-
-function Artefact(posY) {
-	var self = this;
-	self.x = myGameArea.canvas.width - 145;
-	self.y = posY;
-	self.img = new Image();
-	self.img.src = "artefact.png";
-	self.update = function() {
-		this.x -= 1;
-		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, 20, 34);
-	}
-
-	self.ctx = myGameArea.context;
-	ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
-}
-
-function Amplitude(height) {
-	switch (tabColorToChange[counterForColorTab]) {
-		case "r+":
-		r += 15;
-		break;
-		case "r-":
-		r -= 15;
-		break;
-		case "g+":
-		g += 15;
-		break;
-		case "g-":
-		g -= 15;
-		break;
-		case "b+":
-		b += 15;
-		break;
-		case "b-":
-		b -= 15;
-		break;
-		default:
-	}
-
-	if (counterForAmplitudeColor == 9) {
-		counterForAmplitudeColor = 0;
-
-		if (counterForColorTab == 3) {
-			counterForColorTab = 0;
-		} else {
-			counterForColorTab++;
-		}
-	} else {
-		counterForAmplitudeColor++;
-	}
-
-	this.color = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
-	console.log(this.color);
-	this.width = 25;
-	this.height = height ? bigBarHeight : smallBarHeight;
-	this.x = myGameArea.canvas.width - 130;
-	this.y = canvasHeight / 2 - this.height / 2;
-	this.update = function() {
-		this.x -= 1;
-		ctx = myGameArea.context;
-		ctx.fillStyle = this.color;
-		ctx.fillRect(this.x, this.y, this.width, this.height);
-	}
-
-	this.ctx = myGameArea.context;
-	this.ctx.fillStyle = this.color;
-	this.ctx.fillRect(this.x, this.y, this.width, this.height);
-}
-
-function EnergyBar() {
-	this.color = "#FFD51D";
-	this.width = 500;
-	this.height = 25;
-	this.x = 250;
-	this.y = 25;
-	this.update = function() {
-		ctx = myGameArea.context;
-		ctx.fillStyle = this.color;
-		ctx.fillRect(this.x, this.y, this.width, this.height);
-	}
-
-	this.ctx = myGameArea.context;
-	this.ctx.fillStyle = this.color;
-	this.ctx.fillRect(this.x, this.y, this.width, this.height);
-}
-
 
 function updateGameArea() {
 	myGameArea.clear();
