@@ -86,7 +86,7 @@ var App = {
         currentCorrectAnswer: '',
 
         onCreateClick: function () {
-            console.log('Clicked "Create A Game"' + youtubeVideoId + difficulty);
+            console.log('Clicked "Create A Game" ' + youtubeVideoId + ' - ' + difficulty);
             IO.socket.emit('hostCreateNewGame', {
 				youtubeVideoId	: youtubeVideoId,
 				difficulty		: difficulty
