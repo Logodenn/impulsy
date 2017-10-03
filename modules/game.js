@@ -26,21 +26,28 @@ exports.initGame = function (sio, socket) {
  * @param data.difficulty The difficulty selected by the player
  */
 function hostCreateNewGame(data) {
-  var youtubeVideoId  = data.youtubeVideoId;
-  var difficulty      = data.difficulty;
-
+  var youtubeVideoId = data.youtubeVideoId;
+  var difficulty = data.difficulty;
+  var gameCreate;
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (error, game) {
+  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (error, gameCreate) {
+    game = gameCreate
+    console.log(game);
     if (error) console.log(error);
-    else this.emit('NewGameCreated', {
+    else gameSocket.emit('newGameCreated', {
       game
     });
   });
+  
   // Join the Room and wait for the players
-  this.join(thisGameId.toString());
-  var sock = this;
+  gameSocket.join(thisGameId.toString());
+};
+
+function getNewPosition (game, time) {
+  console.log("yo ! ")
+  io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, time));
 };
 
 /*
@@ -50,12 +57,14 @@ function hostCreateNewGame(data) {
 function hostStartGame() {
   console.log("Game starting");
   // peut être faire un wait avant de matter directement le son ? 
+  time = 0
   var new_positions = setInterval(function () {
-    get_new_position(function () {
-      io.sockets.in(data.gameId).emit('energy', checkRightPosition(game, t));
-    });
+    getNewPosition(game, time)
+    time = time + 1;
+    console.log(time);
   }, 1000);
 };
+
 
 /*
  * The player has moved
@@ -64,7 +73,7 @@ function hostStartGame() {
  */
 function playerMove(data) {
   var position = data.position;
-  
+
   game.position = position;
 }
 
