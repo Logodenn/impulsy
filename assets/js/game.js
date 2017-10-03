@@ -185,7 +185,7 @@ function Player() {
 	self.x = 400;
 	self.y = smallBarTop;
 	self.img = new Image();
-	self.img.src = "licorne.png";
+	self.img.src = "../img/licorne.png";
 	self.update = function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
@@ -202,7 +202,7 @@ function Pulsers() {
 	self.x = 890;
 	self.y = 150;
 	self.img = new Image();
-	self.img.src = "pulsers.png";
+	self.img.src = "../img/pulsers.png";
 	self.update = function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, 103, 406);
@@ -219,7 +219,7 @@ function Artefact(posY) {
 	self.x = myGameArea.canvas.width - 145;
 	self.y = posY;
 	self.img = new Image();
-	self.img.src = "artefact.png";
+	self.img.src = "../img/artefact.png";
 	self.update = function() {
 		this.x -= 1;
 		ctx = myGameArea.context;
