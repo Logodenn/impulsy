@@ -1,6 +1,8 @@
 var gameFunctions = require('./game_function');
 const logger = require('winston');
 logger.level = 'debug';
+var yt = require('./youtube');
+var ss = require('socket.io-stream');
 var io;
 var gameSocket;
 var game;
@@ -36,7 +38,6 @@ exports.initGame = function (sio, socket) {
       logger.info("Close connection with socket : " + gameSocket.id + " room : " + game.gameId)
       endGame();
     }
-
   });
 }
 
