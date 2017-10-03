@@ -33,6 +33,14 @@ body {
 	align-items: center;
 }
 
+.buttonWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+	height: 300px;
+}
+
 /********************************************************************/
 /****************************** Index ******************************/
 /******************************************************************/
@@ -41,12 +49,4 @@ body {
 	text-transform: uppercase;
 	text-align: center;
 	/* color: var(--color-font-light); */
-}
-
-#buttons {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: space-evenly;
-	height: 300px;	
 }
