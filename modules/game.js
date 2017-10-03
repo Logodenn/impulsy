@@ -1,6 +1,11 @@
 var gameFunctions = require('./game_function');
+<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
 const logger = require('winston');
 logger.level = 'debug';
+=======
+var yt = require('./youtube');
+var ss = require('socket.io-stream');
+>>>>>>> Initial work
 var io;
 var gameSocket;
 var game;
@@ -21,6 +26,7 @@ exports.initGame = function (sio, socket) {
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
+<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
   gameSocket.on('endGame', endGame);
 
   // If the player Rage Quit or the player want to stop the level
@@ -36,6 +42,14 @@ exports.initGame = function (sio, socket) {
     }
     
     gameSocket.disconnect(true)
+=======
+  gameSocket.on('gameOver', gameOver);
+
+  yt.getAudioStream("8aJw4chksqM", (err, command) => {
+    let stream = ss.createStream();
+    let s = ss(gameSocket).emit('audioChunks', stream);
+    command.pipe(stream);
+>>>>>>> Initial work
   });
 }
 
@@ -79,7 +93,12 @@ function verificationEnergy (game, currentBar) {
  * Launch the game, verify if the player finish the game or die during the game
  */
 function hostStartGame() {
+<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
   logger.debug('Starting the game');
+=======
+  console.log("Game starting");
+      io.sockets.in(data.gameId).emit('gameStarted');
+>>>>>>> Initial work
   // peut être faire un wait avant de matter directement le son ? 
   io.sockets.in(game.gameId).emit('gameStarted');
   currentBar = 0
