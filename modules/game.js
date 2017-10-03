@@ -57,6 +57,7 @@ function getNewPosition (game, time) {
 function hostStartGame() {
   console.log("Game starting");
   // peut être faire un wait avant de matter directement le son ? 
+  io.sockets.in(game.gameId).emit('GameStarted');
   currentBar = 0
   var new_positions = setInterval(function () {
     getNewPosition(game, currentBar)
