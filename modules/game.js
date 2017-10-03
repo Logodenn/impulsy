@@ -3,6 +3,7 @@ var io;
 var gameSocket;
 var game;
 var vitesse_game = 1000; //vitesse du jeu
+var new_positions
 
 exports.initGame = function (sio, socket) {
   io = sio;
@@ -19,7 +20,11 @@ exports.initGame = function (sio, socket) {
   gameSocket.on('playerMove', playerMove);
   gameSocket.on('gameOver', gameOver);
 
-  socket.on('disconnect', socket.disconnect(true));
+  socket.on('disconnect', function(){
+    console.log("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    gameOver();
+    gameSocket.disconnect(true)
+  });
 }
 
 /**
@@ -65,8 +70,8 @@ function hostStartGame() {
   // peut être faire un wait avant de matter directement le son ? 
   io.sockets.in(game.gameId).emit('GameStarted');
   currentBar = 0
-  var new_positions = setInterval(function () {
-    getNewPosition(game, currentBar)
+  new_positions = setInterval(function () {
+    verificationEnergy(game, currentBar)
     currentBar = currentBar + 1;
   }, vitesse_game);
 };
