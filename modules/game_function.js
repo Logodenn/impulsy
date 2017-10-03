@@ -1,36 +1,63 @@
 var youtube = require('./youtube');
 
-module.exports.checkRightPosition = function checkRightPosition(game, t) {
-	if ((game.position != game.array_artefacts[t] & game.difficulty == "easy") | (game.position == game.array_artefacts[t] & game.difficulty == "crazy")) game.energy = game.energy - 1
-	else if (game.position != game.array_artefacts[t] & game.difficulty == "crazy") game.energy = game.energy - 2
-	else if (game.position == game.array_artefacts[t] & game.difficulty == "easy") game.energy = game.energy
-	else if (game.difficulty == "lazy") console.log("Level lazy no energy");
-	else console.log("WTF !!!")
+/**
+ * Function checkRightPosition use to verify the position of the player each bar
+ * energy level depend of the difficulty : 
+ * crazy : loose arthefact (-2 energy) get arthefact (-1 energy)
+ * easy : loose arthefact (-1 energy) get arthefact (energy no change)
+ * lazy : no energy
+ * @param {object} game game object contain the position of the player, the difficulty of the party and the array of arthefact 
+ * @param {int} currentBar bar at this moment in the client side
+ */
+module.exports.checkRightPosition = function checkRightPosition(game, currentBar) {
+	if ((game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy") || (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy")){
+		game.energy = game.energy - 1
+	} 
+	else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy"){ 
+		game.energy = game.energy - 2
+	} 
+	else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy"){
+		game.energy = game.energy
+	} 
+	else if (game.difficulty == "lazy"){
+		console.log("Level lazy no energy");
+	} 
+	else {
+		console.log("WTF !!!")
+	}
 	console.log(game.energy);
 	return game.energy;
 }
 
-
-// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
-
-function getRandom(array_spectrum) {
-	//Example, including customisable intervals [lower_bound, upper_bound)
-	var random_numbers = [];
-	array_spectrum.forEach(function (element) {
+/**
+ * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
+ * @param {array} arraySpectrum array of the spectrum generate by the sound
+ */
+function getArrayArthefacts(arraySpectrum) {
+	var randomNumbers = [];
+	arraySpectrum.forEach(function (element) {
 		if (element == 0) {
-			var lower_bound = 1;
-			var upper_bound = 2;
+			var lowerBound = 1;
+			var upperBound = 2;
 		} else {
-			var lower_bound = 0;
-			var upper_bound = 3;
+			var lowerBound = 0;
+			var upperBound = 3;
 		}
-		var random_number = Math.round(Math.random() * (upper_bound - lower_bound) + lower_bound);
+		var randomNumber = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound);
 		// Yay! new random number
-		random_numbers.push(random_number);
+		randomNumbers.push(randomNumber);
 	});
-	return random_numbers;
+	return randomNumbers;
 }
 
+/**
+ * Function createGame create game object 
+ * @param {string} youtubeVideoId string of the youtube video id
+ * @param {string} difficulty difficulty chose by the player at the begining
+ * @param {int} gameId id of the game (equevalent of the room use for the socket)
+ * @param {string} socketId id of the socket
+ * @param callback 
+ */
 module.exports.createGame = function createGame(youtubeVideoId, difficulty, gameId, socketId, callback) {
 	var game = {
 		gameId: gameId,
@@ -44,9 +71,9 @@ module.exports.createGame = function createGame(youtubeVideoId, difficulty, game
 			youtube.getBars(stream, 1, function (err, bars) {
 				if (err) console.log(err);
 				else {
-					game.array_spectrum = bars;
-					game.array_artefacts = getRandom(game.array_spectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-					game.energy = game.array_spectrum.length; // duration of the music 
+					game.arraySpectrum = bars;
+					game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
+					game.energy = game.arraySpectrum.length; // duration of the music 
 					callback(null, game)
 				}
 			});
