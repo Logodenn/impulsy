@@ -26,7 +26,24 @@ var IO = {
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('gameOver', IO.onGameOver);
-        // IO.socket.on('error', IO.error );
+		// IO.socket.on('error', IO.error );
+		/* IO.socket.on('audioChunks', function(chunk) {
+			var blob = new Blob([chunk], { 'type' : 'audio/mp3' });
+			audio.src = window.URL.createObjectURL(blob);
+			audio.play();
+		}); */
+
+		var audio = document.createElement('audio');
+		ss(IO.socket).on('audioChunks', function(stream, data) {
+			parts = [];
+			stream.on('data', function(chunk){
+				parts.push(chunk);
+			});
+			stream.on('end', function () {
+				audio.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
+				audio.play();
+			});
+		});
     },
 
     onConnected : function() {
