@@ -34,7 +34,7 @@ var IO = {
     },
 
     onGameStarted : function(data) {
-		startGameTmp();
+		startGame();
 		// TODO
     },
 
