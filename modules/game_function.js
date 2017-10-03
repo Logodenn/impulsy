@@ -4,6 +4,7 @@ module.exports.checkRightPosition = function checkRightPosition(game, t) {
 	if ((game.position != game.array_artefacts[t] & game.difficulty == "easy") | (game.position == game.array_artefacts[t] & game.difficulty == "crazy")) game.energy = game.energy - 1
 	else if (game.position != game.array_artefacts[t] & game.difficulty == "crazy") game.energy = game.energy - 2
 	else if (game.position == game.array_artefacts[t] & game.difficulty == "easy") game.energy = game.energy
+	else if (game.difficulty == "lazy") console.log("Level lazy no energy");
 	else console.log("WTF !!!")
 	console.log(game.energy);
 	return game.energy;
