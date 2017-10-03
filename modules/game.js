@@ -18,9 +18,11 @@ exports.initGame = function (sio, socket) {
   // Player Events
   gameSocket.on('playerMove', playerMove);
   gameSocket.on('gameOver', gameOver);
+
+  socket.on('disconnect', socket.disconnect(true));
 }
 
-/*
+/**
  * The 'CREATE' button was clicked and 'hostCreateNewGame' event occurred.
  * Create the game 
  * @param data.youtubeVideoId The sound selected by the player
@@ -41,22 +43,27 @@ function hostCreateNewGame(data) {
       game
     });
   });
-  
   // Join the Room and wait for the players
   gameSocket.join(thisGameId.toString());
 };
 
-function getNewPosition (game, time) {
-  io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, time));
+/**
+ * Function verificationEnergy use every second when the game begining and checkRightPosition in order to update energy level of the player
+ * @param {object} game game object contain the position of the player, the difficulty of the party and the array of arthefact 
+ * @param {int} currentBar bar at this moment in the client side 
+ */
+function verificationEnergy (game, currentBar) {
+  io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, currentBar));
 };
 
-/*
+/**
  * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
  * Launch the game 
  */
 function hostStartGame() {
   console.log("Game starting");
   // peut être faire un wait avant de matter directement le son ? 
+  io.sockets.in(game.gameId).emit('GameStarted');
   currentBar = 0
   var new_positions = setInterval(function () {
     getNewPosition(game, currentBar)
@@ -64,22 +71,23 @@ function hostStartGame() {
   }, vitesse_game);
 };
 
-
-/*
+/**
  * The player has moved
  * Update the position of the player in the game object
- * @param data.position new position of the player
+ * @param {int} data.position new position of the player
  */
 function playerMove(data) {
   var position = data.position;
   game.position = position;
 }
 
-/*
+/**
  * The player finish or die.
  * Close the interval created before and sava date in database.
  */
 function gameOver() {
   clearInterval(new_positions);
+  io.sockets.in(game.gameId).emit('enfOfGame');
   // save du score ici pour la db
 }
+
