@@ -2,6 +2,7 @@ var gameFunctions = require('./game_function');
 var io;
 var gameSocket;
 var game;
+var vitesse_game = 1000; //vitesse du jeu
 
 exports.initGame = function (sio, socket) {
   io = sio;
@@ -46,7 +47,6 @@ function hostCreateNewGame(data) {
 };
 
 function getNewPosition (game, time) {
-  console.log("yo ! ")
   io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, time));
 };
 
@@ -57,12 +57,11 @@ function getNewPosition (game, time) {
 function hostStartGame() {
   console.log("Game starting");
   // peut être faire un wait avant de matter directement le son ? 
-  time = 0
+  currentBar = 0
   var new_positions = setInterval(function () {
-    getNewPosition(game, time)
-    time = time + 1;
-    console.log(time);
-  }, 1000);
+    getNewPosition(game, currentBar)
+    currentBar = currentBar + 1;
+  }, vitesse_game);
 };
 
 
@@ -73,7 +72,6 @@ function hostStartGame() {
  */
 function playerMove(data) {
   var position = data.position;
-
   game.position = position;
 }
 
