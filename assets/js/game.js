@@ -185,7 +185,7 @@ function Player() {
 	self.x = 400;
 	self.y = smallBarTop;
 	self.img = new Image();
-	self.img.src = "../img/licorne.png";
+	self.img.src = "../img/unicorn.png";
 	self.update = function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
