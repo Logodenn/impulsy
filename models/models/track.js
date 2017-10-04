@@ -2,7 +2,7 @@ var orm = require("orm");
 
 module.exports = function(orm, db)
 {
-    var User = db.define("user", {
+    var Track = db.define("track", {
         name: {type : 'text' , key: true},
         spectrumLink: String
     });
