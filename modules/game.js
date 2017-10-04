@@ -76,7 +76,7 @@ function verificationEnergy (game, currentBar) {
 function hostStartGame() {
   console.log("Game starting");
   // peut être faire un wait avant de matter directement le son ? 
-  io.sockets.in(game.gameId).emit('GameStarted');
+  io.sockets.in(game.gameId).emit('gameStarted');
   currentBar = 0
   new_positions = setInterval(function () {
     if (currentBar > game.arrayArtefacts.length){
