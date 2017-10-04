@@ -21,11 +21,20 @@ exports.initGame = function (sio, socket) {
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
-  gameSocket.on('gameOver', gameOver);
+  gameSocket.on('endGame', endGame);
 
-  socket.on('disconnect', function(){
-    logger.info("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId);
-    gameOver();
+  // If the player Rage Quit or the player want to stop the level
+  gameSocket.on('disconnect', function(){
+    console.log("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    
+    if (typeof timer != 'undefined')
+    {
+      clearInterval(new_positions);
+    }
+    else {
+      gameOver();
+    }
+    
     gameSocket.disconnect(true)
   });
 }
@@ -67,16 +76,25 @@ function verificationEnergy (game, currentBar) {
 
 /**
  * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
- * Launch the game 
+ * Launch the game, verify if the player finish the game or die during the game
  */
 function hostStartGame() {
   logger.debug('Starting the game');
   // peut être faire un wait avant de matter directement le son ? 
-  io.sockets.in(game.gameId).emit('GameStarted');
+  io.sockets.in(game.gameId).emit('gameStarted');
   currentBar = 0
   new_positions = setInterval(function () {
-    verificationEnergy(game, currentBar)
-    currentBar = currentBar + 1;
+    if (currentBar > game.arrayArtefacts.length){
+      endGame(true);
+    } 
+    else if (game.energy == 0)
+    {
+      endGame(false);
+    }
+    else {
+      verificationEnergy(game, currentBar)
+      currentBar = currentBar + 1;
+    }
   }, vitesse_game);
 };
 
@@ -94,9 +112,9 @@ function playerMove(data) {
  * The player finish or die.
  * Close the interval created before and sava date in database.
  */
-function gameOver() {
+function endGame(victory) {
   clearInterval(new_positions);
-  io.sockets.in(game.gameId).emit('enfOfGame');
-  // save du score ici pour la db
+  io.sockets.in(game.gameId).emit('enfOfGame', victory);
+  // TODO : save du score ici pour la db
 }
 
