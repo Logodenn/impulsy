@@ -14,9 +14,10 @@
     "express": "4.15.2",
     "fluent-ffmpeg": "^2.1.2",
     "hbs": "^4.0.1",
+    "socket.io": "^2.0.3",
     "stream-to-array": "^2.3.0",
     "web-audio-api": "^0.2.2",
-    "socket.io": "^2.0.3",
+    "winston": "^2.4.0",
     "ytdl-core": "^0.17.1"
   },
   "repository": {
