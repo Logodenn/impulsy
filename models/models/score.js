@@ -3,11 +3,10 @@ var orm = require('orm');
 module.exports = function(orm, db)
 {
     var Score = db.define("score", {
-        idscores      : Number,
-        date   : String,
+        date : { type : 'text' , key: true},
+        user_pseudo : { type : 'text' , key: true},
         duration       : Number,
-        users_idusers      : Number,
-        tracks_idtracks      : Number
+        track_name      : String
     });
 };
 /*function create(score){

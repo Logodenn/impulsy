@@ -1,4 +1,4 @@
-var orm = require("orm");
+//var orm = require("orm");
 
 
 module.exports = function(orm, db)
@@ -8,7 +8,7 @@ module.exports = function(orm, db)
         password: String,
         rank: Number
     });
-}
+};
 
 /*function user(user, operation, callback) {
     orm.connectAsync('mysql://root:1234@localhost/mydb')
