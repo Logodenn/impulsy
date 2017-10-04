@@ -5,7 +5,7 @@ var settings = {
         protocol : "mysql",
         query    : { pool: true },
         host     : "127.0.0.1",
-        database : "mydb",
+        database : "impulsy",
         user     : "root",
         password : "1234"
     }

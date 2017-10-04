@@ -19,6 +19,11 @@ module.exports = function (cb) {
 
         connection = db;
         db.settings.set('instance.returnAllErrors', true);
+
+        db.sync(function (err) {
+            if (err) throw err;
+        });
+
         setup(db, cb);
     });
 };
