@@ -4,9 +4,17 @@ var orm = require('orm');
 
 var controllers = require('./models/controllers');
 
-/*controllers.user.create({
-    pseudo: "pseudo65", password: "Doeufr", rank: 29
-});*/
+controllers.user.create({
+    pseudo: "titi", password: "Doeufr", rank: 29
+});
+
+controllers.track.create({
+    name: "Show must go on !", spectrumLink: "/usr/share/spectre/Show_must_go_on_!"
+});
+
+controllers.score.create({
+    date: "12/01/3004-10:04:03", user_pseudo: "titi", track_name: "Show must go on !", duration: "45"
+});
 
 /*controllers.user.update({
     pseudo: "pseudo65", password: "Doeufr", rank: 29
@@ -14,9 +22,9 @@ var controllers = require('./models/controllers');
     pseudo: "pseudo65", password: "Doeufr", rank: 67
 });*/
 
-controllers.user.delete({
+/*controllers.user.delete({
     pseudo: "pseudo65", password: "Doeufr", rank: 29
-});
+});*/
 
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
