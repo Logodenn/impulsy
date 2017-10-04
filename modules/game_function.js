@@ -42,7 +42,7 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 	}
   
 	logger.debug(game.energy);
-	logger.debug(currentBar);
+	logger.debug(currentBar+'/'+game.arrayArtefacts.length);
 	game.currentBar = currentBar;
 	return game.energy, success;
 }
