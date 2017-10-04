@@ -8,37 +8,55 @@ var youtube = require('./youtube');
  * lazy : no energy
  * @param {object} game game object contain the position of the player, the difficulty of the party and the array of arthefact 
  * @param {int} currentBar bar at this moment in the client side
+ * 
  */
 module.exports.checkRightPosition = function checkRightPosition(game, currentBar) {
-	if ((game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy") || (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy")){
-		game.energy = game.energy - 1
+	var success;
+	if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy"){
+		game.energy = game.energy - 1;
+		success = false;
 	} 
+	else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy"){
+		game.energy = game.energy - 1;
+		success = true;
+	}
 	else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy"){ 
-		game.energy = game.energy - 2
+		game.energy = game.energy - 2;
+		success = false;
 	} 
 	else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy"){
-		game.energy = game.energy
+		game.energy = game.energy;
+		success = true;
 	} 
-	else if (game.difficulty == "lazy"){
+	else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]){
 		console.log("Level lazy no energy");
+		success = true;
 	} 
+	else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]){
+		console.log("Level lazy no energy");
+		success = false;		
+	}
 	else {
 		console.log("WTF !!!")
 	}
 	console.log(game.energy);
-	return game.energy;
+	game.currentBar = currentBar;
+	return game.energy, success;
 }
 
 /**
  * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
- * Attention if barSize is less than one, the randomNumber generated can e less than 0
+ * Attention if barSize is less than one, the randomNumber generated can be less than 0
+ * We can change baseLowerBound and baseUpperBound to modify the base position 
  * @param {array} arraySpectrum array of the spectrum generate by the sound
  */
 function getArrayArthefacts(arraySpectrum) {
 	var randomNumbers = [];
+	var baseLowerBound = 1
+	var baseUpperBound = 2
 	arraySpectrum.forEach(function (barSize) {
-		var lowerBound = 1-barSize;
-		var upperBound = 2+barSize;
+		var lowerBound = baseLowerBound-barSize;
+		var upperBound = baseUpperBound+barSize;
 		var randomNumber = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound);
 		// Yay! new random number
 		randomNumbers.push(randomNumber);
@@ -59,6 +77,7 @@ module.exports.createGame = function createGame(youtubeVideoId, difficulty, game
 		gameId: gameId,
 		socketId: socketId,
 		position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
+		currentBar : 0,
 		difficulty: difficulty // difficulty of the level 
 	};
 	youtube.getAudioStream(youtubeVideoId, function (err, stream) {
