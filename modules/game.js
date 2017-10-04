@@ -116,5 +116,8 @@ function endGame(victory) {
   clearInterval(new_positions);
   io.sockets.in(game.gameId).emit('enfOfGame', victory);
   // TODO : save du score ici pour la db
+  if (victory) victory = "victory";
+  else victory = "loose"
+  logger.info('End of the game this is a '+victory)
 }
 
