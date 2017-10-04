@@ -25,7 +25,7 @@ exports.initGame = function (sio, socket) {
 
   // If the player Rage Quit or the player want to stop the level
   gameSocket.on('disconnect', function(){
-    console.log("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    logger.info("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
     
     if (typeof timer != 'undefined')
     {

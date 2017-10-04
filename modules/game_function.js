@@ -30,18 +30,19 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 		success = true;
 	} 
 	else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]){
-		console.log("Level lazy no energy");
+		logger.debug("Level lazy no energy");
 		success = true;
 	} 
 	else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]){
-		console.log("Level lazy no energy");
+		logger.debug("Level lazy no energy");
 		success = false;		
 	}
 	else {
 		logger.error("Check the difficulty or the current bar something is going wrong");
 	}
   
-	console.log(game.energy);
+	logger.debug(game.energy);
+	logger.debug(currentBar);
 	game.currentBar = currentBar;
 	return game.energy, success;
 }
