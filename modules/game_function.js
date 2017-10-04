@@ -1,4 +1,5 @@
 var youtube = require('./youtube');
+const logger = require('winston');
 
 /**
  * Function checkRightPosition use to verify the position of the player each bar
@@ -37,8 +38,9 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 		success = false;		
 	}
 	else {
-		console.log("WTF !!!")
+		logger.error("Check the difficulty or the current bar something is going wrong");
 	}
+  
 	console.log(game.energy);
 	game.currentBar = currentBar;
 	return game.energy, success;
@@ -51,6 +53,7 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
  * @param {array} arraySpectrum array of the spectrum generate by the sound
  */
 function getArrayArthefacts(arraySpectrum) {
+	logger.debug('Generation of the array of arthefact');		
 	var randomNumbers = [];
 	var baseLowerBound = 1
 	var baseUpperBound = 2
@@ -73,6 +76,7 @@ function getArrayArthefacts(arraySpectrum) {
  * @param callback 
  */
 module.exports.createGame = function createGame(youtubeVideoId, difficulty, gameId, socketId, callback) {
+	logger.debug('Creation of the game object');		
 	var game = {
 		gameId: gameId,
 		socketId: socketId,
@@ -81,14 +85,15 @@ module.exports.createGame = function createGame(youtubeVideoId, difficulty, game
 		difficulty: difficulty // difficulty of the level 
 	};
 	youtube.getAudioStream(youtubeVideoId, function (err, stream) {
-		if (err) console.log(err);
+		if (err) logger.error(err);
 		else {
 			youtube.getBars(stream, 1, function (err, bars) {
-				if (err) console.log(err);
+				if (err) logger.error(err);
 				else {
 					game.arraySpectrum = bars;
 					game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
 					game.energy = game.arraySpectrum.length; // duration of the music 
+					logger.debug('Game created !')
 					callback(null, game)
 				}
 			});
