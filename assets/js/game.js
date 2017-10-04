@@ -107,10 +107,11 @@ var App = {
         },
 
         gameInit: function (data) {
-            App.gameId 		= data.gameId;
-            App.mySocketId 	= data.mySocketId;
+			var game = data.game;
+            App.gameId 		= game.gameId;
+            App.mySocketId 	= game.mySocketId;
             App.myRole 		= 'Host';
-            console.log("Game started with ID: " + App.gameId + ' by host: ' + App.mySocketId);
+            console.log("Game initialized with ID: " + App.gameId + ' by host: ' + App.mySocketId);
         }
 	},
 
