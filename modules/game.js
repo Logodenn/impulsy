@@ -18,11 +18,15 @@ exports.initGame = function (sio, socket) {
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
-  gameSocket.on('gameOver', gameOver);
+  gameSocket.on('endGame', endGame);
 
   socket.on('disconnect', function(){
     console.log("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
     gameOver();
+    if (typeof timer != 'undefined')
+    {
+      clearInterval(new_positions);
+    }
     gameSocket.disconnect(true)
   });
 }
@@ -59,6 +63,7 @@ function hostCreateNewGame(data) {
  */
 function verificationEnergy (game, currentBar) {
   io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, currentBar));
+  // TODO : ajouter si l'on a chopper l'arthéfact
 };
 
 /**
@@ -71,8 +76,13 @@ function hostStartGame() {
   io.sockets.in(game.gameId).emit('GameStarted');
   currentBar = 0
   new_positions = setInterval(function () {
-    verificationEnergy(game, currentBar)
-    currentBar = currentBar + 1;
+    if (currentBar > game.arrayArtefacts.length){
+      clearInterval(new_positions);
+    } 
+    else {
+      verificationEnergy(game, currentBar)
+      currentBar = currentBar + 1;
+    }
   }, vitesse_game);
 };
 
@@ -90,9 +100,9 @@ function playerMove(data) {
  * The player finish or die.
  * Close the interval created before and sava date in database.
  */
-function gameOver() {
+function endGame() {
   clearInterval(new_positions);
   io.sockets.in(game.gameId).emit('enfOfGame');
-  // save du score ici pour la db
+  // TODO : save du score ici pour la db
 }
 
