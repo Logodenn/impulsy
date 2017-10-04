@@ -31,18 +31,14 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 
 /**
  * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
+ * Attention if barSize is less than one, the randomNumber generated can e less than 0
  * @param {array} arraySpectrum array of the spectrum generate by the sound
  */
 function getArrayArthefacts(arraySpectrum) {
 	var randomNumbers = [];
-	arraySpectrum.forEach(function (element) {
-		if (element == 0) {
-			var lowerBound = 1;
-			var upperBound = 2;
-		} else {
-			var lowerBound = 0;
-			var upperBound = 3;
-		}
+	arraySpectrum.forEach(function (barSize) {
+		var lowerBound = 1-barSize;
+		var upperBound = 2+barSize;
 		var randomNumber = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound);
 		// Yay! new random number
 		randomNumbers.push(randomNumber);
