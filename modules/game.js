@@ -104,8 +104,7 @@ function hostStartGame() {
  * @param {int} data.position new position of the player
  */
 function playerMove(data) {
-  var position = data.position;
-  game.position = position;
+  game.position = data.position;
 }
 
 /**
@@ -114,10 +113,10 @@ function playerMove(data) {
  */
 function endGame(victory) {
   clearInterval(new_positions);
-  io.sockets.in(game.gameId).emit('enfOfGame', victory);
-  // TODO : save du score ici pour la db
   if (victory) victory = "victory";
   else victory = "loose"
-  logger.info('End of the game this is a '+victory)
+  io.sockets.in(game.gameId).emit('enfOfGame', {"result" : victory, "score" : game.nbArtefacts});
+  // TODO : save du score ici pour la db
+  logger.info('End of the game this is a '+victory);
 }
 
