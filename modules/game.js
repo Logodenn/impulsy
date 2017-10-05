@@ -25,7 +25,7 @@ exports.initGame = function (sio, socket) {
 
   // If the player Rage Quit or the player want to stop the level
   gameSocket.on('disconnect', function(){
-    console.log("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    logger.info("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
     
     if (typeof timer != 'undefined')
     {
@@ -116,5 +116,8 @@ function endGame(victory) {
   clearInterval(new_positions);
   io.sockets.in(game.gameId).emit('enfOfGame', victory);
   // TODO : save du score ici pour la db
+  if (victory) victory = "victory";
+  else victory = "loose"
+  logger.info('End of the game this is a '+victory)
 }
 
