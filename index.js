@@ -41,4 +41,37 @@ http.listen(app.get('port'), function() {
   console.log('Go to: http://localhost:5000/ to see the app.');
 });
 
+/*app.use(orm.express('mysql://root:1234@localhost/mydb', {
+        define: function (db, models, next) {
+            db.load("./models/index.js", function (err2) {
+                if (err2)
+                    throw err2;
+                db.sync();
+            })
+            next();
+        }
+    })
+);*/
 
+/*
+models(function (err, db) {
+    if (err) throw err;
+
+    db.drop(function (err) {
+        if (err) throw err;
+
+        db.sync(function (err) {
+            if (err) throw err;
+
+            db.models.user.create({
+                pseudo: "pseudo2", password: "Doeufr", rank: 29
+            }, function (err, message) {
+                if (err) throw err;
+
+                db.close()
+                console.log("Done!");
+            });
+        });
+    });
+});
+*/
