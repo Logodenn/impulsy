@@ -1,81 +1,123 @@
-var io = require('socket.io')(app);
+var gameFunctions = require('./game_function');
+const logger = require('winston');
+logger.level = 'debug';
+var io;
+var gameSocket;
+var game;
+var vitesse_game = 500; //vitesse du jeu
+var new_positions
 
-var game_socket;
-
-exports.init_game = function (sio, socket) {
+exports.initGame = function (sio, socket) {
+  logger.debug('Initilization of the game');
   io = sio;
-  game_socket = socket;
-  game_socket.emit('connected', {
+  gameSocket = socket;
+  gameSocket.emit('connected', {
     message: "You are connected!"
   });
 
   // Host Events
-  game_socket.on('host_create_new_game', host_create_new_game);
+  gameSocket.on('hostCreateNewGame', hostCreateNewGame);
+  gameSocket.on('hostStartGame', hostStartGame);
+
   // Player Events
-  /*
-    game_socket.on('playerJoinGame', playerJoinGame);
-    game_socket.on('playerAnswer', playerAnswer);
-	game_socket.on('playerRestart', playerRestart);
-	*/
-}
+  gameSocket.on('playerMove', playerMove);
+  gameSocket.on('endGame', endGame);
 
-function check_right_position(game, t) {
-  if ((game.position != game.artefact[t] & game.difficulty == "easy") | (game.position == game.artefact[t] & game.difficulty == "crazy")) game.energy = game.energy - 1
-  else if (game.position != game.artefact[t] & game.difficulty == "crazy") game.energy = game.energy - 2
-  else if (game.position == game.artefact[t] & game.difficulty == "easy") game.energy = game.energy
-  else console.log("WTF !!!")
-  return game.energy;
-}
-
-var game = {
-  "position": 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
-  "array_spectrum": new Array(), // array of 0 and 1 --- 0 : small and 1 big
-  "array_artefacts": new Array(), // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-  "energy": 1000, // duration of the music 
-  "difficulty": "crazy" // difficulty of the level 
-};
-
-// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
-
-function get_random(array_spectrum) {
-  //Example, including customisable intervals [lower_bound, upper_bound)
-  var random_numbers = [];
-  array_spectrum.forEach(function (element) {
-    if (element == 0) {
-      var lower_bound = 1;
-      var upper_bound = 2;
-    } else {
-      var lower_bound = 0;
-      var upper_bound = 3;
+  // If the player Rage Quit or the player want to stop the level
+  gameSocket.on('disconnect', function(){
+    logger.info("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    
+    if (typeof timer != 'undefined')
+    {
+      clearInterval(new_positions);
     }
-    var random_number = Math.round(Math.random() * (upper_bound - lower_bound) + lower_bound);
-    // Yay! new random number
-    random_numbers.push(random_number);
+    else {
+      gameOver();
+    }
+    
+    gameSocket.disconnect(true)
   });
-  return random_numbers;
 }
 
-function host_create_new_game() {
+/**
+ * The 'CREATE' button was clicked and 'hostCreateNewGame' event occurred.
+ * Create the game 
+ * @param data.youtubeVideoId The sound selected by the player
+ * @param data.difficulty The difficulty selected by the player
+ */
+function hostCreateNewGame(data) {
+  logger.debug('Creation of the game');  
+  var youtubeVideoId = data.youtubeVideoId;
+  var difficulty = data.difficulty;
+  var gameCreate;
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
-  // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-  // utiliser socket id ? 
-  this.emit('new_game_created', {
-    gameId: thisGameId,
-    mySocketId: this.id
+  // Return the game to the browser client
+  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
+    game = gameCreate
+    if (err) logger.error(err);
+    else gameSocket.emit('newGameCreated', {
+      game
+    });
   });
-  this.emit('new_game', game)
   // Join the Room and wait for the players
-  this.join(thisGameId.toString());
+  gameSocket.join(thisGameId.toString());
 };
 
-var new_positions = setInterval(function () {
-  get_new_position(function (position) {
-    game.position = position
-    socket.volatile.emit('energy', check_right_position(game, t));
-  });
-}, 1000);
+/**
+ * Function verificationEnergy use every second when the game begining and checkRightPosition in order to update energy level of the player
+ * @param {object} game game object contain the position of the player, the difficulty of the party and the array of arthefact 
+ * @param {int} currentBar bar at this moment in the client side 
+ */
+function verificationEnergy (game, currentBar) {
+  logger.debug('Verification of the energy for this bar : '+currentBar);
+  io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, currentBar));
+};
 
-socket.on('death', function () {
+/**
+ * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
+ * Launch the game, verify if the player finish the game or die during the game
+ */
+function hostStartGame() {
+  logger.debug('Starting the game');
+  // peut être faire un wait avant de matter directement le son ? 
+  io.sockets.in(game.gameId).emit('gameStarted');
+  currentBar = 0
+  new_positions = setInterval(function () {
+    if (currentBar > game.arrayArtefacts.length){
+      endGame(true);
+    } 
+    else if (game.energy == 0)
+    {
+      endGame(false);
+    }
+    else {
+      verificationEnergy(game, currentBar)
+      currentBar = currentBar + 1;
+    }
+  }, vitesse_game);
+};
+
+/**
+ * The player has moved
+ * Update the position of the player in the game object
+ * @param {int} data.position new position of the player
+ */
+function playerMove(data) {
+  var position = data.position;
+  game.position = position;
+}
+
+/**
+ * The player finish or die.
+ * Close the interval created before and sava date in database.
+ */
+function endGame(victory) {
   clearInterval(new_positions);
-});
+  io.sockets.in(game.gameId).emit('enfOfGame', victory);
+  // TODO : save du score ici pour la db
+  if (victory) victory = "victory";
+  else victory = "loose"
+  logger.info('End of the game this is a '+victory)
+}
+
