@@ -1,42 +1,44 @@
 var express = require('express');
 var app = express();
-var orm = require('orm');
+var http = require('http').Server(app);
+var game = require("./modules/game.js");
+const mainRouter = require('./routers/main');
+const gameRouter = require('./routers/game');
 
-var controllers = require('./models/controllers');
+var io = require('socket.io').listen(http);;
+// var io = require('socket.io');
 
-controllers.user.create({
-    pseudo: "titi", password: "Doeufr", rank: 29
+// var io = require("socket.io")(http);
+// io.listen(http);
+
+// Listen for Socket.IO Connections. Once connected, start the game logic.
+io.sockets.on('connection', function (socket) {
+  console.log('client connected');
+  game.initGame(io, socket);
 });
 
-controllers.track.create({
-    name: "Show must go on !", spectrumLink: "/usr/share/spectre/Show_must_go_on_!"
-});
+//const youtubeRouter = require('./router/youtube');
 
-controllers.score.create({
-    date: "12/01/3004-10:04:03", user_pseudo: "titi", track_name: "Show must go on !", duration: "45"
-});
+// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
 
-/*controllers.user.update({
-    pseudo: "pseudo65", password: "Doeufr", rank: 29
-},{
-    pseudo: "pseudo65", password: "Doeufr", rank: 67
-});*/
 
-/*controllers.user.delete({
-    pseudo: "pseudo65", password: "Doeufr", rank: 29
-});*/
 
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
 
 app.use(express.static(__dirname + '/assets'));
 
-app.get('/', function(req, res) {
-  res.render('index', { message: "Hello World!" });
+app.use('/', mainRouter);
+app.use('/game', gameRouter);
+
+app.get('/trackSelection', function(req, res) 
+{
+  res.render('trackSelection', { message: "Hello World!" });
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+http.listen(app.get('port'), function() {
+  console.log('Impulsy is running on port', app.get('port'));
+  console.log('Go to: http://localhost:5000/ to see the app.');
 });
 
 /*app.use(orm.express('mysql://root:1234@localhost/mydb', {
