@@ -7,8 +7,8 @@ const AudioContext = require('web-audio-api').AudioContext;
 const context = new AudioContext;
 
 module.exports.getAudioStream = (youtubeVideoId, callback) => {
-  const youtubeStream = ytdl('https://www.youtube.com/watch?v=' + youtubeVideoId, { quality: 'lowest', format: 'audioonly' });
-  
+    const youtubeStream = ytdl('https://www.youtube.com/watch?v=' + youtubeVideoId, { quality: undefined, format: 'audioonly' });
+
   youtubeStream.on('error', (err) => {
     callback(err);
     return;
