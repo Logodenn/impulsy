@@ -1,12 +1,15 @@
 var models = require('../models/');
 
 module.exports = {
-    create: function (score) {
+    create: function (score, user, track) {
         models(function (err, db) {
             if (err) throw err;
+            console.log('create score');
+
 
             db.sync(function (err) {
                 if (err) throw err;
+
 
                 db.models.score.create(score, function (err, message) {
                     if (err) {
@@ -19,6 +22,7 @@ module.exports = {
                 });
             });
         });
+        return score;
     },
 
     delete: function (score) {
@@ -34,8 +38,6 @@ module.exports = {
                     }).then(function (results) {
                     console.log(score);
                     console.log("Deleted !");
-                    db.close();
-                    console.log("Done!");
                 }).catch(function (err) {
                     console.error(err);
                     db.close();

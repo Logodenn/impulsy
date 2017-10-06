@@ -34,8 +34,6 @@ module.exports = {
                     }).then(function (results) {
                     console.log(track);
                     console.log("Deleted !");
-                    db.close();
-                    console.log("Done!");
                 }).catch(function (err) {
                     console.error(err);
                     db.close();
@@ -54,7 +52,7 @@ module.exports = {
 
                 db.models.track.findAsync({name: trackBefore.name})
                     .then(function (results) {
-                        results[0].spectrumLink = trackAfter.spectrumLink;
+                        results[0].link = trackAfter.link;
                         results[0].name = trackAfter.name;
                         results[0].saveAsync();
                     }).then(function () {
