@@ -5,23 +5,40 @@ var game = require("./modules/game.js");
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
 
-var io = require('socket.io').listen(http);;
+
+var model_controller=require('./models/controllers');
+
+var io = require('socket.io').listen(http);
 // var io = require('socket.io');
 
 // var io = require("socket.io")(http);
 // io.listen(http);
 
+
+/*model_controller.user.create({pseudo : "titi",
+    password: "g",
+    rank: 23});*/
+
+
+/*model_controller.track.create({name: 'ca',
+link: 'Loc'});*/
+
+
+
+score=model_controller.score.create({ date : "12/73",
+    // duration       : 34, user_pseudo: 'titi', track_name: 'ca', track_link: 'Lo'});
+    duration       : 34});
+
+//score.setOwner()
 // Listen for Socket.IO Connections. Once connected, start the game logic.
-io.sockets.on('connection', function (socket) {
+/*io.sockets.on('connection', function (socket) {
   console.log('client connected');
   game.initGame(io, socket);
-});
+});*/
 
 //const youtubeRouter = require('./router/youtube');
 
-// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
-
-
+// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below
 
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
@@ -40,38 +57,3 @@ http.listen(app.get('port'), function() {
   console.log('Impulsy is running on port', app.get('port'));
   console.log('Go to: http://localhost:5000/ to see the app.');
 });
-
-/*app.use(orm.express('mysql://root:1234@localhost/mydb', {
-        define: function (db, models, next) {
-            db.load("./models/index.js", function (err2) {
-                if (err2)
-                    throw err2;
-                db.sync();
-            })
-            next();
-        }
-    })
-);*/
-
-/*
-models(function (err, db) {
-    if (err) throw err;
-
-    db.drop(function (err) {
-        if (err) throw err;
-
-        db.sync(function (err) {
-            if (err) throw err;
-
-            db.models.user.create({
-                pseudo: "pseudo2", password: "Doeufr", rank: 29
-            }, function (err, message) {
-                if (err) throw err;
-
-                db.close()
-                console.log("Done!");
-            });
-        });
-    });
-});
-*/
