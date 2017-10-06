@@ -111,24 +111,35 @@ var App = {
 				
 				console.log('Clicked "Start A Game"');
 				IO.socket.emit('hostStartGame');
+
+				document.querySelector("#createGameButton").classList.add("hidden");
+				document.querySelector("#startGameButton").classList.add("hidden");
 			}
         },
 
         gameInit: function (data) {
+
 			var game = data.game;
-            App.gameId 		= game.gameId;
-            App.mySocketId 	= game.mySocketId;
-			App.myRole 		= 'Host';
+
+            App.gameId 				= game.gameId;
+			App.mySocketId 			= game.mySocketId;
+			App.myRole 				= 'Host';
+			App.Player.position 	= game.position;
+
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
+
             console.log("Game initialized with ID: " + App.gameId + ' by host: ' + App.mySocketId);
         }
 	},
 
 	// ********** Player ********** //
     Player : {
+
+		position: 1,
+
 		onMove : function(data) {
 			console.log('Player moved');
-			IO.socket.emit('playerMove', {playerPosition: playerPosition});
+			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
 	}
 };
@@ -321,12 +332,24 @@ function EnergyBar() {
 var myGameArea = {
 	canvas : document.createElement("canvas"),
 	start : function() {
-		this.canvas.width = 1000;
-		this.canvas.height = canvasHeight;
-		this.context = this.canvas.getContext("2d");
-		document.body.insertBefore(this.canvas, document.querySelector("#canvasWrapper"));
-		this.intervalAddAmplitude = setInterval("addAmplitudeAndArtefact();",500);
-		this.intervalUpdate = setInterval("updateGameArea();", 10);
+
+		// ******************** Canvas setup ******************** //
+
+		this.canvas.width 	= 1000;
+		this.canvas.height 	= canvasHeight;
+		this.context 		= this.canvas.getContext("2d");
+
+		document.querySelector("#canvasWrapper").appendChild(this.canvas);
+
+		// ******************** Interval setup ******************** //
+
+		this.intervalAddAmplitude 	= setInterval("addAmplitudeAndArtefact();",500);
+		this.intervalUpdate 		= setInterval("updateGameArea();", 10);
+
+		// ******************** Variables ******************** //
+		
+		//playerPosition = 1; // Default player position - important for arrow listeners
+		
 	},
 	clear : function() {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -413,37 +436,37 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				playerPosition = 0;
+				App.Player.position = 0;
 				player.y = 163;
 				break;
 			case 90:
 				// Midtop
-				playerPosition = 1;
+				App.Player.position = 1;
 				player.y = 263;
 				break;
 			case 69:
 				// Midbot
-				playerPosition = 2;
+				App.Player.position = 2;
 				player.y= 363;
 				break;
 			case 82:
 				// Bot
-				playerPosition = 3;
+				App.Player.position = 3;
 				player.y= 463;
 				break;
 			case 38:
 				// Up arrow
-				if(playerPosition != 0) {
+				if(App.Player.position != 0) {
 		
-					playerPosition--;
+					App.Player.position--;
 					player.y -= 100;
 				}
 				break;
 			case 40:
 				// Down arrow
-				if(playerPosition != 3) {
+				if(App.Player.position != 3) {
 		
-					playerPosition++;
+					App.Player.position++;
 					player.y += 100;
 				}
 				break;
@@ -453,7 +476,7 @@ function startGame() {
 
 		player.update();
 		console.log("trying to emit new position through ws");
-		App.player.onMove(playerPosition);
+		App.player.onMove(App.Player.position);
 		// gameSocket.emit('playerMove', {message: "The player position is now:" + playerPosition});
 	}
 }
