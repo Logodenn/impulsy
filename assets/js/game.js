@@ -94,23 +94,32 @@ var App = {
         currentCorrectAnswer: '',
 
         onCreateClick: function () {
-            console.log('Clicked "Create A Game" ' + youtubeVideoId + ' - ' + difficulty);
-            IO.socket.emit('hostCreateNewGame', {
-				youtubeVideoId	: youtubeVideoId,
-				difficulty		: difficulty
-			});
+			if(document.querySelector("#createGameButton").attributes.state.value != "disabled") {
+
+				console.log('Clicked "Create A Game" ' + youtubeVideoId + ' - ' + difficulty);
+				IO.socket.emit('hostCreateNewGame', {
+					youtubeVideoId	: youtubeVideoId,
+					difficulty		: difficulty
+				});
+
+				document.querySelector("#createGameButton").attributes.state.value = "disabled";
+			}
 		},
 
 		onStartClick: function () {
-            console.log('Clicked "Start A Game"');
-            IO.socket.emit('hostStartGame');
+			if(document.querySelector("#startGameButton").attributes.state.value != "disabled") {
+				
+				console.log('Clicked "Start A Game"');
+				IO.socket.emit('hostStartGame');
+			}
         },
 
         gameInit: function (data) {
 			var game = data.game;
             App.gameId 		= game.gameId;
             App.mySocketId 	= game.mySocketId;
-            App.myRole 		= 'Host';
+			App.myRole 		= 'Host';
+			document.querySelector("#startGameButton").attributes.state.value = "passive";
             console.log("Game initialized with ID: " + App.gameId + ' by host: ' + App.mySocketId);
         }
 	},
