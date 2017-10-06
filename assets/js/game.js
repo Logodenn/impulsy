@@ -49,6 +49,7 @@ var IO = {
     onPlayerMove : function(data) {
 		// TODO
 		// Notify players that a player has moved
+		player.update();		
 	},
 
 	gameOver : function(data) {
@@ -121,6 +122,8 @@ var App = {
 
 			var game = data.game;
 
+			console.log(game);
+
             App.gameId 				= game.gameId;
 			App.mySocketId 			= game.mySocketId;
 			App.myRole 				= 'Host';
@@ -138,7 +141,7 @@ var App = {
 		position: 1,
 
 		onMove : function(data) {
-			console.log('Player moved');
+			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
 	}
@@ -474,9 +477,6 @@ function startGame() {
 
 		// ******************** Notify websocket ******************** //
 
-		player.update();
-		console.log("trying to emit new position through ws");
-		App.player.onMove(App.Player.position);
-		// gameSocket.emit('playerMove', {message: "The player position is now:" + playerPosition});
+		App.Player.onMove(App.Player.position);
 	}
 }
