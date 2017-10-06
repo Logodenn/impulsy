@@ -8,20 +8,29 @@ var smallBar = {
     height  : blocUnit * 2,
     width   : blocUnit / 4,
     // position: App.Canvas.bar.big.position + App.Canvas.bar.big.height / 4
-    // position: 4 * blocUnit
+    position: null
 }
 
 var bigBar = {
     height  : smallBar.height * 2,
     width   : blocUnit / 4,
     // position: App.Canvas.bar.energy.position + App.Canvas.bar.energy.height + blocUnit
-    // position: 3 * blocUnit
+    position: null
 }
 
 var energyBar = {
     height  : blocUnit,
     width   : null,
-    position: blocUnit
+    position: blocUnit,
+    // color   : "#FFD51D",
+
+    // // x: 250,
+    // x: null,
+    // draw: function() {
+    //     ctx = myGameArea.context;
+    //     ctx.fillStyle = this.color;
+    //     ctx.fillRect(this.x, this.y, this.width, this.height);
+    // }
 }
 
 var Canvas = {    
@@ -33,28 +42,9 @@ var Canvas = {
 // To make it full dynamic, set the following parameters here
 bigBar.position     = energyBar.position + energyBar.height + blocUnit;
 smallBar.position   = bigBar.position + bigBar.height / 4
-
-// ********** Canvas ********** //
-
-    
-
-
-// ******************** Canvas units ******************** //
-
-// var blocUnit 		= 50;
-// var bigBarHeight 	= blocUnit * 4;
-// var bigBarTop 		= blocUnit;
-// var smallBarHeight 	= blocUnit * 2;
-// var smallBarTop 	= bigBarHeight/2 - smallBarHeight/2 + blocUnit;
-// var canvasHeight	= bigBarHeight + 2 * blocUnit;
+energyBar.width     = 8 * blocUnit;
 
 // ******************** Colors ******************** //
-
-var COLOR = {
-	bar 		: [170, 22, 33], // Red
-	artefact 	: [33, 150, 200], // Blue
-	player 		: [200, 10, 100] //
-}
 
 var r = 50;
 var g = 200;
@@ -139,23 +129,23 @@ function Artefact(posY) {
 function Amplitude(height) {
 	switch (tabColorToChange[counterForColorTab]) {
 		case "r+":
-		r += 15;
-		break;
+            r += 15;
+            break;
 		case "r-":
-		r -= 15;
-		break;
+            r -= 15;
+            break;
 		case "g+":
-		g += 15;
-		break;
+            g += 15;
+            break;
 		case "g-":
-		g -= 15;
-		break;
+            g -= 15;
+            break;
 		case "b+":
-		b += 15;
-		break;
+            b += 15;
+            break;
 		case "b-":
-		b -= 15;
-		break;
+            b -= 15;
+            break;
 		default:
 	}
 
