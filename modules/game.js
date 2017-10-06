@@ -1,18 +1,19 @@
+const util = require('util');
 var gameFunctions = require('./game_function');
-<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
 const logger = require('winston');
 logger.level = 'debug';
-=======
 var yt = require('./youtube');
 var ss = require('socket.io-stream');
->>>>>>> Initial work
+const AudioContext = require('web-audio-api').AudioContext;
+
+const context = new AudioContext();
 var io;
 var gameSocket;
 var game;
 var vitesse_game = 500; //vitesse du jeu
 var new_positions
 
-exports.initGame = function (sio, socket) {
+module.exports.initGame = function (sio, socket) {
   logger.debug('Initilization of the game');
   io = sio;
   gameSocket = socket;
@@ -26,7 +27,6 @@ exports.initGame = function (sio, socket) {
 
   // Player Events
   gameSocket.on('playerMove', playerMove);
-<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
   gameSocket.on('endGame', endGame);
 
   // If the player Rage Quit or the player want to stop the level
@@ -38,18 +38,10 @@ exports.initGame = function (sio, socket) {
       clearInterval(new_positions);
     }
     else {
-      gameOver();
+      endGame();
     }
     
     gameSocket.disconnect(true)
-=======
-  gameSocket.on('gameOver', gameOver);
-
-  yt.getAudioStream("8aJw4chksqM", (err, command) => {
-    let stream = ss.createStream();
-    let s = ss(gameSocket).emit('audioChunks', stream);
-    command.pipe(stream);
->>>>>>> Initial work
   });
 }
 
@@ -70,9 +62,18 @@ function hostCreateNewGame(data) {
   gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
-    else gameSocket.emit('newGameCreated', {
-      game
-    });
+    else {
+      gameSocket.emit('newGameCreated', {
+        game
+      });
+
+      yt.getAudioStream(data.youtubeVideoId, (err, command) => {
+        let pipe = command.pipe();
+        pipe.on('data', (chunk) => {
+          io.sockets.in(game.gameId).emit('audioChunk', { chunk: chunk, sampleRate: 4000 });
+        });
+      });
+    }
   });
   // Join the Room and wait for the players
   gameSocket.join(thisGameId.toString());
@@ -93,13 +94,8 @@ function verificationEnergy (game, currentBar) {
  * Launch the game, verify if the player finish the game or die during the game
  */
 function hostStartGame() {
-<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
   logger.debug('Starting the game');
-=======
-  console.log("Game starting");
-      io.sockets.in(data.gameId).emit('gameStarted');
->>>>>>> Initial work
-  // peut être faire un wait avant de matter directement le son ? 
+  // peut être faire un wait avant de matter directement le son ?
   io.sockets.in(game.gameId).emit('gameStarted');
   currentBar = 0
   new_positions = setInterval(function () {

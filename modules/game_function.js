@@ -83,7 +83,8 @@ module.exports.createGame = function createGame(youtubeVideoId, difficulty, game
 		socketId: socketId,
 		position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
 		currentBar : 0,
-		difficulty: difficulty // difficulty of the level 
+		difficulty: difficulty, // difficulty of the level
+		youtubeVideoId: youtubeVideoId
 	};
 	youtube.getAudioStream(youtubeVideoId, function (err, stream) {
 		if (err) logger.error(err);
