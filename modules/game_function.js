@@ -1,7 +1,5 @@
 var youtube = require('./youtube');
 const logger = require('winston');
-const fs = require('fs');
-//const readable = getReadableStreamSomehow();
 const ffmpeg = require('fluent-ffmpeg');
 
 
