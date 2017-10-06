@@ -138,7 +138,7 @@ var App = {
 	// ********** Player ********** //
     Player : {
 
-		position: 1,
+		// position: 1,
 
 		onMove : function(data) {
 			console.log('Player moved at position : ' + App.Player.position);
