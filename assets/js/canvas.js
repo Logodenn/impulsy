@@ -2,14 +2,51 @@
 // **************************************** CANVAS SETUP **************************************** //
 // ********************************************************************************************* //
 
+var blocUnit = 50;
+
+var smallBar = {
+    height  : blocUnit * 2,
+    width   : blocUnit / 4,
+    // position: App.Canvas.bar.big.position + App.Canvas.bar.big.height / 4
+    // position: 4 * blocUnit
+}
+
+var bigBar = {
+    height  : smallBar.height * 2,
+    width   : blocUnit / 4,
+    // position: App.Canvas.bar.energy.position + App.Canvas.bar.energy.height + blocUnit
+    // position: 3 * blocUnit
+}
+
+var energyBar = {
+    height  : blocUnit,
+    width   : null,
+    position: blocUnit
+}
+
+var Canvas = {    
+    width   : 10 * blocUnit,
+    height   : bigBar.height + energyBar.height + 3 * blocUnit, // Height = biggest bar + energy bar + margins
+    // height  : 8 * blocUnit
+}
+
+// To make it full dynamic, set the following parameters here
+bigBar.position     = energyBar.position + energyBar.height + blocUnit;
+smallBar.position   = bigBar.position + bigBar.height / 4
+
+// ********** Canvas ********** //
+
+    
+
+
 // ******************** Canvas units ******************** //
 
-var blocUnit 		= 50;
-var bigBarHeight 	= blocUnit * 4;
-var bigBarTop 		= blocUnit;
-var smallBarHeight 	= blocUnit * 2;
-var smallBarTop 	= bigBarHeight/2 - smallBarHeight/2 + blocUnit;
-var canvasHeight	= bigBarHeight + 2 * blocUnit;
+// var blocUnit 		= 50;
+// var bigBarHeight 	= blocUnit * 4;
+// var bigBarTop 		= blocUnit;
+// var smallBarHeight 	= blocUnit * 2;
+// var smallBarTop 	= bigBarHeight/2 - smallBarHeight/2 + blocUnit;
+// var canvasHeight	= bigBarHeight + 2 * blocUnit;
 
 // ******************** Colors ******************** //
 
@@ -50,7 +87,7 @@ var listeArtefacts = [];
 function Player() {
 	var self = this;
 	self.x = 400;
-	self.y = smallBarTop;
+	self.y = smallBar.position;
 	self.img = new Image();
 	self.img.src = "../img/unicorn.png";
 	self.update = function() {
@@ -137,9 +174,9 @@ function Amplitude(height) {
 	this.color = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
 	console.log(this.color);
 	this.width = 25;
-	this.height = height ? bigBarHeight : smallBarHeight;
+	this.height = height ? bigBar.height : smallBar.height;
 	this.x = myGameArea.canvas.width - 130;
-	this.y = canvasHeight / 2 - this.height / 2;
+	this.y = Canvas.height / 2 - this.height / 2;
 	this.update = function() {
 		this.x -= 1;
 		ctx = myGameArea.context;
@@ -182,7 +219,7 @@ var myGameArea = {
 		// ******************** Canvas setup ******************** //
 
 		this.canvas.width 	= 1000;
-		this.canvas.height 	= canvasHeight;
+		this.canvas.height 	= Canvas.height;
 		this.context 		= this.canvas.getContext("2d");
 
 		document.querySelector("#canvasWrapper").appendChild(this.canvas);
@@ -225,21 +262,7 @@ function addAmplitudeAndArtefact() {
 	var amplitude  = new Amplitude(amplitudes[time]);
 	listeBarres.push(amplitude);
 
-	var artefact;
-	switch (artefacts[time]) {
-		case 0:
-		artefact  = new Artefact(blocUnit);
-		break;
-		case 1:
-		artefact  = new Artefact(2 * blocUnit);
-		break;
-		case 2:
-		artefact  = new Artefact(3 * blocUnit);
-		break;
-		case 3:
-		artefact  = new Artefact(4 * blocUnit);
-		break;
-	}
+	var artefact = new Artefact(bigBar.position + artefacts[time] * blocUnit);
 	listeArtefacts.push(artefact);
 
 	time++;
