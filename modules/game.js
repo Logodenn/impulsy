@@ -25,17 +25,22 @@ exports.initGame = function (sio, socket) {
 
   // If the player Rage Quit or the player want to stop the level
   gameSocket.on('disconnect', function(){
-    logger.info("Clone connection with socket : "+gameSocket.id+" room : "+game.gameId)
-    
     if (typeof timer != 'undefined')
     {
+      logger.info("Close connection with socket : "+gameSocket.id);
       clearInterval(new_positions);
+      gameSocket.disconnect(true)
+    }
+    else if (typeof game == 'undefined')
+    {
+      logger.info("Close connection with socket : "+gameSocket.id);
+      gameSocket.disconnect(true)
     }
     else {
-      gameOver();
+      logger.info("Close connection with socket : "+gameSocket.id+" room : "+game.gameId)
+      endGame();
     }
     
-    gameSocket.disconnect(true)
   });
 }
 
@@ -53,7 +58,8 @@ function hostCreateNewGame(data) {
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
-  gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
+  //gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
+  gameFunctions.createGame('./sounds/OrelSan - Basique.mp3', true , data.difficulty, thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
     else gameSocket.emit('newGameCreated', {
@@ -118,6 +124,7 @@ function endGame(victory) {
   // TODO : save du score ici pour la db
   if (victory) victory = "victory";
   else victory = "loose"
+  gameSocket.disconnect(true)
   logger.info('End of the game this is a '+victory)
 }
 
