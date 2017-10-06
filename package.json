@@ -14,19 +14,13 @@
     "express": "4.15.2",
     "fluent-ffmpeg": "^2.1.2",
     "hbs": "^4.0.1",
-<<<<<<< 88b526a0d0c0fba6e5b8976ffe6b1710d7e15d66
     "mysql": "^2.12.0",
     "orm": "^4.0.1",
     "socket.io": "^2.0.3",
     "stream-to-array": "^2.3.0",
     "web-audio-api": "^0.2.2",
     "winston": "^2.4.0",
-=======
-    "socket.io": "^2.0.3",
     "socket.io-stream": "^0.9.1",
-    "stream-to-array": "^2.3.0",
-    "web-audio-api": "^0.2.2",
->>>>>>> Initial work
     "ytdl-core": "^0.17.1"
   },
   "repository": {
