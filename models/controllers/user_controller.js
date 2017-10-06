@@ -7,7 +7,6 @@ module.exports = {
 
             db.sync(function (err) {
                 if (err) throw err;
-
                 db.models.user.create(user, function (err, message) {
                     if (err) {
                         console.error(err);
@@ -34,8 +33,6 @@ module.exports = {
                     }).then(function (results) {
                     console.log(user);
                     console.log("Deleted !");
-                    db.close();
-                    console.log("Done!");
                 }).catch(function (err) {
                     console.error(err);
                     db.close();
