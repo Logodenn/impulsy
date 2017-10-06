@@ -25,15 +25,22 @@ exports.initGame = function (sio, socket) {
 
   // If the player Rage Quit or the player want to stop the level
   gameSocket.on('disconnect', function(){
-    logger.info("Close connection with socket : "+gameSocket.id+" room : "+game.gameId)
     if (typeof timer != 'undefined')
     {
+      logger.info("Close connection with socket : "+gameSocket.id);
       clearInterval(new_positions);
+      gameSocket.disconnect(true)
+    }
+    else if (typeof game == 'undefined')
+    {
+      logger.info("Close connection with socket : "+gameSocket.id);
+      gameSocket.disconnect(true)
     }
     else {
+      logger.info("Close connection with socket : "+gameSocket.id+" room : "+game.gameId)
       endGame();
     }
-    gameSocket.disconnect(true)
+    
   });
 }
 
