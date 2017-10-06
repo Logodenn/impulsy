@@ -1,4 +1,4 @@
-
+var chunkArray = [];
 // var model = {
 // 	gameName	: "Impulsy",
 // 	catchPhrase	: "Ride the music!"
@@ -26,24 +26,19 @@ var IO = {
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('gameOver', IO.onGameOver);
-		// IO.socket.on('error', IO.error );
-		/* IO.socket.on('audioChunks', function(chunk) {
-			var blob = new Blob([chunk], { 'type' : 'audio/mp3' });
-			audio.src = window.URL.createObjectURL(blob);
-			audio.play();
-		}); */
-
-		var audio = document.createElement('audio');
+		IO.socket.on('audioChunk', IO.onAudioChunk);
+		/*var audio = document.createElement('audio');
 		ss(IO.socket).on('audioChunks', function(stream, data) {
 			parts = [];
+			console.log("ajfnzajinfjaznfjkankjan");
 			stream.on('data', function(chunk){
 				parts.push(chunk);
+				console.log("fjfjfjfj");
 			});
 			stream.on('end', function () {
 				audio.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
-				audio.play();
 			});
-		});
+		});*/
     },
 
     onConnected : function() {
@@ -74,7 +69,30 @@ var IO = {
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
-    }
+	},
+	
+	onAudioChunk: function(data) { // { chunk: chunk, sampleRate: sampleRate }
+		if (!App.startTime) {
+			App.startTime = App.audioContext.currentTime;
+		}
+
+		var audio = data.chunk;
+		chunkArray.push(audio);
+		if (chunkArray.length % 20 == 0) {
+			var fileReader = new FileReader();
+			var source = App.audioContext.createBufferSource();
+			var blob = new Blob(chunkArray);
+			fileReader.readAsArrayBuffer(blob);
+			fileReader.onloadend = function () {
+				App.audioContext.decodeAudioData(this.result, function(buffer) {
+					source.buffer = buffer;
+					source.connect(App.audioContext.destination);
+					source.start(App.startTime + App.lastBufferDuration, App.lastBufferDuration);
+					App.lastBufferDuration = buffer.duration;
+				});
+			}
+		}
+	}
 };
 
 // ******************** App ******************** //
@@ -82,7 +100,9 @@ var IO = {
 var App = {
 
     gameId: 0,
-    myRole: '',   // 'Player' or 'Host'
+	myRole: '',   // 'Player' or 'Host'
+	audioContext: new (window.AudioContext || window.webkitAudioContext)(),
+	lastBufferDuration: 0,
 
     /**
      * The Socket.IO socket object identifier. This is unique for
@@ -168,6 +188,6 @@ App.init();
 
 // Dummy values for testing purpose
 
-var youtubeVideoId 	= "8aJw4chksqM";
+var youtubeVideoId 	= "3TygesLODpU";
 var difficulty 		= "lazy";
 
