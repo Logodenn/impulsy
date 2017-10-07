@@ -2,7 +2,7 @@
 // **************************************** CANVAS SETUP **************************************** //
 // ********************************************************************************************* //
 
-var blocUnit = 50;
+var blocUnit = 100;
 
 var smallBar = {
     height  : blocUnit * 2,
@@ -19,7 +19,7 @@ var bigBar = {
 }
 
 var energyBar = {
-    height  : blocUnit,
+    height  : blocUnit / 4,
     width   : null,
     position: blocUnit,
     // color   : "#FFD51D",
@@ -60,27 +60,27 @@ var tabColorToChange = ["g-", "r+", "r-", "g+"];
 
 // ******************** Game variables ******************** //
 
-var amplitudes = [0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0];
-var artefacts =  [1, 0, 2, 3, 0, 1, 2, 2, 0, 1, 2, 1, 1, 2, 2, 3, 0, 1, 2, 1, 1, 0, 2, 2, 1, 1, 1, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2, 1, 1, 1, 2, 3, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1];
-var time = 0;
+var amplitudes 	= [0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0];
+var artefacts 	=  [1, 0, 2, 3, 0, 1, 2, 2, 0, 1, 2, 1, 1, 2, 2, 3, 0, 1, 2, 1, 1, 0, 2, 2, 1, 1, 1, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2, 1, 1, 1, 2, 3, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1];
+var time 		= 0;
 
 // ******************** Components ******************** //
 
 var player;
 var energyBar;
-var pulsers;
-var listeBarres = [];
-var listeArtefacts = [];
+var pulsers 		= [];
+var listeBarres 	= [];
+var listeArtefacts 	= [];
 
 // ******************** Player ******************** //
 
 function Player() {
 	var self = this;
-	self.x = 400;
-	self.y = smallBar.position;
-	self.img = new Image();
-	self.img.src = "../img/unicorn.png";
-	self.update = function() {
+	self.x 			= 400;
+	self.y 			= smallBar.position;
+	self.img 		= new Image();
+	self.img.src 	= "../img/unicorn.svg";
+	self.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
@@ -91,33 +91,33 @@ function Player() {
 
 // ******************** Pulsers ******************** //
 
-function Pulsers() {
-	var self = this;
-	self.x = 890;
-	self.y = 150;
-	self.img = new Image();
-	self.img.src = "../img/pulsers.png";
-	self.update = function() {
+function Pulsers(posY) {
+	var self 		= this;
+	self.x 			= 890;
+	self.y 			= posY;
+	self.img 		= new Image();
+	self.img.src 	= "../img/pulser.svg";
+	self.update 	= function() {
 		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, 103, 406);
+		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
 
 	self.ctx = myGameArea.context;
-	self.ctx.drawImage(self.img, self.x, self.y, 103, 406);
+	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 }
 
 // ******************** Artefact ******************** //
 
 function Artefact(posY) {
-	var self = this;
-	self.x = myGameArea.canvas.width - 145;
-	self.y = posY;
-	self.img = new Image();
-	self.img.src = "../img/artefact.png";
-	self.update = function() {
+	var self 		= this;
+	self.x 			= myGameArea.canvas.width - 165;
+	self.y 			= posY;
+	self.img 		= new Image();
+	self.img.src 	= "../img/artefact.svg";
+	self.update 	= function() {
 		this.x -= 1;
 		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, 20, 34);
+		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
 
 	self.ctx = myGameArea.context;
@@ -161,13 +161,12 @@ function Amplitude(height) {
 		counterForAmplitudeColor++;
 	}
 
-	this.color = "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
-	console.log(this.color);
-	this.width = 25;
-	this.height = height ? bigBar.height : smallBar.height;
-	this.x = myGameArea.canvas.width - 130;
-	this.y = Canvas.height / 2 - this.height / 2;
-	this.update = function() {
+	this.color 		= "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
+	this.width 		= 25;
+	this.height 	= height ? bigBar.height : smallBar.height;
+	this.x 			= myGameArea.canvas.width - 130;
+	this.y 			= height ? bigBar.position : smallBar.position;
+	this.update 	= function() {
 		this.x -= 1;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -182,19 +181,19 @@ function Amplitude(height) {
 // ******************** EnergyBar ******************** //
 
 function EnergyBar() {
-	this.color = "#FFD51D";
-	this.width = 500;
-	this.height = 25;
-	this.x = 250;
-	this.y = 25;
-	this.update = function() {
+	this.color 		= "#FFD51D";
+	this.width 		= energyBar.width;
+	this.height 	= energyBar.height;
+	this.x 			= Canvas.width / 10;
+	this.y 			= energyBar.position;
+	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 
-	this.ctx = myGameArea.context;
-	this.ctx.fillStyle = this.color;
+	this.ctx 			= myGameArea.context;
+	this.ctx.fillStyle 	= this.color;
 	this.ctx.fillRect(this.x, this.y, this.width, this.height);
 }
 
@@ -238,12 +237,15 @@ var myGameArea = {
 function updateGameArea() {
 	myGameArea.clear();
 
-	for (i = 0; i < listeBarres.length; i += 1) {
+	for (i = 0; i < listeBarres.length; i++) {
 		listeBarres[i].update();
 		listeArtefacts[i].update();
 	}
 
-	pulsers.update();
+	for (i = 0; i < pulsers.length; i++) {
+		pulsers[i].update();
+	}
+
 	energyBar.update();
 	player.update();
 }
@@ -272,7 +274,11 @@ function startGame() {
 
 	player 		= new Player()
 	energyBar 	= new EnergyBar()
-	pulsers   	= new Pulsers()
+
+	for (var i = 0; i < 4; i++) {
+		var pulser = new Pulsers(bigBar.position + i * blocUnit);
+		pulsers.push(pulser);
+	} 
 
 	// ******************** Player movement ******************** //
 
@@ -301,17 +307,17 @@ function startGame() {
 			case 90:
 				// Midtop
 				App.Player.position = 1;
-				player.y = smallBar.position;
+				player.y = bigBar.position + 1 * blocUnit;
 				break;
 			case 69:
 				// Midbot
 				App.Player.position = 2;
-				player.y = smallBar.position + smallBar.height / 2;
+				player.y = bigBar.position + 2 * blocUnit;
 				break;
 			case 82:
 				// Bot
 				App.Player.position = 3;
-				player.y = bigBar.position + bigBar.height / 2;
+				player.y = bigBar.position + 3 * blocUnit;
 				break;
 			case 38:
 				// Up arrow
