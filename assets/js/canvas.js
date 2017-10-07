@@ -34,8 +34,8 @@ var energyBar = {
 }
 
 var Canvas = {    
-    width   : 10 * blocUnit,
-    height   : bigBar.height + energyBar.height + 3 * blocUnit, // Height = biggest bar + energy bar + margins
+    width	: 10 * blocUnit,
+    height	: bigBar.height + energyBar.height + 3 * blocUnit, // Height = biggest bar + energy bar + margins
     // height  : 8 * blocUnit
 }
 
@@ -208,7 +208,7 @@ var myGameArea = {
 
 		// ******************** Canvas setup ******************** //
 
-		this.canvas.width 	= 1000;
+		this.canvas.width 	= Canvas.width;
 		this.canvas.height 	= Canvas.height;
 		this.context 		= this.canvas.getContext("2d");
 
@@ -296,29 +296,29 @@ function startGame() {
 			case 65:
 				// Top
 				App.Player.position = 0;
-				player.y = 163;
+				player.y = bigBar.position;
 				break;
 			case 90:
 				// Midtop
 				App.Player.position = 1;
-				player.y = 263;
+				player.y = smallBar.position;
 				break;
 			case 69:
 				// Midbot
 				App.Player.position = 2;
-				player.y= 363;
+				player.y = smallBar.position + smallBar.height / 2;
 				break;
 			case 82:
 				// Bot
 				App.Player.position = 3;
-				player.y= 463;
+				player.y = bigBar.position + bigBar.height / 2;
 				break;
 			case 38:
 				// Up arrow
 				if(App.Player.position != 0) {
 		
 					App.Player.position--;
-					player.y -= 100;
+					// player.y -= smallBar.height / 2;
 				}
 				break;
 			case 40:
@@ -326,13 +326,13 @@ function startGame() {
 				if(App.Player.position != 3) {
 		
 					App.Player.position++;
-					player.y += 100;
+					// player.y += smallBar.height / 2;
 				}
 				break;
 		}
 
 		// ******************** Notify websocket ******************** //
-
+		console.log(player.y);
 		App.Player.onMove(App.Player.position);
 	}
 }
