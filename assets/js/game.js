@@ -114,7 +114,7 @@ var App = {
 				IO.socket.emit('hostStartGame');
 
 				document.querySelector("#createGameButton").classList.add("hidden");
-				document.querySelector("#startGameButton").classList.add("hidden");
+                document.querySelector("#startGameButton").classList.add("hidden");
 			}
         },
 
