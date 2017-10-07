@@ -318,7 +318,7 @@ function startGame() {
 				if(App.Player.position != 0) {
 		
 					App.Player.position--;
-					// player.y -= smallBar.height / 2;
+					player.y -= smallBar.height / 2;
 				}
 				break;
 			case 40:
@@ -326,7 +326,7 @@ function startGame() {
 				if(App.Player.position != 3) {
 		
 					App.Player.position++;
-					// player.y += smallBar.height / 2;
+					player.y += smallBar.height / 2;
 				}
 				break;
 		}
