@@ -1,5 +1,38 @@
-var models = require('../models/');
+var orm = require('orm');
 
+module.exports = {
+    list: function (req, res, next) {
+        req.models.track.find().limit(4).all(function (err, tracks) {
+            if (err) return next(err);
+
+            var items = tracks.map(function (m) {
+                return m.serialize();
+            });
+
+            res.send({ items: items });
+        });
+    },
+    create: function (req, res, next) {
+        var params = req.params;
+        //var params = _.pick(req.body, 'title', 'body');
+
+        req.models.track.create(params, function (err, track) {
+            if(err) {
+                if(Array.isArray(err)) {
+                    return res.send(200, { errors: helpers.formatErrors(err) });
+                } else {
+                    return next(err);
+                }
+            }
+            return res.status(200).send(track.serialize());
+        });
+    },
+    get: function (req, res, next) {
+
+    }
+};
+
+/*
 module.exports = {
     create: function (track) {
         models(function (err, db) {
@@ -71,7 +104,7 @@ module.exports = {
         });
     }
 
-    /*list: function (req, res, next) {
+    /!*list: function (req, res, next) {
     req.models.message.find().limit(4).order('-id').all(function (err, messages) {
         if (err) return next(err);
 
@@ -81,5 +114,5 @@ module.exports = {
 
         res.send({ items: items });
     });
-},*/
-}
+},*!/
+*/
