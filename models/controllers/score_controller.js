@@ -1,5 +1,51 @@
-var models = require('../models/');
+var orm = require('orm');
+var helpers = require('./_helpers');
+var moment = require('moment');
 
+module.exports = {
+    create: function (req, res, next) {
+        var params = req.params;
+
+        req.models.user.get(req.params.user_id, function (err, user) {
+            if (err) {
+                if (err.code == orm.ErrorCodes.NOT_FOUND) {
+                    return res.status(404).send("User not found");
+                } else {
+                    return next(err);
+                }
+            }
+
+            req.models.track.get(req.params.track_id, function (err, track) {
+                if (err) {
+                    if (err.code == orm.ErrorCodes.NOT_FOUND) {
+                        return res.status(404).send("Track not found");
+                    } else {
+                        return next(err);
+                    }
+                }
+
+                params.user_date = user.pseudo;
+                params.track_date = track.name;
+                params.date=moment(this.createdAt).fromNow();
+
+                console.log(params);
+                req.models.score.create(params, function (err, score) {
+                    if(err) {
+                        if(Array.isArray(err)) {
+                            return res.status(200).send({ errors: helpers.formatErrors(err) });
+                        } else {
+                            return next(err);
+                        }
+                    }
+
+                    return res.status(200).send(score.serialize());
+                });
+            });
+        });
+    }
+};
+
+/*
 module.exports = {
     create: function (score, user, track) {
         models(function (err, db) {
@@ -76,4 +122,4 @@ module.exports = {
             });
         });
     }
-}
+*/
