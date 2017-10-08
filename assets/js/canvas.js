@@ -79,7 +79,7 @@ function Player() {
 	self.x 			= 400;
 	self.y 			= smallBar.position;
 	self.img 		= new Image();
-	self.img.src 	= "../img/unicorn.svg";
+	self.img.src 	= "../img/unicorn.png";
 	self.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
@@ -96,7 +96,7 @@ function Pulsers(posY) {
 	self.x 			= 890;
 	self.y 			= posY;
 	self.img 		= new Image();
-	self.img.src 	= "../img/pulser.svg";
+	self.img.src 	= "../img/pulser.png";
 	self.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
@@ -113,7 +113,7 @@ function Artefact(posY) {
 	self.x 			= myGameArea.canvas.width - 165;
 	self.y 			= posY;
 	self.img 		= new Image();
-	self.img.src 	= "../img/artefact.svg";
+	self.img.src 	= "../img/artefact.png";
 	self.update 	= function() {
 		this.x -= 1;
 		ctx = myGameArea.context;
