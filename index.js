@@ -5,8 +5,10 @@ var game = require("./modules/game.js");
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
 
-
-var model_controller=require('./models/controllers');
+var environment = require('./models/config/environment');
+var settings = require('./models/config/settings');
+var modelRouter = require('./models/config/route');
+var models = require('./models/models');
 
 var io = require('socket.io').listen(http);
 // var io = require('socket.io');
@@ -15,21 +17,17 @@ var io = require('socket.io').listen(http);
 // io.listen(http);
 
 
+
 /*model_controller.user.create({pseudo : "titi",
-    password: "g",
-    rank: 23});*/
+            password: "g",
+            rank: 23});
 
-
-/*model_controller.track.create({name: 'ca',
+model_controller.track.create({name: 'ca',
 link: 'Loc'});*/
 
+/*model_controller.score.create({ date : "12/733",
+     duration : 34, user_date: 'tir', track_date: 'cga'});*/
 
-
-score=model_controller.score.create({ date : "12/73",
-    // duration       : 34, user_pseudo: 'titi', track_name: 'ca', track_link: 'Lo'});
-    duration       : 34});
-
-//score.setOwner()
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 /*io.sockets.on('connection', function (socket) {
   console.log('client connected');
@@ -42,6 +40,10 @@ score=model_controller.score.create({ date : "12/73",
 
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
+
+
+environment(app);
+modelRouter(app);
 
 app.use(express.static(__dirname + '/assets'));
 
