@@ -113,8 +113,7 @@ var App = {
 				console.log('Clicked "Start A Game"');
 				IO.socket.emit('hostStartGame');
 
-				document.querySelector("#createGameButton").classList.add("hidden");
-                document.querySelector("#startGameButton").classList.add("hidden");
+				document.querySelector("#startButtons").classList.add("hidden");
 			}
         },
 
