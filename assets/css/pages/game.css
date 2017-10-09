@@ -1,6 +1,10 @@
 
 @import '../main.css';
 
+.content {
+	/* background: red; */
+}
+
 .buttonWrapper {
 	display: flex;
 	flex-direction: column;
