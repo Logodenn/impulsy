@@ -20,15 +20,18 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 		success = false;
 	} else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
 		game.energy = game.energy - 1;
+		game.nbArtefacts = game.nbArtefacts + 1;
 		success = true;
 	} else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
 		game.energy = game.energy - 2;
 		success = false;
 	} else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
 		game.energy = game.energy;
+		game.nbArtefacts = game.nbArtefacts + 1;
 		success = true;
 	} else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]) {
 		logger.debug("Level lazy no energy");
+		game.nbArtefacts = game.nbArtefacts + 1;
 		success = true;
 	} else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]) {
 		logger.debug("Level lazy no energy");
@@ -73,13 +76,15 @@ function getArrayArthefacts(arraySpectrum) {
  * @param {string} socketId id of the socket
  * @param callback 
  */
-module.exports.createGame = function createGame(sound, local, difficulty, gameId, socketId, callback) {
+module.exports.createGame = function createGame(youtubeVideoId, difficulty, gameId, socketId, callback) {
 	logger.debug('Creation of the game object');
+	// TODO : ajotuer ici les morts des amis par rapport aux player
 	var game = {
 		gameId: gameId,
 		socketId: socketId,
 		position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
-		currentBar: 0,
+		currentBar : 0,
+		nbArtefacts : 0,
 		difficulty: difficulty // difficulty of the level 
 	};
 	youtube.getAudioStream(sound, local, function (err, stream) {
