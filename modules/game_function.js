@@ -76,7 +76,7 @@ function getArrayArthefacts(arraySpectrum) {
  * @param {string} socketId id of the socket
  * @param callback 
  */
-module.exports.createGame = function createGame(youtubeVideoId, difficulty, gameId, socketId, callback) {
+module.exports.createGame = function createGame(sound, local, difficulty, gameId, socketId, callback) {
 	logger.debug('Creation of the game object');
 	// TODO : ajotuer ici les morts des amis par rapport aux player
 	var game = {
