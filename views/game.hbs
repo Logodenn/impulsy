@@ -4,7 +4,7 @@
         <title></title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/style.css" rel="stylesheet">
+        <link href="css/pages/game.css" rel="stylesheet">
         
         <script src="/socket.io/socket.io.js"></script>
         <script src="js/game.js"></script>
@@ -14,9 +14,7 @@
 
         <section class="content">
 
-            <h1 class="catchPhrase">Impulsy - Ride the music</h1>
-
-            <div id="buttons" class="buttonWrapper">
+            <div id="startButtons" class="buttonWrapper">
                 <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button>
                 <button id="startGameButton" class="button" state="disabled" onclick="App.Host.onStartClick()">Ready: start game</button>
             </div>
