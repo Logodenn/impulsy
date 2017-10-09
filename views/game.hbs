@@ -14,12 +14,18 @@
 
         <section class="content">
 
-            <div id="startButtons" class="buttonWrapper">
+            <div id="startButtons" class="buttonWrapper flex-col">
                 <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button>
                 <button id="startGameButton" class="button" state="disabled" onclick="App.Host.onStartClick()">Ready: start game</button>
             </div>
 
             <div id="canvasWrapper"></div>
+
+            <div id="moveButtons" class="buttonWrapper flex-row">
+                <button id="upwardButton" class="button" state="passive" onclick="Player.onTabletMove('up')">Up</button>
+                <button id="downwardButton" class="button" state="passive" onclick="Player.onTabletMove('down')">Down</button>
+            </div>
+
         </section>
     </body>
 </html>
