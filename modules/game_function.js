@@ -1,5 +1,7 @@
 var youtube = require('./youtube');
 const logger = require('winston');
+const ffmpeg = require('fluent-ffmpeg');
+
 
 /**
  * Function checkRightPosition use to verify the position of the player each bar
@@ -13,39 +15,33 @@ const logger = require('winston');
  */
 module.exports.checkRightPosition = function checkRightPosition(game, currentBar) {
 	var success;
-	if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy"){
+	if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
 		game.energy = game.energy - 1;
 		success = false;
-	} 
-	else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy"){
+	} else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
 		game.energy = game.energy - 1;
 		game.nbArtefacts = game.nbArtefacts + 1;
 		success = true;
-	}
-	else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy"){ 
+	} else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
 		game.energy = game.energy - 2;
 		success = false;
-	} 
-	else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy"){
+	} else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
 		game.energy = game.energy;
 		game.nbArtefacts = game.nbArtefacts + 1;
 		success = true;
-	} 
-	else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]){
+	} else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]) {
 		logger.debug("Level lazy no energy");
 		game.nbArtefacts = game.nbArtefacts + 1;
 		success = true;
-	} 
-	else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]){
+	} else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]) {
 		logger.debug("Level lazy no energy");
-		success = false;		
-	}
-	else {
+		success = false;
+	} else {
 		logger.error("Check the difficulty or the current bar something is going wrong");
 	}
-  
+
 	logger.debug(game.energy);
-	logger.debug(currentBar+'/'+game.arrayArtefacts.length);
+	logger.debug(currentBar + '/' + game.arrayArtefacts.length);
 	game.currentBar = currentBar;
 	return game.energy, success;
 }
@@ -57,13 +53,13 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
  * @param {array} arraySpectrum array of the spectrum generate by the sound
  */
 function getArrayArthefacts(arraySpectrum) {
-	logger.debug('Generation of the array of arthefact');		
+	logger.debug('Generation of the array of arthefact');
 	var randomNumbers = [];
 	var baseLowerBound = 1
 	var baseUpperBound = 2
 	arraySpectrum.forEach(function (barSize) {
-		var lowerBound = baseLowerBound-barSize;
-		var upperBound = baseUpperBound+barSize;
+		var lowerBound = baseLowerBound - barSize;
+		var upperBound = baseUpperBound + barSize;
 		var randomNumber = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound);
 		// Yay! new random number
 		randomNumbers.push(randomNumber);
@@ -73,7 +69,8 @@ function getArrayArthefacts(arraySpectrum) {
 
 /**
  * Function createGame create game object 
- * @param {string} youtubeVideoId string of the youtube video id
+ * @param {string} sound string of the youtube video id or path to the sound
+ * @param {boolean} local false if the sound is from youtube true otherwise
  * @param {string} difficulty difficulty chose by the player at the begining
  * @param {int} gameId id of the game (equevalent of the room use for the socket)
  * @param {string} socketId id of the socket
@@ -90,7 +87,7 @@ module.exports.createGame = function createGame(youtubeVideoId, difficulty, game
 		nbArtefacts : 0,
 		difficulty: difficulty // difficulty of the level 
 	};
-	youtube.getAudioStream(youtubeVideoId, function (err, stream) {
+	youtube.getAudioStream(sound, local, function (err, stream) {
 		if (err) logger.error(err);
 		else {
 			youtube.getBars(stream, 1, function (err, bars) {
