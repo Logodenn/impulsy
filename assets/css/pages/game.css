@@ -13,5 +13,11 @@
 
 #moveButtons {
 	position: absolute;
-	bottom: 0;
+	bottom: 10vh;
+	width: 20vw;
+	left: 50vw - 10vw; /* half the screen minus half its width to center */
+}
+
+#moveButtons button {
+	/* width: 300px; */
 }
