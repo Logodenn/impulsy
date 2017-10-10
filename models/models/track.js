@@ -2,25 +2,16 @@ var orm = require("orm");
 
 module.exports = function (orm, db) {
     var Track = db.define("track", {
-            name: {type: 'text', key: true},
-            link: String
+            name: {type: 'text'},
+            link: {type: 'text'},
+            information: Object
         },
         {
-            /*hooks: {
-                beforeValidation: function () {
-                    this.createdAt = new Date();
-                }
-            },
+
             validations: {
-                title: [
-                    orm.enforce.ranges.length(1, undefined, "must be atleast 1 letter long"),
-                    orm.enforce.ranges.length(undefined, 96, "cannot be longer than 96 letters")
-                ],
-                body: [
-                    orm.enforce.ranges.length(1, undefined, "must be atleast 1 letter long"),
-                    orm.enforce.ranges.length(undefined, 32768, "cannot be longer than 32768 letters")
-                ]
-            },*/
+                name: orm.validators.unique()
+            },
+
             methods: {
                 serialize: function () {
                     var scores;
@@ -35,7 +26,8 @@ module.exports = function (orm, db) {
 
                     return {
                         name : this.name,
-                        link: this.link
+                        link: this.link,
+                        information: this.information
                     };
                 }
             }

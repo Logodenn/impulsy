@@ -1,5 +1,5 @@
 var orm = require('orm');
-var helpers = require('./_helpers');
+var helpers = require('../../routers/_helpers');
 var moment = require('moment');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
         req.models.user.get(req.params.user_id, function (err, user) {
             if (err) {
                 if (err.code == orm.ErrorCodes.NOT_FOUND) {
-                    return res.status(404).send("User not found");
+                    return res.status(404).send("User ngot found");
                 } else {
                     return next(err);
                 }

@@ -2,15 +2,20 @@ var orm = require('orm');
 
 module.exports = function (orm, db) {
     var Score = db.define("score", {
-            date: { type: 'date', required: true, time: true, key:true},
-            duration: { type: 'number', required: true}
+            date: { type: 'date', required: true, time: true},
+            duration: { type: 'integer', required: true}
         },
         {
+            validations: {
+                date: orm.validators.unique()
+            },
             methods: {
                 serialize: function () {
                     return {
                         date: this.date,
-                        duration: this.duration
+                        duration: this.duration,
+                        user_date:this.user_date,
+                        track_date: this.track_date
                     }
                 }
             }
@@ -18,15 +23,16 @@ module.exports = function (orm, db) {
 
     console.log(db.settings);
     Score.hasOne('user', db.models.user,{
+        type: 'text',
         required: true,
-        reverse: 'user',
+        reverse: 'pseudo',
         autoFetch: true,
-        type: 'text'
     });
     Score.hasOne('track', db.models.track, {
+        type: 'text',
         required: true,
-        //reverse: 'track',
-        autoFetch: true,
-        type: 'text'
+        reverse: 'name',
+        autoFetch: true
+
     });
 };
