@@ -3,26 +3,15 @@
 
 module.exports = function (orm, db) {
     var User = db.define('user', {
-            pseudo: {type: 'text', key: true},
-            password: String,
-            rank: Number
+            pseudo: {type: 'text'},
+            password: {type: 'text'},
+            mail: {type: 'text'},
+            rank: {type: 'integer'}
         },
         {
-            /*hooks: {
-                beforeValidation: function () {
-                    this.createdAt = new Date();
-                }
-            },
             validations: {
-                title: [
-                    orm.enforce.ranges.length(1, undefined, "must be atleast 1 letter long"),
-                    orm.enforce.ranges.length(undefined, 96, "cannot be longer than 96 letters")
-                ],
-                body: [
-                    orm.enforce.ranges.length(1, undefined, "must be atleast 1 letter long"),
-                    orm.enforce.ranges.length(undefined, 32768, "cannot be longer than 32768 letters")
-                ]
-            },*/
+                pseudo: orm.validators.unique()
+            },
             methods: {
                 serialize: function () {
                     var scores;
@@ -38,6 +27,7 @@ module.exports = function (orm, db) {
                     return {
                         pseudo: this.pseudo,
                         password: this.password,
+                        mail: this.mail,
                         rank: this.rank,
                         scores: scores
                     };

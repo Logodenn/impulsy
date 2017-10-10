@@ -5,7 +5,7 @@ module.exports = function (app) {
 
     app.post('/db'       ,controllers.db.clean);
 
-    app.get( '/user'                   , controllers.user.list);
+    //app.get( '/user'                   , controllers.user.list);
     app.post('/user/:pseudo/:password/:rank'                   , controllers.user.create);
 
     app.get( '/track'                   , controllers.track.list);
