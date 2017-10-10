@@ -4,11 +4,19 @@ var http = require('http').Server(app);
 var game = require("./modules/game.js");
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
+const dbRouter = require('./routers/db');
+const userRouter = require('./routers/user');
+const trackRouter = require('./routers/track');
+const scoreRouter = require('./routers/score');
+
+var bodyParser = require('body-parser');
+
 
 var environment = require('./models/config/environment');
 var settings = require('./models/config/settings');
-var modelRouter = require('./models/config/route');
-var models = require('./models/models');
+//var modelRouter = require('./models/config/route');
+//var models = require('./models/models');
+
 
 var io = require('socket.io').listen(http);
 // var io = require('socket.io');
@@ -16,17 +24,6 @@ var io = require('socket.io').listen(http);
 // var io = require("socket.io")(http);
 // io.listen(http);
 
-
-
-/*model_controller.user.create({pseudo : "titi",
-            password: "g",
-            rank: 23});
-
-model_controller.track.create({name: 'ca',
-link: 'Loc'});*/
-
-/*model_controller.score.create({ date : "12/733",
-     duration : 34, user_date: 'tir', track_date: 'cga'});*/
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 /*io.sockets.on('connection', function (socket) {
@@ -38,17 +35,26 @@ link: 'Loc'});*/
 
 // var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below
 
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
 
 
 environment(app);
-modelRouter(app);
+//modelRouter(app);
 
 app.use(express.static(__dirname + '/assets'));
 
 app.use('/', mainRouter);
 app.use('/game', gameRouter);
+
+app.use('/db', dbRouter);
+app.use('/user', userRouter);
+app.use('/track', trackRouter);
+app.use('/score', scoreRouter);
 
 app.get('/trackSelection', function(req, res) 
 {
