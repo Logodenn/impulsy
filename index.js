@@ -36,10 +36,7 @@ app.get('/trackSelection', function(req, res)
   res.render('trackSelection', { message: "Hello World!" });
 });
 
-http.listen(app.get('port'), function() {
-  console.log('Impulsy is running on port', app.get('port'));
-  console.log('Go to: http://localhost:5000/ to see the app.');
-});
+module.exports = http;
 
 /*app.use(orm.express('mysql://root:1234@localhost/mydb', {
         define: function (db, models, next) {
