@@ -14,14 +14,13 @@ module.exports = function (orm, db) {
                     return {
                         date: this.date,
                         duration: this.duration,
-                        user_date:this.user_date,
-                        track_date: this.track_date
+                        user_id: this.user_id,
+                        track_id: this.track_id
                     }
                 }
             }
         });
 
-    console.log(db.settings);
     Score.hasOne('user', db.models.user,{
         type: 'text',
         required: true,
