@@ -18,10 +18,7 @@ router.post("/db", (req, res, next)=> {
                 }, function (err, user) {
                     if (err) return next(err);
 
-                    //db.close()
-                    res.render('game', { message: 'Hello World' });
-
-                    //return res.status(200).send("Done!");
+                    return res.status(200).send("Done!");
                 });
             });
         });
