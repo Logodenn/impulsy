@@ -25,6 +25,7 @@ var IO = {
         IO.socket.on('newGameCreated', IO.onNewGameCreated);
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
+        IO.socket.on('energy', IO.onEnergy);
         IO.socket.on('gameOver', IO.onGameOver);
         // IO.socket.on('error', IO.error );
     },
@@ -50,6 +51,13 @@ var IO = {
 		// TODO
 		// Notify players that a player has moved
 		player.update();		
+    },
+    
+    onEnergy : function(data) {
+        // TODO
+        console.log('v energy bar is now v');
+        console.log(data);
+		energyBar.update();		
 	},
 
 	gameOver : function(data) {
@@ -137,9 +145,15 @@ var App = {
 	// ********** Player ********** //
     Player : {
 
-		// position: 1,
+        // position: 1,
+        // This Player object is used to transit data through the WS
 
 		onMove : function(data) {
+			console.log('Player moved at position : ' + App.Player.position);
+			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
+        },
+        
+        onEnergy : function(data) {
 			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
