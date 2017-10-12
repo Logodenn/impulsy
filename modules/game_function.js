@@ -43,7 +43,12 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 	logger.debug(game.energy);
 	logger.debug(currentBar + '/' + game.arrayArtefacts.length);
 	game.currentBar = currentBar;
-	return game.energy, success;
+	data = {
+		energy : game.energy,
+		arthefactTaken : success,
+		bar : currentBar
+	}
+	return data
 }
 
 /**
