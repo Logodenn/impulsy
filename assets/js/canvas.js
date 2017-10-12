@@ -67,7 +67,6 @@ var time 		= 0;
 // ******************** Components ******************** //
 
 var player;
-var energyBar;
 var pulsers 		= [];
 var listeBarres 	= [];
 var listeArtefacts 	= [];
