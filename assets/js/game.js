@@ -55,9 +55,14 @@ var IO = {
     
     onEnergy : function(data) {
         // TODO
-        console.log('v energy bar is now v');
         console.log(data);
-		energyBar.update();		
+        // TODO compute the proper way
+        energyBar.width = data.energyBar;
+        energyBar.update();
+        if(data.isArtefactTaken) {
+
+            console.log(listeArtefacts[data.bar] + "sould be redraw as taken");		
+        }
 	},
 
 	gameOver : function(data) {
