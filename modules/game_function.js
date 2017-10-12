@@ -45,7 +45,7 @@ module.exports.checkRightPosition = function checkRightPosition(game, currentBar
 	game.currentBar = currentBar;
 	data = {
 		energy : game.energy,
-		arthefactTaken : success,
+		isArtefactTaken : success,
 		nbArtefacts : game.nbArtefacts,
 		bar : currentBar
 	}
