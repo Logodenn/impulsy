@@ -5,6 +5,12 @@
 	/* background: red; */
 }
 
+#difficultyButtons {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
 .buttonWrapper {
 	display: flex;
 	flex-direction: column;
