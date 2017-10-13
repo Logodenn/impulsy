@@ -96,7 +96,7 @@ module.exports.createGame = function createGame(sound, local, difficulty, gameId
 	youtube.getAudioStream(sound, local, function (err, stream) {
 		if (err) logger.error(err);
 		else {
-			youtube.getBars(stream, 1, function (err, bars) {
+			youtube.getBars(stream, 2, function (err, bars) {
 				if (err) logger.error(err);
 				else {
 					game.arraySpectrum = bars;
