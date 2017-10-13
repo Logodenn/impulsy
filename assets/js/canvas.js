@@ -213,6 +213,9 @@ var myGameArea = {
 
 		document.querySelector("#canvasWrapper").appendChild(this.canvas);
 
+		// Show the up and down buttons - is hidden if media query is browser
+		document.querySelector("#moveButtons").classList.remove("hidden");
+
 		// ******************** Interval setup ******************** //
 
 		this.intervalAddAmplitude 	= setInterval("addAmplitudeAndArtefact();",500);
@@ -341,4 +344,35 @@ function startGame() {
 		console.log(player.y);
 		App.Player.onMove(App.Player.position);
 	}
+}
+
+function onTabletMove(direction) {
+	// TODO
+	// it's a dirty way to do this
+	// centralize the keyListeners and the buttonMoveListener
+
+	console.log(direction);
+
+	switch(direction) {
+		case 'up':
+			// Up arrow
+			if(App.Player.position != 0) {
+				
+				App.Player.position--;
+				player.y -= smallBar.height / 2;
+			}
+			break;
+		case 'down':
+			// Down arrow
+			if(App.Player.position != 3) {
+				
+				App.Player.position++;
+				player.y += smallBar.height / 2;
+			}
+			break;
+	}
+
+	// ******************** Notify websocket ******************** //
+	console.log(player.y);
+	App.Player.onMove(App.Player.position);
 }
