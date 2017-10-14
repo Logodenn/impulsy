@@ -55,13 +55,13 @@ var IO = {
     
     onEnergy : function(data) {
         // TODO
-        console.log(data);
+        // console.log(data);
         // TODO compute the proper way
-        energyBar.width = data.energyBar;
+        energyBar.width = data.energy;
         energyBar.update();
         if(data.isArtefactTaken) {
 
-            console.log(listeArtefacts[data.bar] + "sould be redraw as taken");		
+            console.log(listeArtefacts[data.bar] + "sould be redrawn as taken");		
         }
 	},
 
