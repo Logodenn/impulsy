@@ -78,8 +78,27 @@ router.post('/register', function(req, res) {
       }
  
       passport.authenticate('stormpath')(req, res, function () {
-        return res.redirect('/dashboard');
+        return res.redirect('/game');
       });
     });
   });
 });
+// Render the login page.
+router.get('/login', function(req, res) {
+  res.render('login', { title: 'Login', error: req.flash('error')[0] });
+});
+ 
+// Authenticate a user.
+router.post('/login', passport.authenticate('stormpath', {
+  successRedirect: '/game',
+  failureRedirect: '/login',
+  failureFlash: 'Invalid email or password.'
+}));
+ 
+// Logout the user, then redirect to the home page.
+router.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
+ 
+module.exports = router;
