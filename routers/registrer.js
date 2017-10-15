@@ -1,9 +1,7 @@
 /*
 
-var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
-var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
  
@@ -11,7 +9,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var StormpathStrategy = require('passport-stormpath');
 var session = require('express-session');
-var flash = require('connect-flash');
+var flash = require('connect-flash'); // peut être inutile 
 
 // j'ai un doute sur l'utilisation de passport 
 // mais ça pertmet d'utiliser FB, Google etc... 
@@ -24,8 +22,7 @@ passport.serializeUser(strategy.serializeUser);
 passport.deserializeUser(strategy.deserializeUser);
 
 
-app.use(favicon());
-app.use(logger('dev'));
+app.use(favicon()); // je ne sais pas ce que ça fait
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
