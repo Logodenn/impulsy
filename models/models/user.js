@@ -31,7 +31,14 @@ module.exports = function (orm, db) {
                         rank: this.rank,
                         scores: scores
                     };
+
                 }
             }
         });
+
+    User.hasMany('user', db.models.user, {link: String},{
+        reverse: 'users',
+        key: true
+    });
+
 };

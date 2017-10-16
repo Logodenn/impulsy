@@ -8,6 +8,9 @@ const dbRouter = require('./routers/db');
 const userRouter = require('./routers/user');
 const trackRouter = require('./routers/track');
 const scoreRouter = require('./routers/score');
+const logger = require('winston');
+
+
 
 var bodyParser = require('body-parser');
 
