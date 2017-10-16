@@ -60,8 +60,10 @@ var IO = {
         energyBar.width = data.energy;
         energyBar.update();
         if(data.isArtefactTaken) {
-
-            console.log(listeArtefacts[data.bar] + "sould be redrawn as taken");		
+            console.log("vvv sould be redrawn as taken");
+            // console.log(listeArtefacts[data.bar].img.src);
+            // console.log(listeArtefacts);
+            // listeArtefacts[data.bar].img.src = "../img/artefactTaken.png";
         }
 	},
 
