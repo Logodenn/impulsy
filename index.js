@@ -1,9 +1,72 @@
 var express = require('express');
+var passport = require('passport');
+var Strategy = require('passport-local').Strategy;
 var app = express();
 var http = require('http').Server(app);
 var game = require("./modules/game.js");
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
+const authRouter = require('./routers/auth');
+
+
+
+// Configure the local strategy for use by Passport.
+//
+// The local strategy require a `verify` function which receives the credentials
+// (`username` and `password`) submitted by the user.  The function must verify
+// that the password is correct and then invoke `cb` with a user object, which
+// will be set at `req.user` in route handlers after authentication.
+passport.use(new Strategy(
+    function (username, password, cb) {
+        db.users.findByUsername(username, function (err, user) {
+            if (err) {
+                return cb(err);
+            }
+            if (!user) {
+                return cb(null, false);
+            }
+            if (user.password != password) {
+                return cb(null, false);
+            }
+            return cb(null, user);
+        });
+    }));
+
+
+// Configure Passport authenticated session persistence.
+//
+// In order to restore authentication state across HTTP requests, Passport needs
+// to serialize users into and deserialize users out of the session.  The
+// typical implementation of this is as simple as supplying the user ID when
+// serializing, and querying the user record by ID from the database when
+// deserializing.
+passport.serializeUser(function (user, cb) {
+    cb(null, user.id);
+});
+
+passport.deserializeUser(function (id, cb) {
+    db.users.findById(id, function (err, user) {
+        if (err) {
+            return cb(err);
+        }
+        cb(null, user);
+    });
+});
+// Use application-level middleware for common functionality, including
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({
+    extended: true
+}));
+app.use(require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize());
+app.use(passport.session());
 
 var io = require('socket.io').listen(http);;
 // var io = require('socket.io');
@@ -13,15 +76,21 @@ var io = require('socket.io').listen(http);;
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
-  console.log('client connected');
-  game.initGame(io, socket);
+    console.log('client connected');
+    game.initGame(io, socket);
 });
 
-//const youtubeRouter = require('./router/youtube');
+app.use('/auth', authRouter);
 
-// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
+app.use(session({
+    cookieName: 'session',
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
 
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
@@ -31,9 +100,10 @@ app.use(express.static(__dirname + '/assets'));
 app.use('/', mainRouter);
 app.use('/game', gameRouter);
 
-app.get('/trackSelection', function(req, res) 
-{
-  res.render('trackSelection', { message: "Hello World!" });
+app.get('/trackSelection', function (req, res) {
+    res.render('trackSelection', {
+        message: "Hello World!"
+    });
 });
 
 module.exports = http;
