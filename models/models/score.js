@@ -6,9 +6,6 @@ module.exports = function (orm, db) {
             duration: { type: 'integer', required: true}
         },
         {
-            validations: {
-                date: orm.validators.unique()
-            },
             methods: {
                 serialize: function () {
                     return {
@@ -22,16 +19,16 @@ module.exports = function (orm, db) {
         });
 
     Score.hasOne('user', db.models.user,{
-        type: 'text',
         required: true,
-        reverse: 'pseudo',
+        //reverse: 'pseudo',
+        reverse: "scores",
         autoFetch: true,
     });
     Score.hasOne('track', db.models.track, {
-        type: 'text',
         required: true,
-        reverse: 'name',
+        //reverse: 'name',
+        reverse : "scores",
         autoFetch: true
-
     });
+
 };

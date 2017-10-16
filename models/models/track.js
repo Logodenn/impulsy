@@ -27,7 +27,8 @@ module.exports = function (orm, db) {
                     return {
                         name : this.name,
                         link: this.link,
-                        information: this.information
+                        information: this.information,
+                        scores: this.scores
                     };
                 }
             }
