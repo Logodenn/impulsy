@@ -24,23 +24,19 @@ exports.initGame = function (sio, socket) {
   gameSocket.on('endGame', endGame);
 
   // If the player Rage Quit or the player want to stop the level
-  gameSocket.on('disconnect', function(){
-    if (typeof timer != 'undefined')
-    {
-      logger.info("Close connection with socket : "+gameSocket.id);
+  gameSocket.on('disconnect', function () {
+    if (typeof timer != 'undefined') {
+      logger.info("Close connection with socket : " + gameSocket.id);
       clearInterval(new_positions);
       gameSocket.disconnect(true)
-    }
-    else if (typeof game == 'undefined')
-    {
-      logger.info("Close connection with socket : "+gameSocket.id);
+    } else if (typeof game == 'undefined') {
+      logger.info("Close connection with socket : " + gameSocket.id);
       gameSocket.disconnect(true)
-    }
-    else {
-      logger.info("Close connection with socket : "+gameSocket.id+" room : "+game.gameId)
+    } else {
+      logger.info("Close connection with socket : " + gameSocket.id + " room : " + game.gameId)
       endGame();
     }
-    
+
   });
 }
 
@@ -51,7 +47,7 @@ exports.initGame = function (sio, socket) {
  * @param data.difficulty The difficulty selected by the player
  */
 function hostCreateNewGame(data) {
-  logger.debug('Creation of the game');  
+  logger.debug('Creation of the game');
   var youtubeVideoId = data.youtubeVideoId;
   var difficulty = data.difficulty;
   var gameCreate;
@@ -59,7 +55,7 @@ function hostCreateNewGame(data) {
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
   //gameFunctions.createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
-  gameFunctions.createGame('./sounds/OrelSan - Basique.mp3', true , data.difficulty, thisGameId, this.id, function (err, gameCreate) {
+  gameFunctions.createGame('./sounds/OrelSan - Basique.mp3', true, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
     else gameSocket.emit('newGameCreated', {
@@ -71,37 +67,61 @@ function hostCreateNewGame(data) {
 };
 
 /**
- * Function verificationEnergy use every second when the game begining and checkRightPosition in order to update energy level of the player
- * @param {object} game game object contain the position of the player, the difficulty of the party and the array of arthefact 
- * @param {int} currentBar bar at this moment in the client side 
- */
-function verificationEnergy (game, currentBar) {
-  logger.debug('Verification of the energy for this bar : '+currentBar);
-  io.sockets.in(game.gameId).emit('energy', gameFunctions.checkRightPosition(game, currentBar));
-};
-
-/**
  * The 'START' button was clicked and 'hostCreateNewGame' event occurred.
  * Launch the game, verify if the player finish the game or die during the game
  */
 function hostStartGame() {
   logger.debug('Starting the game');
-  // peut être faire un wait avant de matter directement le son ? 
   io.sockets.in(game.gameId).emit('gameStarted');
-  currentBar = 0
-  new_positions = setInterval(function () {
-    if (currentBar > game.arrayArtefacts.length){
-      endGame(true);
-    } 
-    else if (game.energy == 0)
-    {
-      endGame(false);
-    }
-    else {
-      verificationEnergy(game, currentBar)
-      currentBar = currentBar + 1;
-    }
-  }, vitesse_game);
+  setTimeout(function(){
+    console.debug("GO GO GO");
+    currentBar = 0;
+    new_positions = setInterval(function () {
+      if (currentBar > game.arrayArtefacts.length) {
+        endGame(true);
+      } else if (game.energy == 0) {
+        endGame(false);
+      } else {
+        const verificationEnergy = function (err, game, currentBar) {
+          logger.debug('Verification of the energy for this bar : ' + currentBar);
+          var success;
+          if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
+            game.energy = game.energy - 1;
+            success = false;
+          } else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
+            game.energy = game.energy - 1;
+            game.nbArtefacts = game.nbArtefacts + 1;
+            success = true;
+          } else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
+            game.energy = game.energy - 2;
+            success = false;
+          } else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
+            game.energy = game.energy;
+            game.nbArtefacts = game.nbArtefacts + 1;
+            success = true;
+          } else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]) {
+            logger.debug("Level lazy no energy");
+            game.nbArtefacts = game.nbArtefacts + 1;
+            success = true;
+          } else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]) {
+            logger.debug("Level lazy no energy");
+            success = false;
+          } else {
+            logger.error("Check the difficulty or the current bar something is going wrong");
+          }
+          logger.debug(game.energy);
+          logger.debug(currentBar + '/' + game.arrayArtefacts.length);
+          game.currentBar = currentBar;
+          io.sockets.in(game.gameId).emit('energy', {
+            energy: game.energy,
+            touch: success
+          });
+        }
+        currentBar++;
+      }
+    }, vitesse_game);
+  }, 4000);
+
 };
 
 /**
@@ -121,9 +141,11 @@ function endGame(victory) {
   clearInterval(new_positions);
   if (victory) victory = "victory";
   else victory = "loose"
-  io.sockets.in(game.gameId).emit('enfOfGame', {"result" : victory, "score" : game.nbArtefacts});
+  io.sockets.in(game.gameId).emit('enfOfGame', {
+    "result": victory,
+    "score": game.nbArtefacts
+  });
   // TODO : save du score ici pour la db
   gameSocket.disconnect(true)
-  logger.info('End of the game this is a '+victory)
+  logger.info('End of the game this is a ' + victory)
 }
-
