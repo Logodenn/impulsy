@@ -24,6 +24,7 @@ var IO = {
         IO.socket.on('newGameCreated', IO.onNewGameCreated);
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
+        IO.socket.on('energy', IO.onEnergy);
         IO.socket.on('gameOver', IO.onGameOver);
 		IO.socket.on('audioChunk', IO.onAudioChunk);
 		IO.socket.on('audioEnd', IO.onAudioEnd);
@@ -50,6 +51,20 @@ var IO = {
 		// TODO
 		// Notify players that a player has moved
 		player.update();		
+    },
+    
+    onEnergy : function(data) {
+        // TODO
+        // console.log(data);
+        // TODO compute the proper way
+        energyBar.width = data.energy;
+        energyBar.update();
+        if(data.isArtefactTaken) {
+            console.log("vvv sould be redrawn as taken");
+            // console.log(listeArtefacts[data.bar].img.src);
+            // console.log(listeArtefacts);
+            // listeArtefacts[data.bar].img.src = "../img/artefactTaken.png";
+        }
 	},
 
 	gameOver : function(data) {
@@ -112,14 +127,35 @@ var App = {
 
         players : [],
         currentCorrectAnswer: '',
+        difficulty: "lazy",
+
+        onDifficultyClick: function (difficulty) {
+
+            // Reset state
+            document.querySelector("#lazy").attributes.state.value = "passive";
+            document.querySelector("#easy").attributes.state.value = "passive";
+            document.querySelector("#crazy").attributes.state.value = "passive";
+            console.log(difficulty);
+            // Active state
+            document.querySelector("#"+difficulty).attributes.state.value = "active";
+
+            this.difficulty = difficulty;
+		},
 
         onCreateClick: function () {
 			if(document.querySelector("#createGameButton").attributes.state.value != "disabled") {
 
-				console.log('Clicked "Create A Game" ' + youtubeVideoId + ' - ' + difficulty);
+                // Reset state
+                document.querySelector("#lazy").attributes.state.value = "disabled";
+                document.querySelector("#easy").attributes.state.value = "disabled";
+                document.querySelector("#crazy").attributes.state.value = "disabled";
+                // Active state
+                document.querySelector("#"+this.difficulty).attributes.state.value = "active";
+
+				console.log('Clicked "Create A Game" ' + youtubeVideoId + ' - ' + this.difficulty);
 				IO.socket.emit('hostCreateNewGame', {
 					youtubeVideoId	: youtubeVideoId,
-					difficulty		: difficulty
+					difficulty		: this.difficulty
 				});
 
 				document.querySelector("#createGameButton").attributes.state.value = "disabled";
@@ -132,7 +168,9 @@ var App = {
 				console.log('Clicked "Start A Game"');
 				IO.socket.emit('hostStartGame');
 
-				document.querySelector("#startButtons").classList.add("hidden");
+                // Hide buttons
+                document.querySelector("#difficultyButtons").classList.add("hidden");
+                document.querySelector("#startButtons").classList.add("hidden");
 			}
         },
 
@@ -156,9 +194,15 @@ var App = {
 	// ********** Player ********** //
     Player : {
 
-		// position: 1,
+        // position: 1,
+        // This Player object is used to transit data through the WS
 
 		onMove : function(data) {
+			console.log('Player moved at position : ' + App.Player.position);
+			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
+        },
+        
+        onEnergy : function(data) {
 			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
@@ -178,4 +222,3 @@ App.init();
 
 var youtubeVideoId 	= "3TygesLODpU";
 var difficulty 		= "lazy";
-

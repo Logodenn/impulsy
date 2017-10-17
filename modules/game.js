@@ -153,7 +153,8 @@ function hostStartGame() {
  * @param {int} data.position new position of the player
  */
 function playerMove(data) {
-  game.position = data.position;
+  //logger.debug(data);
+  game.position = data.playerPosition;
 }
 
 /**
