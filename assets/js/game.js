@@ -1,4 +1,3 @@
-var chunkArray = [];
 // var model = {
 // 	gameName	: "Impulsy",
 // 	catchPhrase	: "Ride the music!"
@@ -27,18 +26,7 @@ var IO = {
         IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('gameOver', IO.onGameOver);
 		IO.socket.on('audioChunk', IO.onAudioChunk);
-		/*var audio = document.createElement('audio');
-		ss(IO.socket).on('audioChunks', function(stream, data) {
-			parts = [];
-			console.log("ajfnzajinfjaznfjkankjan");
-			stream.on('data', function(chunk){
-				parts.push(chunk);
-				console.log("fjfjfjfj");
-			});
-			stream.on('end', function () {
-				audio.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
-			});
-		});*/
+		IO.socket.on('audioEnd', IO.onAudioEnd);
     },
 
     onConnected : function() {
@@ -71,27 +59,23 @@ var IO = {
 		// remove listeners
 	},
 	
-	onAudioChunk: function(data) { // { chunk: chunk, sampleRate: sampleRate }
-		if (!App.startTime) {
-			App.startTime = App.audioContext.currentTime;
+	onAudioChunk: function(data) {
+		App.Audio.chunkArray.push(data.chunk);
+	},
+	onAudioEnd: function() {
+		var fileReader = new FileReader();
+		var source = App.Audio.audioContext.createBufferSource();
+		var blob = new Blob(App.Audio.chunkArray);
+
+		fileReader.onloadend = function () {
+			App.Audio.audioContext.decodeAudioData(this.result, function(buffer) {
+				source.buffer = buffer;
+				source.connect(App.Audio.audioContext.destination);
+				source.start();
+			});
 		}
 
-		var audio = data.chunk;
-		chunkArray.push(audio);
-		if (chunkArray.length % 20 == 0) {
-			var fileReader = new FileReader();
-			var source = App.audioContext.createBufferSource();
-			var blob = new Blob(chunkArray);
-			fileReader.readAsArrayBuffer(blob);
-			fileReader.onloadend = function () {
-				App.audioContext.decodeAudioData(this.result, function(buffer) {
-					source.buffer = buffer;
-					source.connect(App.audioContext.destination);
-					source.start(App.startTime + App.lastBufferDuration, App.lastBufferDuration);
-					App.lastBufferDuration = buffer.duration;
-				});
-			}
-		}
+		fileReader.readAsArrayBuffer(blob);
 	}
 };
 
@@ -101,8 +85,6 @@ var App = {
 
     gameId: 0,
 	myRole: '',   // 'Player' or 'Host'
-	audioContext: new (window.AudioContext || window.webkitAudioContext)(),
-	lastBufferDuration: 0,
 
     /**
      * The Socket.IO socket object identifier. This is unique for
@@ -180,6 +162,12 @@ var App = {
 			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
+	},
+
+	// ********** Audio ********** //
+	Audio : {
+		audioContext: new (window.AudioContext || window.webkitAudioContext)(),
+		chunkArray: []
 	}
 };
 
@@ -188,6 +176,7 @@ App.init();
 
 // Dummy values for testing purpose
 
-var youtubeVideoId 	= "3TygesLODpU";
+//var youtubeVideoId 	= "x5_DHuWpjeA";
+var youtubeVideoId 	= "utH9UCr0p8Q";
 var difficulty 		= "lazy";
 
