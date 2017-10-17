@@ -80,18 +80,6 @@ io.sockets.on('connection', function (socket) {
     game.initGame(io, socket);
 });
 
-app.use('/auth', authRouter);
-
-app.use(session({
-    cookieName: 'session',
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
 
