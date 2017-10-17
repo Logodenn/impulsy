@@ -7,8 +7,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "node test.js"
+    "start": "node bin/www",
+    "test": "mocha tests"
   },
   "dependencies": {
     "express": "4.15.2",
@@ -16,7 +16,9 @@
     "hbs": "^4.0.1",
     "mysql": "^2.12.0",
     "orm": "^4.0.1",
+    "slow-stream": "0.0.4",
     "socket.io": "^2.0.3",
+    "socket.io-stream": "^0.9.1",
     "stream-to-array": "^2.3.0",
     "web-audio-api": "^0.2.2",
     "winston": "^2.4.0",
