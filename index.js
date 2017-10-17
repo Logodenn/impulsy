@@ -1,27 +1,18 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var game = require("./modules/game.js");
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const game = require("./modules/game.js");
+const logger = require('./utils/logger')(module);
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
 
-var io = require('socket.io').listen(http);;
-// var io = require('socket.io');
-
-// var io = require("socket.io")(http);
-// io.listen(http);
+const io = require('socket.io').listen(http);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
-  console.log('client connected');
+  logger.info('Connection of a client');
   game.initGame(io, socket);
 });
-
-//const youtubeRouter = require('./router/youtube');
-
-// var array_spectrum = [0,0,0,1,1,0,1,0]; to test function below 
-
-
 
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
