@@ -3,8 +3,6 @@ var gameFunctions = require('./game_function');
 const logger = require('winston');
 logger.level = 'debug';
 var yt = require('./youtube');
-var chunkingStreams = require('chunking-streams');
-var SizeChunker = chunkingStreams.SizeChunker;
 const AudioContext = require('web-audio-api').AudioContext;
 const SlowStream = require('slow-stream');
 
@@ -14,10 +12,6 @@ var gameSocket;
 var game;
 var vitesse_game = 500; //vitesse du jeu
 var new_positions
-var chunker = new SizeChunker({
-  chunkSize: 1024,
-  flushTail: true
-})
 
 module.exports.initGame = function (sio, socket) {
   logger.debug('Initilization of the game');
