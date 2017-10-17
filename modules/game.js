@@ -1,6 +1,6 @@
 const util = require('util');
 var gameFunctions = require('./game_function');
-const logger = require('winston');
+const logger = require('../utils/logger')(module);
 logger.level = 'debug';
 var yt = require('./youtube');
 const AudioContext = require('web-audio-api').AudioContext;
@@ -24,10 +24,6 @@ module.exports.initGame = function (sio, socket) {
   // Host Events
   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
   gameSocket.on('hostStartGame', hostStartGame);
-
-  // Player Events
-  gameSocket.on('playerMove', playerMove);
-  gameSocket.on('endGame', endGame);
 
   // If the player Rage Quit or the player want to stop the level
   gameSocket.on('disconnect', function () {
@@ -95,9 +91,15 @@ function hostCreateNewGame(data) {
  */
 function hostStartGame() {
   logger.debug('Starting the game');
+
+  // Player Events
+  gameSocket.on('playerMove', playerMove);
+  gameSocket.on('endGame', endGame);
+
   io.sockets.in(game.gameId).emit('gameStarted');
+
   setTimeout(function(){
-    console.debug("GO GO GO");
+    logger.debug("GO GO GO");
     currentBar = 0;
     new_positions = setInterval(function () {
       if (currentBar > game.arrayArtefacts.length) {
