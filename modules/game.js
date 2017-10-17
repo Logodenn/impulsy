@@ -68,7 +68,7 @@ function hostCreateNewGame(data) {
         game
       });
 
-      yt.getAudioStream(data.youtubeVideoId, (err, command) => {
+      yt.getAudioStream(youtubeVideoId, false, 'highest', (err, command) => {
         let pipe = command.pipe(new SlowStream({
           maxWriteInterval: 15
         }));
