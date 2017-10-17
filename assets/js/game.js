@@ -176,7 +176,6 @@ App.init();
 
 // Dummy values for testing purpose
 
-//var youtubeVideoId 	= "x5_DHuWpjeA";
-var youtubeVideoId 	= "utH9UCr0p8Q";
+var youtubeVideoId 	= "3TygesLODpU";
 var difficulty 		= "lazy";
 

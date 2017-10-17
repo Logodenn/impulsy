@@ -21,6 +21,7 @@
     "stream-to-array": "^2.3.0",
     "web-audio-api": "^0.2.2",
     "winston": "^2.4.0",
+    "socket.io-stream": "^0.9.1",
     "ytdl-core": "^0.17.1"
   },
   "repository": {
