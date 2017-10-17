@@ -154,6 +154,9 @@ function getArrayArthefacts(arraySpectrum) {
 function createGame(sound, local, difficulty, gameId, socketId, callback) {
   logger.debug('Creation of the game object');
   // TODO : ajotuer ici les morts des amis par rapport aux player
+  // TODO : Rechercher dans la base si la musique existe 
+  // TODO : Si musique existe, prendre son spectre, ses arthéfacts 
+  // TODO : Si musique n'existe pas enregistrer spectre et arthéfacts 
   var game = {
     gameId: gameId,
     socketId: socketId,
