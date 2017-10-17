@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport'); 
-var Account = require('../models/controllers/user_controller');
+// TODO vérifier import pour User
+var User = require('../models/controllers/user_controller');
 
 var router = express.Router();
 
@@ -9,10 +10,11 @@ router.get('/register', function(req, res) {
     res.render('register');
 });
 
-//TODO : à l'aide Pierre 
+//TODO : 
 // Faire un create sur User
+// Salé le mdp 
 router.post('/register', function(req, res, next) {
-  User.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+  User.register(new User({ username : req.body.username }), req.body.password, function(err, account) {
     if (err) {
       return res.render('register', { error : err.message });
     }
