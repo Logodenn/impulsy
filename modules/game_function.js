@@ -2,56 +2,6 @@ var youtube = require('./youtube');
 const logger = require('winston');
 const ffmpeg = require('fluent-ffmpeg');
 
-
-/**
- * Function checkRightPosition use to verify the position of the player each bar
- * energy level depend of the difficulty : 
- * crazy : loose arthefact (-2 energy) get arthefact (-1 energy)
- * easy : loose arthefact (-1 energy) get arthefact (energy no change)
- * lazy : no energy
- * @param {object} game game object contain the position of the player, the difficulty of the party and the array of arthefact 
- * @param {int} currentBar bar at this moment in the client side
- * 
- */
-module.exports.checkRightPosition = function checkRightPosition(game, currentBar) {
-	var success;
-	if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
-		game.energy = game.energy - 1;
-		success = false;
-	} else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
-		game.energy = game.energy - 1;
-		game.nbArtefacts = game.nbArtefacts + 1;
-		success = true;
-	} else if (game.position != game.arrayArtefacts[currentBar] && game.difficulty == "crazy") {
-		game.energy = game.energy - 2;
-		success = false;
-	} else if (game.position == game.arrayArtefacts[currentBar] && game.difficulty == "easy") {
-		game.energy = game.energy;
-		game.nbArtefacts = game.nbArtefacts + 1;
-		success = true;
-	} else if (game.difficulty == "lazy" && game.position == game.arrayArtefacts[currentBar]) {
-		logger.debug("Level lazy no energy");
-		game.nbArtefacts = game.nbArtefacts + 1;
-		success = true;
-	} else if (game.difficulty == "lazy" && game.position != game.arrayArtefacts[currentBar]) {
-		logger.debug("Level lazy no energy");
-		success = false;
-	} else {
-		logger.error("Check the difficulty or the current bar something is going wrong");
-	}
-
-	logger.debug(game.energy);
-	logger.debug(currentBar + '/' + game.arrayArtefacts.length);
-	game.currentBar = currentBar;
-	data = {
-		energy : game.energy,
-		isArtefactTaken : success,
-		nbArtefacts : game.nbArtefacts,
-		bar : currentBar
-	}
-	return data
-}
-
 /**
  * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
  * Attention if barSize is less than one, the randomNumber generated can be less than 0
@@ -93,7 +43,7 @@ module.exports.createGame = function createGame(sound, local, difficulty, gameId
 		nbArtefacts : 0,
 		difficulty: difficulty // difficulty of the level 
 	};
-	youtube.getAudioStream(sound, local, function (err, stream) {
+	youtube.getAudioStream(sound, local, 'lowest', function (err, stream) {
 		if (err) logger.error(err);
 		else {
 			youtube.getBars(stream, 2, function (err, bars) {
