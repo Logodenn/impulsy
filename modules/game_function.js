@@ -43,7 +43,7 @@ module.exports.createGame = function createGame(sound, local, difficulty, gameId
 		nbArtefacts : 0,
 		difficulty: difficulty // difficulty of the level 
 	};
-	youtube.getAudioStream(sound, local, function (err, stream) {
+	youtube.getAudioStream(sound, local, 'lowest', function (err, stream) {
 		if (err) logger.error(err);
 		else {
 			youtube.getBars(stream, 1, function (err, bars) {
