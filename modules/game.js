@@ -1,13 +1,19 @@
+const util = require('util');
 var gameFunctions = require('./game_function');
 const logger = require('winston');
 logger.level = 'debug';
+var yt = require('./youtube');
+const AudioContext = require('web-audio-api').AudioContext;
+const SlowStream = require('slow-stream');
+
+const context = new AudioContext();
 var io;
 var gameSocket;
 var game;
 var vitesse_game = 500; //vitesse du jeu
 var new_positions
 
-exports.initGame = function (sio, socket) {
+module.exports.initGame = function (sio, socket) {
   logger.debug('Initilization of the game');
   io = sio;
   gameSocket = socket;
@@ -36,7 +42,6 @@ exports.initGame = function (sio, socket) {
       logger.info("Close connection with socket : " + gameSocket.id + " room : " + game.gameId)
       endGame();
     }
-
   });
 }
 
@@ -58,9 +63,27 @@ function hostCreateNewGame(data) {
   gameFunctions.createGame('./sounds/OrelSan - Basique.mp3', true, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
-    else gameSocket.emit('newGameCreated', {
-      game
-    });
+    else {
+      gameSocket.emit('newGameCreated', {
+        game
+      });
+
+      yt.getAudioStream(youtubeVideoId, false, 'highest', (err, command) => {
+        let pipe = command.pipe(new SlowStream({
+          maxWriteInterval: 15
+        }));
+
+        pipe.on('end', () => {
+          io.sockets.in(game.gameId).emit('audioEnd');
+        })
+
+        pipe.on('data', (chunk) => {
+          io.sockets.in(game.gameId).emit('audioChunk', {
+            chunk: chunk
+          });
+        });
+      });
+    }
   });
   // Join the Room and wait for the players
   gameSocket.join(thisGameId.toString());
