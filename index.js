@@ -18,6 +18,7 @@ const authRouter = require('./routers/auth');
 // will be set at `req.user` in route handlers after authentication.
 passport.use(new Strategy(
     function (username, password, cb) {
+        // TODO : vérifier la méthode pour trouver un utiliseteur par son pseudo ou/et mail ? 
         db.users.findByUsername(username, function (err, user) {
             if (err) {
                 return cb(err);
