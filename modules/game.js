@@ -3,8 +3,10 @@ var gameFunctions = require('./game_function');
 const logger = require('winston');
 logger.level = 'debug';
 var yt = require('./youtube');
-var ss = require('socket.io-stream');
+var chunkingStreams = require('chunking-streams');
+var SizeChunker = chunkingStreams.SizeChunker;
 const AudioContext = require('web-audio-api').AudioContext;
+const SlowStream = require('slow-stream');
 
 const context = new AudioContext();
 var io;
@@ -12,6 +14,10 @@ var gameSocket;
 var game;
 var vitesse_game = 500; //vitesse du jeu
 var new_positions
+var chunker = new SizeChunker({
+  chunkSize: 1024,
+  flushTail: true
+})
 
 module.exports.initGame = function (sio, socket) {
   logger.debug('Initilization of the game');
@@ -69,9 +75,18 @@ function hostCreateNewGame(data) {
       });
 
       yt.getAudioStream(data.youtubeVideoId, (err, command) => {
-        let pipe = command.pipe();
+        let pipe = command.pipe(new SlowStream({
+          maxWriteInterval: 15
+        }));
+
+        pipe.on('end', () => {
+          io.sockets.in(game.gameId).emit('audioEnd');
+        })
+
         pipe.on('data', (chunk) => {
-          io.sockets.in(game.gameId).emit('audioChunk', { chunk: chunk, sampleRate: 4000 });
+          io.sockets.in(game.gameId).emit('audioChunk', {
+            chunk: chunk
+          });
         });
       });
     }
