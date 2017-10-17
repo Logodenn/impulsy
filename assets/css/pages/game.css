@@ -12,9 +12,18 @@
 }
 
 .buttonWrapper {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: space-evenly;
 	height: 300px;
+}
+
+/********** Code for tablet **********/
+
+#moveButtons {
+	position: absolute;
+	bottom: 10vh;
+	width: 20vw;
+	left: 50vw - 10vw; /* half the screen minus half its width to center */
+}
+
+#moveButtons button {
+	/* width: 300px; */
 }
