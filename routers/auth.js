@@ -1,7 +1,6 @@
 var express = require('express');
 var passport = require('passport'); 
-// TODO vérifier import pour User
-var User = require('../models/controllers/user_controller');
+const db = require('../models/controllers')
 
 var router = express.Router();
 
@@ -10,14 +9,15 @@ router.get('/register', function(req, res) {
     res.render('register');
 });
 
-//TODO : 
-// Faire un create sur User
-// Salé le mdp 
 router.post('/register', function(req, res, next) {
-  User.register(new User({ username : req.body.username }), req.body.password, function(err, account) {
-    if (err) {
-      return res.render('register', { error : err.message });
-    }
+  user = {
+    pseudo : req.body.pseudo, 
+    mail : req.body.mail, 
+    password : req.body.password, // TODO : salt password
+    rank : -1
+  };
+  db.user.create(user, function (err, result) {
+    return res.render('register', { error : err.message });
     passport.authenticate('local', function(req, res) {
       res.redirect('/');
     });
