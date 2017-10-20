@@ -25,10 +25,11 @@ module.exports = function (orm, db) {
                     }
 
                     return {
+                        id : this.id,
                         name : this.name,
                         link: this.link,
                         information: this.information,
-                        scores: this.scores
+                        scores: scores
                     };
                 }
             }

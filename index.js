@@ -10,6 +10,8 @@ const trackRouter = require('./routers/track');
 const scoreRouter = require('./routers/score');
 const logger = require('winston');
 
+var controller=require('./models/controllers');
+
 
 
 var bodyParser = require('body-parser');
@@ -20,6 +22,89 @@ var settings = require('./models/config/settings');
 //var modelRouter = require('./models/config/route');
 //var models = require('./models/models');
 
+
+///////////////////////TESTS//////////////////////////////////////////////
+
+
+/////////USER/////////////
+
+/*var users= controller.user.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.getU("jiji",function (err,results) {
+    console.log(results);
+});*/
+
+/*u={pseudo : "hello", mail: "coco@gmail.com",rank : 34, password : "KJKJKJKhhh"};
+controller.user.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.delete("hello",function (err,results) {
+    console.log(results);
+});*/
+
+
+/*up={user_id: 1, pseudo : "heljilo", mail: "coco@gmail.comd",rank : 34, password : "KJKJKJKhhh"};
+
+var user= controller.user.update(up,function (err,results) {
+    console.log(results);
+});*/
+
+/////////////////SCORE///////////////////////
+
+/*var score= controller.score.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.score.getU(2,function (err,results) {
+    console.log(results);
+});*/
+
+/*u={duration : "3423", user_id :1 , track_id : 2};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.score.delete(4,function (err,results) {
+    console.log(results);
+});*/
+
+/*u={id:3, date : new Date().toLocaleString(), duration : 678333 };
+var user= controller.score.update(u,function (err,results) {
+    console.log(results);
+});*/
+
+/////////////////TRACK///////////////////////
+
+
+/*var score= controller.track.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.track.getU("h",function (err,results) {
+    console.log(results);
+});*/
+
+/*u={name :"Julienne", link:"ftozertiuioj68bh", information:"{aaa:aazzz, fez:ty}"};
+controller.track.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user= controller.track.delete("Julien",function (err,results) {
+    console.log(results);
+});
+*/
+/*u={id : 2, name:"htrertrezz", link : "kijuye", information : "{aaa:aassdfsefesfffffffffffffffffffffffdqs, hez:ty}" };
+var user= controller.track.update(u,function (err,results) {
+    console.log(results);
+});*/
+
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 var io = require('socket.io').listen(http);
 // var io = require('socket.io');
