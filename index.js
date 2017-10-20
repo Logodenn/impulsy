@@ -22,9 +22,15 @@ app.use(express.static(__dirname + '/assets'));
 app.use('/', mainRouter);
 app.use('/game', gameRouter);
 
+// ********** Views ********** //
 app.get('/trackSelection', function(req, res) 
 {
   res.render('trackSelection', { message: "Hello World!" });
+});
+
+app.get('/hallOfFame', function(req, res) 
+{
+  res.render('hallOfFame', { message: "Hello World!" });
 });
 
 module.exports = http;
