@@ -7,6 +7,7 @@ var game = require("./modules/game.js");
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
 const authRouter = require('./routers/auth');
+const db = require('../models/controllers')
 
 
 
@@ -19,17 +20,17 @@ const authRouter = require('./routers/auth');
 passport.use(new Strategy(
     function (username, password, cb) {
         // TODO : vérifier la méthode pour trouver un utiliseteur par son pseudo ou/et mail ? 
-        db.users.findByUsername(username, function (err, user) {
+        db.user.getU(username, function (err, result) {
             if (err) {
                 return cb(err);
             }
-            if (!user) {
+            if (!result) {
                 return cb(null, false);
             }
-            if (user.password != password) {
+            if (result.password != password) {// TODO salt password with username/email   ? 
                 return cb(null, false);
             }
-            return cb(null, user);
+            return cb(null, result);
         });
     }));
 
