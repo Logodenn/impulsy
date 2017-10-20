@@ -1,11 +1,12 @@
 const youtube = require('./youtube');
 const logger = require('winston');
 const ffmpeg = require('fluent-ffmpeg');
+const db = require('../models/controllers')
 logger.level = 'debug';
 var io;
 var gameSocket;
 var game;
-var vitesse_game = 500; //vitesse du jeu
+var game_speed = 500; 
 var new_positions
 
 exports.initGame = function (sio, socket) {
@@ -89,7 +90,7 @@ function hostStartGame() {
         });
         currentBar++;
       }
-    }, vitesse_game);
+    }, game_speed);
   }, 4000);
 };
 
@@ -114,9 +115,17 @@ function endGame(victory) {
     "result": victory,
     "score": game.nbArtefacts
   });
-  // TODO : save du score ici pour la db
-  gameSocket.disconnect(true)
-  logger.info('End of the game this is a ' + victory)
+  // TODO : check UserId 
+  score = {
+    duration: game.currentBar,
+    userId: 1, // int
+    trackId: game.trackId
+  };
+  db.score.create(score, function (err, result) {
+    if (err) logger.error(err);
+  });
+  gameSocket.disconnect(true);
+  logger.info('End of the game this is a ' + victory);
 }
 
 
@@ -153,33 +162,58 @@ function getArrayArthefacts(arraySpectrum) {
  */
 function createGame(sound, local, difficulty, gameId, socketId, callback) {
   logger.debug('Creation of the game object');
-  // TODO : ajotuer ici les morts des amis par rapport aux player
-  // TODO : Rechercher dans la base si la musique existe 
-  // TODO : Si musique existe, prendre son spectre, ses arthéfacts 
-  // TODO : Si musique n'existe pas enregistrer spectre et arthéfacts 
-  var game = {
-    gameId: gameId,
-    socketId: socketId,
-    position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
-    currentBar: 0,
-    nbArtefacts: 0,
-    difficulty: difficulty // difficulty of the level 
-  };
-  youtube.getAudioStream(sound, local, function (err, stream) {
+  // TODO : ajouter ici les morts des amis par rapport aux player
+  db.track.getT(sound, function (err, result) {
     if (err) logger.error(err);
-    else {
-      youtube.getBars(stream, 1, function (err, bars) {
+
+    var game = {
+      gameId: gameId,
+      socketId: socketId,
+      position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
+      currentBar: 0,
+      difficulty: difficulty // difficulty of the level 
+    };
+
+    if (result) { // Search if the sound exist
+      game.arraySpectrum = result.information.arraySpectrum;
+      game.arrayArtefacts = result.information.arrayArtefacts;
+      game.energy = result.information.arraySpectrum.length; // duration of the music 
+      game.track = result.trackId;
+    } else { // The sound doesn't exist, we create and save it  
+      youtube.getAudioStream(sound, local, function (err, stream) {
         if (err) logger.error(err);
         else {
-          game.arraySpectrum = bars;
-          game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-          game.energy = game.arraySpectrum.length; // duration of the music 
-          logger.debug('Game created !')
-          callback(null, game)
+          youtube.getBars(stream, 1, function (err, bars) {
+            if (err) logger.error(err);
+            else {
+              game.arraySpectrum = bars;
+              game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
+              game.energy = game.arraySpectrum.length; // duration of the music 
+              logger.debug('Game created !')
+              callback(null, game)
+            }
+          });
         }
+        // TODO voir avec Pierre pour link et sound
+        // sound = titre musique et link lien vers vidéo 
+        track_information = {
+          arraySpectrum = game.arraySpectrum,
+          arrayArtefacts = game.arrayArtefacts
+        };
+        track = {
+          name: sound,
+          link: "",
+          information: track_information
+        };
+        db.track.create(track, function (err, result) {
+          if (err) logger.error(err);
+          else game.trackId = result.trackId;
+        });
       });
     }
   });
+
+
 }
 
 
@@ -228,6 +262,6 @@ function checkRightPosition(game, currentBar) {
     isArtefactTaken: success,
     nbArtefacts: game.nbArtefacts,
     bar: currentBar
-  }
+  };
   return data
 }
