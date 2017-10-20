@@ -1,36 +1,144 @@
 var orm = require('orm');
+var models = require('../models');
+const logger = require('winston');
+
 
 module.exports = {
-    list: function (req, res, next) {
-        req.models.track.find().limit(4).all(function (err, tracks) {
-            if (err) return next(err);
-
-            var items = tracks.map(function (m) {
-                return m.serialize();
-            });
-
-            res.send({ items: items });
-        });
-    },
-    create: function (req, res, next) {
-        var params = req.params;
-        //var params = _.pick(req.body, 'title', 'body');
-
-        req.models.track.create(params, function (err, track) {
-            if(err) {
-                if(Array.isArray(err)) {
-                    return res.send(200, { errors: helpers.formatErrors(err) });
-                } else {
-                    return next(err);
-                }
+    list: function (cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
             }
-            return res.status(200).send(track.serialize());
+            else {
+                db.models.track.find().all(function (err, tracks) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, tracks);
+                    }
+                    logger.info("Done!");
+                });
+            }
         });
     },
-    get: function (req, res, next) {
 
+    getU: function (name, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.track.find({name: name}, function (err, track) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, track[0]);
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    create: function (track, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                track.information=JSON.stringify(track.information);
+                db.models.track.create(track, function (err, message) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        logger.info("track created!");
+                        cb(null, message);
+                    }
+                });
+            }
+        });
+    },
+
+
+    delete: function (name, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.track.find({name: name}, function (err, track) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        track[0].remove(function (err) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                logger.info("track " + track[0].id + " removed !");
+                                db.models.score.find({id: track[0].id}).remove(function (err) {
+                                    if (err) {
+                                        logger.error(err);
+                                        cb(err);
+                                    } else {
+                                        logger.info("scores for track " + track[0].id + " removed !");
+                                        cb(null, "ok")
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+
+    update: function (track, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.models.track.get(track.id, function (err, trackUpdate) {
+                    if (err) {
+                        logger.error(err);
+                        if (err.code == orm.ErrorCodes.NOT_FOUND) {
+                            cb("track not found");
+                        } else {
+                            cb(err);
+                        }
+                    } else {
+                        if (track.name) trackUpdate.name = track.name;
+
+                        if (track.link) trackUpdate.link = track.link;
+
+                        if (track.information) trackUpdate.information = JSON.stringify(track.information);
+
+                        logger.debug(track);
+                        trackUpdate.save(function (err) {
+                            if (err) {
+                                logger.debug(err);
+                                cb(err);
+                            } else {
+                                logger.info("track" + track.id + " updated !");
+                                cb(null, trackUpdate)
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 };
+
 
 /*
 module.exports = {

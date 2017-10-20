@@ -1,4 +1,3 @@
-//var orm = require("orm");
 
 
 module.exports = function (orm, db) {
@@ -10,7 +9,8 @@ module.exports = function (orm, db) {
         },
         {
             validations: {
-                pseudo: orm.validators.unique()
+                pseudo: orm.validators.unique(),
+                mail: orm.validators.unique()
             },
             methods: {
                 serialize: function () {
@@ -25,6 +25,7 @@ module.exports = function (orm, db) {
                     }
 
                     return {
+                        id: this.id,
                         pseudo: this.pseudo,
                         password: this.password,
                         mail: this.mail,
@@ -36,9 +37,8 @@ module.exports = function (orm, db) {
             }
         });
 
-    User.hasMany('user', db.models.user, {link: String},{
+    User.hasMany('user', db.models.user, {link: String}, {
         reverse: 'users',
         key: true
     });
-
 };
