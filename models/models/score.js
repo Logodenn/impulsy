@@ -9,6 +9,7 @@ module.exports = function (orm, db) {
             methods: {
                 serialize: function () {
                     return {
+                        id : this.id,
                         date: this.date,
                         duration: this.duration,
                         user_id: this.user_id,
@@ -22,13 +23,12 @@ module.exports = function (orm, db) {
         required: true,
         //reverse: 'pseudo',
         reverse: "scores",
-        autoFetch: true,
+        autoFetch: true
     });
-    Score.hasOne('track', db.models.track, {
+    Score.hasOne('track', db.models.track,{
         required: true,
         //reverse: 'name',
         reverse : "scores",
         autoFetch: true
     });
-
 };
