@@ -1,36 +1,143 @@
 var orm = require('orm');
+var models = require('../models');
+const logger = require('winston');
 
 
 module.exports = {
-    list: function (req, res, next) {
-        req.models.user.find().limit(4).all(function (err, users) {
-            if (err) return next(err);
-
-            var items = users.map(function (m) {
-                return m.serialize();
-            });
-
-            res.send({ items: items });
-        });
-    },
-    create: function (req, res, next) {
-
-        var params = req.params;
-        //var params = _.pick(req.body, 'pseudo', 'password', 'rank');
-        console.log(req.params);
-        req.models.user.create(params, function (err, user) {
-            if(err) {
-                if(Array.isArray(err)) {
-                    return res.send(200, { errors: helpers.formatErrors(err) });
-                } else {
-                    return next(err);
-                }
+    list: function (cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
             }
-            return res.status(200).send(user.serialize())
+            else {
+                db.models.user.find().all(function (err, users) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, users);
+                    }
+                    logger.info("Done!");
+                });
+            }
         });
     },
-    get: function (req, res, next) {
 
+    getU: function (pseudo, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo}, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, user[0]);
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    create: function (user, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.create(user, function (err, message) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        logger.info("User created!");
+                        cb(null, message);
+                    }
+                });
+            }
+        });
+    },
+
+
+    delete: function (pseudo, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo}, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        user[0].remove(function (err) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                logger.info("user " + user[0].id + " removed !");
+
+                                //TODO attention si user undefined
+                                db.models.score.find({user_id: user[0].id}).remove(function (err) {
+                                    if (err) {
+                                        logger.error(err);
+                                        cb(err);
+                                    } else {
+                                        logger.info("scores for user " + user[0].id + " removed !");
+                                        cb(null, "ok")
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+
+    update: function (user, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.models.user.get(user.user_id, function (err, userUpdate) {
+                    if (err) {
+                        logger.error(err);
+                        if (err.code == orm.ErrorCodes.NOT_FOUND) {
+                            cb("User not found");
+                        } else {
+                            cb(err);
+                        }
+                    } else {
+                        if (user.pseudo && user.pseudo != userUpdate.pseudo) userUpdate.pseudo = user.pseudo;
+
+                        if (user.password) userUpdate.password = user.password;
+
+                        if (user.mail) userUpdate.mail = user.mail;
+
+                        if (user.rank) userUpdate.rank = user.rank;
+
+                        userUpdate.save(function (err) {
+                            if (err) {
+                                logger.debug(err);
+                                cb(err);
+                            } else {
+                                logger.info("user" + user.id + " updated !");
+                                cb(null, userUpdate)
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 };
 /*

@@ -6,9 +6,7 @@ var helpers = require('./_helpers');
 const logger = require('winston');
 
 
-
-router.get("/", (req, res, next)=> {
-
+router.get("/", (req, res, next) => {
     req.models.score.find().limit(4).all(function (err, scores) {
         if (err) {
             logger.debug(err);
@@ -19,7 +17,7 @@ router.get("/", (req, res, next)=> {
             return m.serialize();
         });
 
-        res.send({ items: items });
+        res.send({items: items});
     });
 });
 
@@ -31,22 +29,20 @@ router.post("/", (req, res, next) => {
 
     req.models.user.get(params.user_id, function (err, user) {
         if (err) {
+            logger.debug(err);
             if (err.code == orm.ErrorCodes.NOT_FOUND) {
-                logger.debug(err);
                 return res.status(404).send("User not found");
             } else {
-                logger.debug(err);
                 return next(err);
             }
         }
 
         req.models.track.get(params.track_id, function (err, track) {
             if (err) {
+                logger.debug(err);
                 if (err.code == orm.ErrorCodes.NOT_FOUND) {
-                    logger.debug(err);
                     return res.status(404).send("Track not found");
                 } else {
-                    logger.debug(err);
                     return next(err);
                 }
             }
@@ -57,16 +53,15 @@ router.post("/", (req, res, next) => {
 
             req.models.score.create(params, function (err, score) {
                 if (err) {
+                    logger.debug(err);
                     if (Array.isArray(err)) {
-                        logger.debug(err);
                         return res.status(200).send({errors: helpers.formatErrors(err)});
                     } else {
-                        logger.debug(err)
                         return next(err);
                     }
                 }
 
-                logger.info("score "+score.id+" created !");
+                logger.info("score " + score.id + " created !");
 
                 return res.status(200).send(score.serialize());
             });
@@ -81,11 +76,10 @@ router.delete("/", (req, res, next) => {
 
     req.models.score.get(params.score_id, function (err, score) {
         if (err) {
+            logger.debug(err);
             if (err.code == orm.ErrorCodes.NOT_FOUND) {
-                logger.debug(err);
                 return res.status(404).send("Score not found");
             } else {
-                logger.debug(err);
                 return next(err);
             }
         }
@@ -110,11 +104,10 @@ router.post("/update", (req, res, next) => {
 
     req.models.score.get(params.score_id, function (err, score) {
         if (err) {
+            logger.debug(err);
             if (err.code == orm.ErrorCodes.NOT_FOUND) {
-                logger.debug(err);
                 return res.status(404).send("Score not found");
             } else {
-                logger.debug(err);
                 return next(err);
             }
         }
