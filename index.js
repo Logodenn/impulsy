@@ -8,7 +8,7 @@ const logger = require('./utils/logger')(module);
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
 const authRouter = require('./routers/auth');
-const db = require('../models/controllers')
+const db = require('./models/controllers')
 
 
 
