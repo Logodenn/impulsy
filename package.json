@@ -20,9 +20,14 @@
     "mongoose": "^4.12.3",
     "mysql": "^2.12.0",
     "orm": "^4.0.1",
+<<<<<<< HEAD
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+=======
+    "slow-stream": "0.0.4",
+>>>>>>> origin/dev
     "socket.io": "^2.0.3",
+    "socket.io-stream": "^0.9.1",
     "stream-to-array": "^2.3.0",
     "web-audio-api": "^0.2.2",
     "winston": "^2.4.0",

@@ -42,7 +42,7 @@ var Canvas = {
 // To make it full dynamic, set the following parameters here
 bigBar.position     = energyBar.position + energyBar.height + blocUnit;
 smallBar.position   = bigBar.position + bigBar.height / 4
-energyBar.width     = 8 * blocUnit;
+// energyBar.width     = 8 * blocUnit;
 
 // ******************** Colors ******************** //
 
@@ -67,7 +67,6 @@ var time 		= 0;
 // ******************** Components ******************** //
 
 var player;
-var energyBar;
 var pulsers 		= [];
 var listeBarres 	= [];
 var listeArtefacts 	= [];
@@ -184,11 +183,14 @@ function EnergyBar() {
 	this.color 		= "#FFD51D";
 	this.width 		= energyBar.width;
 	this.height 	= energyBar.height;
-	this.x 			= Canvas.width / 10;
+	// this.x 			= Canvas.width / 10;
+	this.x			= (Canvas.width * 0.5) - (this.width * 0.5);
 	this.y 			= energyBar.position;
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
+		this.x = (Canvas.width * 0.5) - (this.width * 0.5);
+		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 

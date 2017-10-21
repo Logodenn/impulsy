@@ -2,8 +2,9 @@ var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var app = express();
-var http = require('http').Server(app);
-var game = require("./modules/game.js");
+const http = require('http').Server(app);
+const game = require("./modules/game.js");
+const logger = require('./utils/logger')(module);
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
 const authRouter = require('./routers/auth');
@@ -70,16 +71,12 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
 
-var io = require('socket.io').listen(http);;
-// var io = require('socket.io');
-
-// var io = require("socket.io")(http);
-// io.listen(http);
+const io = require('socket.io').listen(http);
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
-    console.log('client connected');
-    game.initGame(io, socket);
+  logger.info('Connection of a client');
+  game.initGame(io, socket);
 });
 
 app.set('port', (process.env.PORT || 5000));
@@ -94,6 +91,11 @@ app.get('/trackSelection', function (req, res) {
     res.render('trackSelection', {
         message: "Hello World!"
     });
+});
+
+app.get('/hallOfFame', function(req, res) 
+{
+  res.render('hallOfFame', { message: "Hello World!" });
 });
 
 module.exports = http;
