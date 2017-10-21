@@ -13,9 +13,14 @@
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
 
+            <div id="buttons" class="buttonWrapper flex-row">
+                <button class="button" state="active">Use your account</button>
+                <button class="button" state="passive">New to Impulsy?</button>
+            </div>
+
             <div id="formWrapper" class="flex-row">
 
-                <form id="loginForm" action="">
+                <form id="loginForm" action="" class="flex-col">
 
                     <label for="username">Username</label>
                     <input type="text" id="username">
@@ -23,11 +28,11 @@
                     <label for="password">Password</label>
                     <input type="text" id="password">
 
+                    <button class="button" state="passive">Log in</button>
+
                 </form>
 
-                <p>New to Impulsy?</p>
-
-                <form id="signupForm" action="">
+                <form id="signupForm" action="" class="flex-col">
 
                     <label for="username">Username</label>
                     <input type="text" id="username">
@@ -40,6 +45,8 @@
 
                     <label for="mail">Mail</label>
                     <input type="text" id="mail">
+
+                    <button class="button" state="passive">Sign in</button>
                     
                 </form>
 
