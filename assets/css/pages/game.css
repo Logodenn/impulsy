@@ -5,12 +5,6 @@
 	/* background: red; */
 }
 
-#difficultyButtons {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-evenly;
-}
-
 .buttonWrapper {
 	height: 300px;
 }
