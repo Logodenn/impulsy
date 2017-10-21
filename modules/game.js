@@ -1,15 +1,18 @@
 const youtube = require('./youtube');
-const logger = require('winston');
-const ffmpeg = require('fluent-ffmpeg');
 const db = require('../models/controllers')
-logger.level = 'debug';
+const util = require('util');
+const logger = require('../utils/logger')(module);
+const AudioContext = require('web-audio-api').AudioContext;
+const SlowStream = require('slow-stream');
+
+const context = new AudioContext();
 var io;
 var gameSocket;
 var game;
 var game_speed = 500; 
 var new_positions
 
-exports.initGame = function (sio, socket) {
+module.exports.initGame = function (sio, socket) {
   logger.debug('Initilization of the game');
   io = sio;
   gameSocket = socket;
@@ -20,10 +23,6 @@ exports.initGame = function (sio, socket) {
   // Host Events
   gameSocket.on('hostCreateNewGame', hostCreateNewGame);
   gameSocket.on('hostStartGame', hostStartGame);
-
-  // Player Events
-  gameSocket.on('playerMove', playerMove);
-  gameSocket.on('endGame', endGame);
 
   // If the player Rage Quit or the player want to stop the level
   gameSocket.on('disconnect', function () {
@@ -38,7 +37,6 @@ exports.initGame = function (sio, socket) {
       logger.info("Close connection with socket : " + gameSocket.id + " room : " + game.gameId)
       endGame();
     }
-
   });
 }
 
@@ -60,9 +58,27 @@ function hostCreateNewGame(data) {
   createGame('./sounds/OrelSan - Basique.mp3', true, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
-    else gameSocket.emit('newGameCreated', {
-      game
-    });
+    else {
+      gameSocket.emit('newGameCreated', {
+        game
+      });
+
+      youtube.getAudioStream(youtubeVideoId, false, 'highest', (err, command) => {
+        let pipe = command.pipe(new SlowStream({
+          maxWriteInterval: 15
+        }));
+
+        pipe.on('end', () => {
+          io.sockets.in(game.gameId).emit('audioEnd');
+        })
+
+        pipe.on('data', (chunk) => {
+          io.sockets.in(game.gameId).emit('audioChunk', {
+            chunk: chunk
+          });
+        });
+      });
+    }
   });
   // Join the Room and wait for the players
   gameSocket.join(thisGameId.toString());
@@ -74,9 +90,15 @@ function hostCreateNewGame(data) {
  */
 function hostStartGame() {
   logger.debug('Starting the game');
+
+  // Player Events
+  gameSocket.on('playerMove', playerMove);
+  gameSocket.on('endGame', endGame);
+
   io.sockets.in(game.gameId).emit('gameStarted');
-  setTimeout(function () {
-    console.debug("GO GO GO");
+
+  setTimeout(function(){
+    logger.debug("GO GO GO");
     currentBar = 0;
     new_positions = setInterval(function () {
       if (currentBar > game.arrayArtefacts.length) {
@@ -100,7 +122,8 @@ function hostStartGame() {
  * @param {int} data.position new position of the player
  */
 function playerMove(data) {
-  game.position = data.position;
+  //logger.debug(data);
+  game.position = data.playerPosition;
 }
 
 /**
