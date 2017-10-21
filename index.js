@@ -27,6 +27,11 @@ app.get('/trackSelection', function(req, res)
   res.render('trackSelection', { message: "Hello World!" });
 });
 
+app.get('/login', function(req, res) 
+{
+  res.render('login', { message: "Hello World!" });
+});
+
 module.exports = http;
 
 /*app.use(orm.express('mysql://root:1234@localhost/mydb', {
