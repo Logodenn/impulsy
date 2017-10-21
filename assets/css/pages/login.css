@@ -8,5 +8,17 @@
 }
 
 .buttonWrapper {
-	/* height: 300px; */
+	width: 750px;
+}
+
+.inputWrapper {
+	margin: 10px;
+}
+
+.form {
+	align-items: end;
+}
+
+.form button{
+	align-self: center;
 }
