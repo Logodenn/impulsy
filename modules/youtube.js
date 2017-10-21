@@ -6,9 +6,9 @@ const AudioContext = require('web-audio-api').AudioContext;
 
 const context = new AudioContext;
 
-module.exports.getAudioStream = (source, local, callback) => {
+module.exports.getAudioStream = (source, local, quality, callback) => {
   if(!local) {
-    const source = ytdl('https://www.youtube.com/watch?v=' + source, { quality: 'lowest', format: 'audioonly' });
+    source = ytdl('https://www.youtube.com/watch?v=' + source, { quality: quality, format: 'audioonly' });
     source.on('error', (err) => {
       callback(err);
       return;
@@ -17,7 +17,6 @@ module.exports.getAudioStream = (source, local, callback) => {
 
   let stream = ffmpeg({ source: source });
   stream.noVideo()
-      .audioBitrate('1k')
       .format('mp3');
 
   callback(null, stream);
