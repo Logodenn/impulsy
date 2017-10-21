@@ -1,102 +1,46 @@
-/*
-
-TODO : dans le index.js
-
-app.use(session({
-  cookieName: 'session',
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-TODO : dans le user_controller.js ou user.js
-var passport = require('passport');
-
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var passportLocalMongoose = require('passport-local-mongoose');
-
-var Account = new Schema({
-    username: String,
-    password: String
-});
-
-Account.plugin(passportLocalMongoose);
-
-module.exports = mongoose.model('Account', Account);
-
-*/
-
 var express = require('express');
 var passport = require('passport'); 
-var Account = require('../models/controllers/user_controllers.js');
+const db = require('../models/controllers')
 
 var router = express.Router();
 
-router.get('/', function (req, res) {
-  res.render('index', { user : req.user });
-});
-
+//TODO : vérifier si l'user n'est pas déjà connecté 
 router.get('/register', function(req, res) {
-  if ( req.session.passport.user != null ) {
-    res.redirect('/');
-  } else {
-    res.render('register', {
-      title : 'Sign-up'
-    });
-  }
+    res.render('register');
 });
 
 router.post('/register', function(req, res, next) {
-  Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
-    if (err) {
-      return res.render('register', { error : err.message });
-    }
-
-    passport.authenticate('local')(req, res, function () {
-      req.session.save(function (err) {
-        if (err) {
-          return next(err);
-        }
-        res.redirect('/');
-      });
+  user = {
+    pseudo : req.body.pseudo, 
+    mail : req.body.mail, 
+    password : req.body.password, // TODO : salt password
+    rank : -1
+  };
+  db.user.create(user, function (err, result) {
+    return res.render('register', { error : err.message });
+    passport.authenticate('local', function(req, res) {
+      res.redirect('/');
     });
   });
 });
 
-router.get('/login', function(req, res) {
-  if ( req.session.passport.user != null ) {
-    res.redirect('/');
-  } else {
-    res.render('login', {
-      user : req.user,
-      title : 'Sign-in',
-      subTitle : 'Come back please !'
-    });
-  }
+app.get('/login',
+function(req, res){
+  res.render('login');
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res) {
-  if ( req.session.passport.user != null ) {
-    res.redirect('/');
-  } else {
-    res.redirect('/register');
-  }
+app.post('/login', 
+passport.authenticate('local', { failureRedirect: '/login' }),
+function(req, res) {
+  res.redirect('/');
 });
 
-router.get('/logout', function(req, res) {
-  if ( req.session.passport.user != null ) {
-    req.logout();
-    res.redirect('/');
-  }
-  else {
-    res.redirect('/')
-  }
+app.get('/logout',
+function(req, res){
+  req.logout();
+  res.redirect('/');
 });
+
 
 
 module.exports = router;
