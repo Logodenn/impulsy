@@ -24,18 +24,18 @@ router.post('/register', function(req, res, next) {
   });
 });
 
-app.get('/login',
+router.get('/login',
 function(req, res){
   res.render('login');
 });
 
-app.post('/login', 
+router.post('/login', 
 passport.authenticate('local', { failureRedirect: '/login' }),
 function(req, res) {
   res.redirect('/');
 });
 
-app.get('/logout',
+router.get('/logout',
 function(req, res){
   req.logout();
   res.redirect('/');
