@@ -220,8 +220,8 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
         // TODO voir avec Pierre pour link et sound
         // sound = titre musique et link lien vers vidéo 
         track_information = {
-          arraySpectrum = game.arraySpectrum,
-          arrayArtefacts = game.arrayArtefacts
+          arraySpectrum: game.arraySpectrum,
+          arrayArtefacts: game.arrayArtefacts
         };
         track = {
           name: sound,
