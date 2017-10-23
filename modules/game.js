@@ -4,7 +4,7 @@ const util = require('util');
 const logger = require('../utils/logger')(module);
 const AudioContext = require('web-audio-api').AudioContext;
 const SlowStream = require('slow-stream');
-
+const arthefactCheckingLatency = 3000;
 const context = new AudioContext();
 var io;
 var gameSocket;
@@ -113,7 +113,7 @@ function hostStartGame() {
         currentBar++;
       }
     }, game_speed);
-  }, 4000);
+  }, arthefactCheckingLatency);
 };
 
 /**
