@@ -4,9 +4,10 @@ var settings = require('../config/settings');
 var connection = null;
 
 function setup(db, cb) {
-    require('./score')(orm, db);
     require('./track')(orm, db);
     require('./user')(orm, db);
+    require('./score')(orm, db);
+
 
     return cb(null, db);
 }

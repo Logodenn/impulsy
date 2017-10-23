@@ -24,7 +24,7 @@ module.exports = {
         });
     },
 
-    getU: function (id, cb) {
+    getScore: function (id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);

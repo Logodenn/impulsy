@@ -15,6 +15,7 @@ module.exports = function (orm, db) {
             methods: {
                 serialize: function () {
                     var scores;
+                    var friends;
 
                     if (this.scores) {
                         scores = this.scores.map(function (c) {
@@ -24,21 +25,36 @@ module.exports = function (orm, db) {
                         scores = [];
                     }
 
+                    if (this.friends) {
+                        friends = this.friends.map(function (c) {
+                            return c.serialize();
+                        });
+                    } else {
+                        friends = [];
+                    }
+
                     return {
                         id: this.id,
                         pseudo: this.pseudo,
                         password: this.password,
                         mail: this.mail,
                         rank: this.rank,
-                        scores: scores
+                        scores: scores,
+                        friends: friends
                     };
 
                 }
             }
         });
 
-    User.hasMany('user', db.models.user, {link: String}, {
-        reverse: 'users',
-        key: true
+    User.hasMany('friends', db.models.user, {}, {
+        reverse: "users",
+        autoFetch: true,
+        key: true,
     });
+/*    User.hasMany("friends", {
+        reverse: 'users',
+        key       : true, // Turns the foreign keys in the join table into a composite key
+        autoFetch : true
+    });*/
 };
