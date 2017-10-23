@@ -6,6 +6,7 @@
   border-radius: 3px;
   border: solid 3px var(--color-background-light);
   color: var(--color-background);
+  margin: 5px;
 }
 
 .button:hover {
