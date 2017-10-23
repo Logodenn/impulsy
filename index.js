@@ -21,7 +21,7 @@ const db = require('./models/controllers')
 passport.use(new Strategy(
     function (username, password, cb) {
         // TODO : vérifier la méthode pour trouver un utiliseteur par son pseudo ou/et mail ? 
-        db.user.getU(username, function (err, result) {
+        db.user.getUser(username, function (err, result) {
             if (err) {
                 return cb(err);
             }
