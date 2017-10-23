@@ -1,14 +1,12 @@
 // mettre ça dans les setting du projet
 
-var settings = {
+module.exports = {
     database   : {
         protocol : "mysql",
         query    : { pool: true },
-        host     : "127.0.0.1",
+        host     : process.env.DB_HOST,
         database : "impulsy",
-        user     : "root",
-        password : "1234"
+        user     : process.env.DB_USERNAME,
+        password : process.env.DB_PASSWORD
     }
 };
-
-module.exports = settings;
