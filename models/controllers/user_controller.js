@@ -24,7 +24,7 @@ module.exports = {
         });
     },
 
-    getU: function (pseudo, cb) {
+    getUser: function (pseudo, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -138,7 +138,112 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+
+    listFriends: function (pseudo, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo}, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        user[0].getFriends(function (err, results) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                cb(null, results);
+                            }
+                        });
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    createFriend: function (pseudo1, pseudo2, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo1}, function (err, user1) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        db.models.user.find({pseudo: pseudo2}, function (err, user2) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                user1[0].getFriends(function (err, results) {
+                                    if (err) {
+                                        logger.error(err);
+                                        cb(err);
+                                    } else {
+                                        user1[0].hasFriends([user2[0]], function (err, result) {
+                                            if (err) {
+                                                logger.error(err);
+                                                cb(err);
+                                            } else {
+                                                if (result) {
+                                                    logger.error("Yet friends")
+                                                } else {
+                                                    user1[0].addFriends([user2[0]]);
+                                                    user2[0].addFriends([user1[0]]);
+                                                    logger.info("Friends created!");
+                                                    cb(null, "Friends created!");
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                })
+
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+
+    removeFriend: function (pseudo1, pseudo2, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo1}, function (err, user1) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        db.models.user.find({pseudo: pseudo2}, function (err, user2) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                user1[0].removeFriends([user2[0]]);
+                                user2[0].removeFriends([user1[0]]);
+                                logger.info("Friends removed!");
+                                cb(null, "Friends removed!");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
 };
 /*
 module.exports = {

@@ -24,7 +24,7 @@ module.exports = {
         });
     },
 
-    getU: function (name, cb) {
+    getTrack: function (name, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -36,7 +36,8 @@ module.exports = {
                         logger.error(err);
                         cb(err);
                     } else {
-                        cb(null, track[0]);
+                        track.information = JSON.parse(track[0].information);
+                        cb(null, track);
                     }
                     logger.info("Done!");
                 });
@@ -44,6 +45,8 @@ module.exports = {
         });
     },
 
+
+    // Attention : bien respecter le format suivant pour le champs information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'
     create: function (track, cb) {
         models(function (err, db) {
             if (err) {
@@ -51,7 +54,7 @@ module.exports = {
                 cb(err);
             }
             else {
-                track.information=JSON.stringify(track.information);
+                track.information = JSON.stringify(track.information);
                 db.models.track.create(track, function (err, message) {
                     if (err) {
                         logger.error(err);
