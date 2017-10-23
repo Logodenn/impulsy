@@ -98,6 +98,11 @@ app.get('/hallOfFame', function(req, res)
   res.render('hallOfFame', { message: "Hello World!" });
 });
 
+app.get('/login', function(req, res) 
+{
+  res.render('login', { message: "Hello World!" });
+});
+
 module.exports = http;
 
 /*app.use(orm.express('mysql://root:1234@localhost/mydb', {
