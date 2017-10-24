@@ -1,39 +1,34 @@
 var orm = require('orm');
 
-module.exports = function(orm, db)
-{
+module.exports = function (orm, db) {
     var Score = db.define("score", {
-        date : { type : 'text' , key: true},
-        user_pseudo : { type : 'text' , key: true},
-        duration       : Number,
-        track_name      : String
+            date: { type: 'date', required: true, time: true},
+            duration: { type: 'integer', required: true}
+        },
+        {
+            methods: {
+                serialize: function () {
+                    return {
+                        id : this.id,
+                        date: this.date,
+                        duration: this.duration,
+                        user_id: this.user_id,
+                        track_id: this.track_id
+                    }
+                }
+            }
+        });
+
+    Score.hasOne('user', db.models.user,{
+        required: true,
+        //reverse: 'pseudo',
+        reverse: "scores",
+        autoFetch: true
+    });
+    Score.hasOne('track', db.models.track,{
+        required: true,
+        //reverse: 'name',
+        reverse : "scores",
+        autoFetch: true
     });
 };
-/*function create(score){
-orm.connectAsync('mysql://root:1234@localhost/mydb')
-  .then(function(db) {
-      // connected
-      var Scores = db.define("scores", {
-      		idscores      : Number,
-      		date   : String,
-      		duration       : Number,
-      		users_idusers      : Number,
-      		tracks_idtracks      : Number
-      	}, {
-      		methods: {
-      			fullScore: function () {
-      				return this.iduser + ' ' + this.email;
-      			}
-      		}
-      	});
-
-        Scores.createAsync(score)
-          .then(function(results) {
-            console.log("created",);
-            console.log("Result: %d", results);
-          });
-  })
-  .catch(function() {
-     console.error('Connection error: ' + err);
-  });
-  }*/
