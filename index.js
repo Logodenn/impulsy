@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
@@ -7,10 +8,172 @@ const game = require("./modules/game.js");
 const logger = require('./utils/logger')(module);
 const mainRouter = require('./routers/main');
 const gameRouter = require('./routers/game');
+const dbRouter = require('./routers/db');
+const userRouter = require('./routers/user');
+const trackRouter = require('./routers/track');
+const scoreRouter = require('./routers/score');
+
+var controller=require('./models/controllers');
+
+
+
+var bodyParser = require('body-parser');
+
+
+var environment = require('./models/config/environment');
+var settings = require('./models/config/settings');
+//var modelRouter = require('./models/config/route');
+//var models = require('./models/models');
+
+
+///////////////////////TESTS//////////////////////////////////////////////
+
+
+/////////USER/////////////
+
+/*var users= controller.user.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.getU("jiji",function (err,results) {
+    results.getScores(function (err,results) {
+        console.log(results);
+    });
+});*/
+
+/*
+u={pseudo : "hello", mail: "coco@gmail.com",rank : 34, password : "KJKJKJKhhh"};
+controller.user.create(u,function (err,results) {
+    console.log(results);
+});
+*/
+
+/*var user= controller.user.delete("momo",function (err,results) {
+    console.log(results);
+});*/
+
+
+/*up={user_id: 1, pseudo : "heljilo", mail: "coco@gmail.comd",rank : 34, password : "KJKJKJKhhh"};
+
+var user= controller.user.update(up,function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.listFriends("jiji",function (err,results) {
+        console.log(results);
+});*/
+
+
+var user= controller.user.createFriend("jiji","momo",function (err,results) {
+     console.log(results);
+ });
+
+
+/*var user= controller.user.removeFriend("jiji","momo",function (err,results) {
+    console.log(results);
+});*/
+
+
+
+/////////////////SCORE///////////////////////
+
+/*var score= controller.score.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*u={duration : "3423", user_id :1 , track_id : 2};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.scores.getS(1,function (err,results) {
+    console.log(results);
+});*/
+
+
+
+/*var user= controller.score.delete(4,function (err,results) {
+    console.log(results);
+});*/
+
+/*u={id:3, date : new Date().toLocaleString(), duration : 678333 };
+var user= controller.score.update(u,function (err,results) {
+    console.log(results);
+});*/
+
+/////////////////TRACK///////////////////////
+
+
+/*var score= controller.track.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user = controller.track.getT("Julien", function (err, results) {
+    console.log(results.information.arrayArtefact);
+});
+*/
+
+/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
+controller.track.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user= controller.track.delete("Julien",function (err,results) {
+    console.log(results);
+});
+*/
+
+
+
+/*u={id : 2, name:"Julien", link : "kijuye", information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'};
+var user= controller.track.update(u,function (err,results) {
+    console.log(results);
+});*/
+
+/////////////////FRIENDS///////////////////////
+
+/*
+
+var score= controller.user.getU("jiji",function (err,jiji) {
+
+    controller.user.getU("hello",function (err,hello) {
+        jiji.addFriends([hello],function(err, friends) {
+            jiji.getFriends(function(err, friends) {
+                console.log(friends[0].id)
+            });
+        });
+    });
+});
+*/
+
+/*
+var user = controller.track.getT("Julien", function (err, results) {
+    console.log(results.information.arrayArtefact);
+});
+*/
+
+/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
+controller.track.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user= controller.track.delete("Julien",function (err,results) {
+    console.log(results);
+});
+*/
+
+
+
+/*u={id : 2, name:"Julien", link : "kijuye", information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'};
+var user= controller.track.update(u,function (err,results) {
+    console.log(results);
+});*/
+
 const authRouter = require('./routers/auth');
 const db = require('./models/controllers')
-
-
 
 // Configure the local strategy for use by Passport.
 //
@@ -73,6 +236,7 @@ app.use(passport.session());
 
 const io = require('socket.io').listen(http);
 
+
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
   logger.info('Connection of a client');
@@ -82,18 +246,21 @@ io.sockets.on('connection', function (socket) {
 app.set('port', (process.env.PORT || 5000));
 app.set('view engine', 'hbs');
 
+
+environment(app);
+//modelRouter(app);
+
 app.use(express.static(__dirname + '/assets'));
 
 app.use('/', mainRouter);
 app.use('/game', gameRouter);
 
-app.get('/trackSelection', function (req, res) {
-    res.render('trackSelection', {
-        message: "Hello World!"
-    });
-});
+app.use('/db', dbRouter);
+app.use('/user', userRouter);
+app.use('/track', trackRouter);
+app.use('/score', scoreRouter);
 
-app.get('/hallOfFame', function(req, res) 
+app.get('/trackSelection', function(req, res) 
 {
   res.render('hallOfFame', { message: "Hello World!" });
 });
@@ -104,38 +271,3 @@ app.get('/login', function(req, res)
 });
 
 module.exports = http;
-
-/*app.use(orm.express('mysql://root:1234@localhost/mydb', {
-        define: function (db, models, next) {
-            db.load("./models/index.js", function (err2) {
-                if (err2)
-                    throw err2;
-                db.sync();
-            })
-            next();
-        }
-    })
-);*/
-
-/*
-models(function (err, db) {
-    if (err) throw err;
-
-    db.drop(function (err) {
-        if (err) throw err;
-
-        db.sync(function (err) {
-            if (err) throw err;
-
-            db.models.user.create({
-                pseudo: "pseudo2", password: "Doeufr", rank: 29
-            }, function (err, message) {
-                if (err) throw err;
-
-                db.close()
-                console.log("Done!");
-            });
-        });
-    });
-});
-*/
