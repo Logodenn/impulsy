@@ -188,7 +188,6 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
   // TODO : ajouter ici les morts des amis par rapport aux player
   db.track.getTrack(sound, function (err, result) {
     if (err) logger.error(err);
-
     var game = {
       gameId: gameId,
       socketId: socketId,
@@ -196,14 +195,15 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
       currentBar: 0,
       difficulty: difficulty // difficulty of the level 
     };
-
+    console.log('Result : ');
+    console.log(result);
     if (result) { // Search if the sound exist
       game.arraySpectrum = result.information.arraySpectrum;
       game.arrayArtefacts = result.information.arrayArtefacts;
       game.energy = result.information.arraySpectrum.length; // duration of the music 
       game.track = result.trackId;
     } else { // The sound doesn't exist, we create and save it  
-      youtube.getAudioStream(sound, local, function (err, stream) {
+      youtube.getAudioStream(sound, local, "lowest", function (err, stream) {
         if (err) logger.error(err);
         else {
           youtube.getBars(stream, 1, function (err, bars) {
