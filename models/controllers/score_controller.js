@@ -51,7 +51,7 @@ module.exports = {
                 cb(err);
             }
             else {
-                score.date=new Date().toLocaleString();
+                score.date=new Date().toISOString();
                 db.models.score.create(score, function (err, message) {
                     if (err) {
                         logger.error(err);
