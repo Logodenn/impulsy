@@ -1,12 +1,145 @@
-var models = require('../models/');
+var orm = require('orm');
+var models = require('../models');
+const logger = require('winston');
+
 
 module.exports = {
-    create: function (score) {
+    list: function (cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.score.find().all(function (err, scores) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, scores);
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    getScore: function (id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.score.find({id: id}, function (err, score) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, score[0]);
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    create: function (score, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                score.date=new Date().toISOString();
+                db.models.score.create(score, function (err, message) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        logger.info("score created!");
+                        cb(null, message);
+                    }
+                });
+            }
+        });
+    },
+
+
+    delete: function (id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.score.find({id: id}, function (err, score) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        score[0].remove(function (err) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                cb(null, "removed");
+                                logger.info("score " + score[0].id + " removed !");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+
+    update: function (score, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.models.score.get(score.id, function (err, scoreUpdate) {
+                    if (err) {
+                        logger.error(err);
+                        if (err.code == orm.ErrorCodes.NOT_FOUND) {
+                            cb("score not found");
+                        } else {
+                            cb(err);
+                        }
+                    } else {
+
+                        if (score.date) scoreUpdate.date = score.date;
+
+                        if (score.duration) scoreUpdate.duration = score.duration;
+
+                        scoreUpdate.save(function (err) {
+                            if (err) {
+                                logger.debug(err);
+                                cb(err);
+                            } else {
+                                logger.info("score " + score.id + " updated !");
+                                cb(null, scoreUpdate)
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+};
+
+/*
+module.exports = {
+    create: function (score, user, track) {
         models(function (err, db) {
             if (err) throw err;
+            console.log('create score');
+
 
             db.sync(function (err) {
                 if (err) throw err;
+
 
                 db.models.score.create(score, function (err, message) {
                     if (err) {
@@ -19,6 +152,7 @@ module.exports = {
                 });
             });
         });
+        return score;
     },
 
     delete: function (score) {
@@ -34,8 +168,6 @@ module.exports = {
                     }).then(function (results) {
                     console.log(score);
                     console.log("Deleted !");
-                    db.close();
-                    console.log("Done!");
                 }).catch(function (err) {
                     console.error(err);
                     db.close();
@@ -74,4 +206,4 @@ module.exports = {
             });
         });
     }
-}
+*/
