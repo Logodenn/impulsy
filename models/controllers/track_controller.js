@@ -38,8 +38,7 @@ module.exports = {
                     } else {
                         if(track.length != 0)  
                         {
-                            track.information = JSON.parse(track[0].information);
-                            cb(null, track);
+                            cb(null, track[0]);
                         }
                         else
                         {
@@ -61,7 +60,7 @@ module.exports = {
                 cb(err);
             }
             else {
-                track.information = JSON.stringify(track.information);
+                track.information = JSON.stringify(track.information);                
                 db.models.track.create(track, function (err, message) {
                     if (err) {
                         logger.error(err);
