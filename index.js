@@ -260,14 +260,6 @@ app.use('/user', userRouter);
 app.use('/track', trackRouter);
 app.use('/score', scoreRouter);
 
-app.get('/trackSelection', function(req, res) 
-{
-  res.render('hallOfFame', { message: "Hello World!" });
-});
 
-app.get('/login', function(req, res) 
-{
-  res.render('login', { message: "Hello World!" });
-});
 
 module.exports = http;
