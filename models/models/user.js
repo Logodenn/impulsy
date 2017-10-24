@@ -1,94 +1,60 @@
-//var orm = require("orm");
 
 
-module.exports = function(orm, db)
-{
+module.exports = function (orm, db) {
     var User = db.define('user', {
-        pseudo : { type : 'text' , key: true},
-        password: String,
-        rank: Number
-    });
-};
+            pseudo: {type: 'text'},
+            password: {type: 'text'},
+            mail: {type: 'text'},
+            rank: {type: 'integer'}
+        },
+        {
+            validations: {
+                pseudo: orm.validators.unique(),
+                mail: orm.validators.unique()
+            },
+            methods: {
+                serialize: function () {
+                    var scores;
+                    var friends;
 
-/*function user(user, operation, callback) {
-    orm.connectAsync('mysql://root:1234@localhost/mydb')
-        .then(function (db) {
-            // connected
-            var User = db.define("user", {
-                    pseudo: String,
-                    password: String,
-                    rank: Number
+                    if (this.scores) {
+                        scores = this.scores.map(function (c) {
+                            return c.serialize();
+                        });
+                    } else {
+                        scores = [];
+                    }
+
+                    if (this.friends) {
+                        friends = this.friends.map(function (c) {
+                            return c.serialize();
+                        });
+                    } else {
+                        friends = [];
+                    }
+
+                    return {
+                        id: this.id,
+                        pseudo: this.pseudo,
+                        password: this.password,
+                        mail: this.mail,
+                        rank: this.rank,
+                        scores: scores,
+                        friends: friends
+                    };
+
                 }
-            );
-            User.sync(function (err) {
-                if (operation == 'insert') {
-                    User.createAsync(user)
-                        .then(function () {
-                            console.log("user : " + user.pseudo + " created");
-                            callback(0);
-                        }).catch(function (err) {
-                        console.error('Creation error for user : ' + user.pseudo + '' + err);
-                        callback(1);
-                    });
-                } else if (operation == 'delete') {
-                    User.findAsync({pseudo: user.pseudo})
-                        .then(function (results) {
-
-                            console.log("user : " + results[0].pseudo);
-                            results[0].removeAsync();
-                        }).then(function () {
-                        console.log("deleted !!");
-                        callback(0)
-                    }).catch(function (err) {
-                        console.error('Creation error for user : ' + user.pseudo + '' + err);
-                        callback(1);
-                    });
-                } else if (operation == 'update') {
-                    User.findAsync({pseudo: user.pseudo})
-                        .then(function (results) {
-
-                            console.log("user : " + results[0].pseudo);
-
-                            results[0].password = user.password;
-                            results[0].rank = user.rank;
-                            results[0].saveAsync();
-                        }).then(function () {
-                        console.log("saved !!");
-                        callback(0);
-                    }).catch(function (err) {
-                        console.error('Creation error for user : ' + user.pseudo + '' + err);
-                        callback(1)
-                    });
-                }
-            });
-        })
-        .catch(function (err) {
-            console.error('Connection error' + err);
-            callback(1);
+            }
         });
-}
 
-
-function testInsertUserDB() {
-    var pseudo = 'john'
-    user({pseudo: pseudo, password: "Doeufr", rank: 29}, 'insert', function (results) {
-        if (results == 0) {
-            //user({pseudo: pseudo}, 'delete', function (results) {
-                if (results == 0) {
-                    console.log('0');
-                    return true;
-                } else {
-                    console.log('1');
-                    return false;
-                }
-            //});
-        } else {
-            console.log('1');
-            return false;
-        }
+    User.hasMany('friends', db.models.user, {}, {
+        reverse: "users",
+        autoFetch: true,
+        key: true,
     });
-}
-
-
-testInsertUserDB();*/
-
+/*    User.hasMany("friends", {
+        reverse: 'users',
+        key       : true, // Turns the foreign keys in the join table into a composite key
+        autoFetch : true
+    });*/
+};
