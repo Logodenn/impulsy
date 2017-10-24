@@ -12,7 +12,7 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const Strategy = require('passport-local').Strategy
 const app = express()
-const http = require('http')
+const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
 
 /* GAME */
@@ -120,4 +120,4 @@ io.sockets.on('connection', function (socket) {
   game.initGame(io, socket)
 })
 
-module.exports = http.Server(app)
+module.exports = http
