@@ -36,8 +36,15 @@ module.exports = {
                         logger.error(err);
                         cb(err);
                     } else {
-                        track.information = JSON.parse(track[0].information);
-                        cb(null, track);
+                        if(track.length != 0)  
+                        {
+                            track.information = JSON.parse(track[0].information);
+                            cb(null, track);
+                        }
+                        else
+                        {
+                            cb(null, undefined);
+                        }
                     }
                     logger.info("Done!");
                 });
