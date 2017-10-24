@@ -5,7 +5,7 @@ module.exports = {
         protocol : "mysql",
         query    : { pool: true },
         host     : process.env.DB_HOST,
-        database : "impulsy",
+        database : process.env.DB_DATABASE_NAME,
         user     : process.env.DB_USERNAME,
         password : process.env.DB_PASSWORD
     }
