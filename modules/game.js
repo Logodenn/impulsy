@@ -9,7 +9,7 @@ const context = new AudioContext();
 var io;
 var gameSocket;
 var game;
-var game_speed = 500; 
+var game_speed = 500;
 var new_positions
 
 module.exports.initGame = function (sio, socket) {
@@ -50,7 +50,6 @@ function hostCreateNewGame(data) {
   logger.debug('Creation of the game');
   var youtubeVideoId = data.youtubeVideoId;
   var difficulty = data.difficulty;
-  var gameCreate;
   // Create a unique Socket.IO Room
   var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
@@ -60,14 +59,14 @@ function hostCreateNewGame(data) {
     if (err) logger.error(err);
     else {
       gameSocket.emit('newGameCreated', {
-        game
+        game,
+        latency: arthefactCheckingLatency
       });
 
       youtube.getAudioStream(youtubeVideoId, false, 'highest', (err, command) => {
         let pipe = command.pipe(new SlowStream({
           maxWriteInterval: 15
         }));
-
         pipe.on('end', () => {
           io.sockets.in(game.gameId).emit('audioEnd');
         })
@@ -97,7 +96,7 @@ function hostStartGame() {
 
   io.sockets.in(game.gameId).emit('gameStarted');
 
-  setTimeout(function(){
+  setTimeout(function () {
     logger.debug("GO GO GO");
     currentBar = 0;
     new_positions = setInterval(function () {
@@ -195,13 +194,12 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
       currentBar: 0,
       difficulty: difficulty // difficulty of the level 
     };
-    console.log('Result : ');
-    console.log(result);
-    if (result) { // Search if the sound exist
+    
+    if (typeof result != 'undefined') { // Search if the sound exist
       game.arraySpectrum = result.information.arraySpectrum;
       game.arrayArtefacts = result.information.arrayArtefacts;
       game.energy = result.information.arraySpectrum.length; // duration of the music 
-      game.track = result.trackId;
+      game.track = result.id;
     } else { // The sound doesn't exist, we create and save it  
       youtube.getAudioStream(sound, local, "lowest", function (err, stream) {
         if (err) logger.error(err);
@@ -212,28 +210,34 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
               game.arraySpectrum = bars;
               game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
               game.energy = game.arraySpectrum.length; // duration of the music 
-              logger.debug('Game created !')
-              callback(null, game)
+              
+              // TODO voir avec Pierre pour link et sound
+              // sound = titre musique et link lien vers vidéo 
+              track_information = {
+                arraySpectrum: game.arraySpectrum,
+                arrayArtefacts: game.arrayArtefacts
+              };
+              logger.debug(track_information.arraySpectrum);
+              logger.debug(track_information.arrayArtefacts);
+              track = {
+                name: sound,
+                link: "",
+                information: track_information
+              };
+              logger.debug(track.information)
+              db.track.create(track, function (err, result) {
+                if (err) logger.error(err);
+                else game.trackId = result.trackId;
+              });
+              logger.debug('Track saved !')
+              
             }
           });
         }
-        // TODO voir avec Pierre pour link et sound
-        // sound = titre musique et link lien vers vidéo 
-        track_information = {
-          arraySpectrum: game.arraySpectrum,
-          arrayArtefacts: game.arrayArtefacts
-        };
-        track = {
-          name: sound,
-          link: "",
-          information: track_information
-        };
-        db.track.create(track, function (err, result) {
-          if (err) logger.error(err);
-          else game.trackId = result.trackId;
-        });
       });
     }
+    callback(null, game)
+    logger.debug('Game created !')
   });
 
 
