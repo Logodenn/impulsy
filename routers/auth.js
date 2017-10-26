@@ -6,23 +6,14 @@ var router = express.Router();
 
 //TODO : vérifier si l'user n'est pas déjà connecté 
 router.get('/register', function(req, res) {
-    res.render('register');
+    res.render('login');
 });
 
-router.post('/register', function(req, res, next) {
-  user = {
-    pseudo : req.body.pseudo, 
-    mail : req.body.mail, 
-    password : req.body.password, // TODO : salt password
-    rank : -1
-  };
-  db.user.create(user, function (err, result) {
-    return res.render('register', { error : err.message });
-    passport.authenticate('local', function(req, res) {
-      res.redirect('/');
-    });
-  });
-});
+router.post('/register', passport.authenticate('local-signup', {
+      successRedirect : '/', // redirect to the secure profile section
+      failureRedirect : '/login', // redirect back to the signup page if there is an error
+      failureFlash : false // allow flash messages
+    }));
 
 router.get('/login',
 function(req, res){
@@ -30,7 +21,7 @@ function(req, res){
 });
 
 router.post('/login', 
-passport.authenticate('local', { failureRedirect: '/login' }),
+passport.authenticate('local-signin', { failureRedirect: '/login' }),
 function(req, res) {
   res.redirect('/');
 });
