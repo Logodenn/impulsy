@@ -24,13 +24,14 @@ router.post('/register', function(req, res, next) {
   });
 });
 
-router.get('/login',
-function(req, res){
-  res.render('login');
-});
+router.post('/login', passport.authenticate('local-login', {
+  successRedirect : '/', // redirect to the secure profile section
+  failureRedirect : '/login', // redirect back to the signup page if there is an error
+  failureFlash : false // allow flash messages
+}));
 
 router.post('/login', 
-passport.authenticate('local', { failureRedirect: '/login' }),
+passport.authenticate('local-login', { failureRedirect: '/login' }),
 function(req, res) {
   res.redirect('/');
 });
