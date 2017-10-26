@@ -14,17 +14,30 @@ function setup(db, cb) {
 
 module.exports = function (cb) {
     if (connection) return cb(null, connection);
-
     orm.connect(settings.database, function (err, db) {
-        if (err) return cb(err);
+        if (err) {
+            console.log("et mince !!!!")
+            console.log(err);
+            return cb(err);
+        }
+
 
         connection = db;
-        db.settings.set('instance.returnAllErrors', true);
 
-        db.sync(function (err) {
-            if (err) throw err;
+        //connection.query("CREATE DATABASE impulkljdsfsy", function (err, result) {
+            if (err) {
+
+                throw err;
+            }
+            console.log("Database created");
+
+            db.settings.set('instance.returnAllErrors', true);
+
+            db.sync(function (err) {
+                if (err) throw err;
+            });
+
+            setup(db, cb);
         });
-
-        setup(db, cb);
-    });
+   // });
 };
