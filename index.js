@@ -26,154 +26,8 @@ var settings = require('./models/config/settings');
 //var models = require('./models/models');
 
 
-///////////////////////TESTS//////////////////////////////////////////////
-
-
-/////////USER/////////////
-
-/*var users= controller.user.list(function (err,results) {
-    console.log(results);
-});*/
-
-/*var user= controller.user.getU("jiji",function (err,results) {
-    results.getScores(function (err,results) {
-        console.log(results);
-    });
-});*/
-
-/*
-u={pseudo : "hello", mail: "coco@gmail.com",rank : 34, password : "KJKJKJKhhh"};
-controller.user.create(u,function (err,results) {
-    console.log(results);
-});
-*/
-
-/*var user= controller.user.delete("momo",function (err,results) {
-    console.log(results);
-});*/
-
-
-/*up={user_id: 1, pseudo : "heljilo", mail: "coco@gmail.comd",rank : 34, password : "KJKJKJKhhh"};
-
-var user= controller.user.update(up,function (err,results) {
-    console.log(results);
-});*/
-
-/*var user= controller.user.listFriends("jiji",function (err,results) {
-        console.log(results);
-});*/
-
-
-var user= controller.user.createFriend("jiji","momo",function (err,results) {
-     console.log(results);
- });
-
-
-/*var user= controller.user.removeFriend("jiji","momo",function (err,results) {
-    console.log(results);
-});*/
-
-
-
-/////////////////SCORE///////////////////////
-
-/*var score= controller.score.list(function (err,results) {
-    console.log(results);
-});*/
-
-/*u={duration : "3423", user_id :1 , track_id : 2};
-controller.score.create(u,function (err,results) {
-    console.log(results);
-});*/
-
-/*var user= controller.scores.getS(1,function (err,results) {
-    console.log(results);
-});*/
-
-
-
-/*var user= controller.score.delete(4,function (err,results) {
-    console.log(results);
-});*/
-
-/*u={id:3, date : new Date().toLocaleString(), duration : 678333 };
-var user= controller.score.update(u,function (err,results) {
-    console.log(results);
-});*/
-
-/////////////////TRACK///////////////////////
-
-
-/*var score= controller.track.list(function (err,results) {
-    console.log(results);
-});*/
-
-/*
-var user = controller.track.getT("Julien", function (err, results) {
-    console.log(results.information.arrayArtefact);
-});
-*/
-
-/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
-controller.track.create(u,function (err,results) {
-    console.log(results);
-});*/
-
-/*
-var user= controller.track.delete("Julien",function (err,results) {
-    console.log(results);
-});
-*/
-
-
-
-/*u={id : 2, name:"Julien", link : "kijuye", information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'};
-var user= controller.track.update(u,function (err,results) {
-    console.log(results);
-});*/
-
-/////////////////FRIENDS///////////////////////
-
-/*
-
-var score= controller.user.getU("jiji",function (err,jiji) {
-
-    controller.user.getU("hello",function (err,hello) {
-        jiji.addFriends([hello],function(err, friends) {
-            jiji.getFriends(function(err, friends) {
-                console.log(friends[0].id)
-            });
-        });
-    });
-});
-*/
-
-/*
-var user = controller.track.getT("Julien", function (err, results) {
-    console.log(results.information.arrayArtefact);
-});
-*/
-
-/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
-controller.track.create(u,function (err,results) {
-    console.log(results);
-});*/
-
-/*
-var user= controller.track.delete("Julien",function (err,results) {
-    console.log(results);
-});
-*/
-
-
-
-/*u={id : 2, name:"Julien", link : "kijuye", information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'};
-var user= controller.track.update(u,function (err,results) {
-    console.log(results);
-});*/
-
 const authRouter = require('./routers/auth');
-const db = require('./models/controllers')
+//const db = require('./models/controllers')
 
 // Configure the local strategy for use by Passport.
 //
@@ -271,3 +125,172 @@ app.get('/login', function(req, res)
 });
 
 module.exports = http;
+
+
+
+
+
+
+
+///////////////////////TESTS//////////////////////////////////////////////
+
+
+/////////USER/////////////
+
+/*var users= controller.user.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.getU("jiji",function (err,results) {
+    results.getScores(function (err,results) {
+        console.log(results);
+    });
+});*/
+
+/*
+u={pseudo : "hello", mail: "coco@gmail.com",rank : 34, password : "KJKJKJKhhh"};
+controller.user.create(u,function (err,results) {
+    console.log(results);
+});
+*/
+
+/*var user= controller.user.delete("momo",function (err,results) {
+    console.log(results);
+});*/
+
+
+/*up={user_id: 1, pseudo : "heljilo", mail: "coco@gmail.comd",rank : 34, password : "KJKJKJKhhh"};
+
+var user= controller.user.update(up,function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.listFriends("jiji",function (err,results) {
+        console.log(results);
+});*/
+
+
+/*var user= controller.user.createFriend("jiji","momo",function (err,results) {
+    console.log(results);
+});*/
+
+
+/*var user= controller.user.removeFriend("jiji","momo",function (err,results) {
+    console.log(results);
+});*/
+
+
+/*var user= controller.user.listFavoriteTracks("momo",function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.user.createFavoriteTrack("momo","lolo",function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user= controller.user.removeFavoriteTrack("momo","lolo",function (err,results) {
+    console.log(results);
+});
+*/
+
+
+/////////////////SCORE///////////////////////
+
+/*var score= controller.score.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*u={duration : "3423", user_id :1 , track_id : 2};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*var user= controller.scores.getS(1,function (err,results) {
+    console.log(results);
+});*/
+
+
+
+/*var user= controller.score.delete(4,function (err,results) {
+    console.log(results);
+});*/
+
+/*u={id:3, date : new Date().toLocaleString(), duration : 678333 };
+var user= controller.score.update(u,function (err,results) {
+    console.log(results);
+});*/
+
+/////////////////TRACK///////////////////////
+
+
+/*var score= controller.track.list(function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user = controller.track.getT("Julien", function (err, results) {
+    console.log(results.information.arrayArtefact);
+});
+*/
+
+/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
+controller.track.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user= controller.track.delete("Julien",function (err,results) {
+    console.log(results);
+});
+*/
+
+
+
+/*u={id : 2, name:"Julien", link : "kijuye", information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'};
+var user= controller.track.update(u,function (err,results) {
+    console.log(results);
+});*/
+
+/////////////////FRIENDS///////////////////////
+
+/*
+
+var score= controller.user.getU("jiji",function (err,jiji) {
+
+    controller.user.getU("hello",function (err,hello) {
+        jiji.addFriends([hello],function(err, friends) {
+            jiji.getFriends(function(err, friends) {
+                console.log(friends[0].id)
+            });
+        });
+    });
+});
+*/
+
+
+
+/*var user = controller.track.getTrack("Julien", function (err, results) {
+    console.log(results.information.arrayArtefact);
+});*/
+
+
+
+/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
+controller.track.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*
+var user= controller.track.delete("Julien",function (err,results) {
+    console.log(results);
+});
+*/
+
+
+/*
+u={id : 2, name:"Julien", link : "kijuye", information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'};
+var user= controller.track.update(u,function (err,results) {
+    console.log(results);
+});
+*/

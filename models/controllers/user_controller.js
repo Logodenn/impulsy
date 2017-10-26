@@ -244,6 +244,109 @@ module.exports = {
             }
         });
     },
+
+    listFavoriteTracks: function (pseudo, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo}, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        user[0].getFavoriteTracks(function (err, results) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                cb(null, results);
+                            }
+                        });
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    createFavoriteTrack: function (pseudo, name, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo}, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        db.models.track.find({name: name}, function (err, track) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                user[0].getFavoriteTracks(function (err, results) {
+                                    if (err) {
+                                        logger.error(err);
+                                        cb(err);
+                                    } else {
+                                        user[0].hasFavoriteTracks([track[0]], function (err, result) {
+                                            if (err) {
+                                                logger.error(err);
+                                                cb(err);
+                                            } else {
+                                                if (result) {
+                                                    logger.error("Yet favoriteTracks")
+                                                } else {
+                                                    user[0].addFavoriteTracks([track[0]]);
+                                                    logger.info("FavoriteTracks created!");
+                                                    cb(null, "FavoriteTracks created!");
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                })
+
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    },
+
+    removeFavoriteTrack: function (pseudo, name, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.user.find({pseudo: pseudo}, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        db.models.track.find({name: name}, function (err, track) {
+                            if (err) {
+                                logger.error(err);
+                                cb(err);
+                            } else {
+                                user[0].removeFavoriteTracks([track[0]]);
+                                logger.info("FavoriteTracks removed!");
+                                cb(null, "FavoriteTracks removed!");
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
 };
 /*
 module.exports = {
