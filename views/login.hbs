@@ -22,7 +22,7 @@
 
                 {{!-- LOGIN FORM --}}
 
-                <form id="loginForm" action="http://127.0.0.1:8080/login" method="post" class="form flex-col">
+                <form id="loginForm" action="http://127.0.0.1:5000/login" method="post" class="form flex-col">
 
                     <div class="inputWrapper">
                         <label for="lusername">Username</label>
@@ -34,7 +34,7 @@
                         <input type="text" id="lpassword" class="input">
                     </div>
 
-                    <button class="button" state="passive">Log in</button>
+                    <button class="button" type="submit" form="loginForm" state="passive">Log in</button>
 
                 </form>
 
