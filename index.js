@@ -98,18 +98,7 @@ app.use('/db', dbRouter)
 app.use('/user', userRouter)
 app.use('/track', trackRouter)
 app.use('/score', scoreRouter)
-
-app.get('/trackSelection', function (req, res) {
-  res.render('hallOfFame', {
-    message: 'Hello World!'
-  })
-})
-
-app.get('/login', (req, res) => {
-  res.render('login', {
-    message: 'Hello World!'
-  })
-})
+app.use('/', authRouter)
 
 /* IO */
 
