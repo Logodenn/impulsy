@@ -40,9 +40,14 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-passport.use('local-signin', new Strategy(
-  (login, password, cb) => {
-    // TODO : vérifier la méthode pour trouver un utiliseteur par son pseudo ou/et mail ?
+passport.use('local-login', new Strategy({
+    // by default, local strategy uses username and password, we will override with email
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true // allows us to pass back the entire request to the callback
+  },
+  function (req, login, password, cb) {
+    // try if it's an email or a username
     if (validateEmail(login)) email = true;
     else email = false;
     //db.user.getUser(login, email, function (err, result) {
@@ -86,8 +91,6 @@ function (req, email, password, cb) {
   });
 }));
 
-
-
 passport.serializeUser(function (user, cb) {
   cb(null, user.id)
 })
@@ -102,11 +105,6 @@ passport.deserializeUser(function (id, cb) {
   })
 })
 
-// Initialize Passport and restore authentication state, if any, from the
-// session.
-app.use(passport.initialize())
-app.use(passport.session())
-
 /* MIDDLEWARES */
 
 // Use application-level middleware for common functionality, including
@@ -119,6 +117,11 @@ app.use(require('express-session')({
   resave: false,
   saveUninitialized: false
 }))
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.set('view engine', 'hbs')
 
