@@ -9,6 +9,18 @@
   margin: 5px;
 }
 
+.button-small {
+  padding: 20px;
+  width: auto;
+}
+
+.button-track {
+  padding: 5px 10px;
+  font-family: "Calibri";
+  font-size: 1rem;
+  width: auto;
+}
+
 .button:hover {
   background: var(--color-focus);
   border: solid 3px var(--color-focus);
