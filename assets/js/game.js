@@ -166,6 +166,9 @@ var App = {
                 // Hide buttons
                 document.querySelector("#difficultyButtons").classList.add("hidden");
                 document.querySelector("#startButtons").classList.add("hidden");
+
+                // Display score
+                document.querySelector("#score").classList.remove("hidden");
 			}
         },
 
