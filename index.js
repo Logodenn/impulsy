@@ -35,24 +35,58 @@ const db = require('./models/controllers')
 environment(app)
 
 /* PASSPORT SETUP */
+function validateEmail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
 
-passport.use(new Strategy(
-  (username, password, cb) => {
+passport.use('local-signin', new Strategy(
+  (login, password, cb) => {
     // TODO : vérifier la méthode pour trouver un utiliseteur par son pseudo ou/et mail ?
-    db.user.getUser(username, function (err, result) {
+    if (validateEmail(login)) email = true;
+    else email = false;
+    //db.user.getUser(login, email, function (err, result) {
+    db.user.getUser(login, function (err, result) {
       if (err) {
-        return cb(err)
+        console.log(err);
+        return cb(err);
       }
+      console.log(result);
       if (!result) {
-        return cb(null, false)
+        return cb(null, false);
       }
       if (result.password !== password) { // TODO salt password with username/email   ?
-        return cb(null, false)
+        return cb(null, false);
       }
-      return cb(null, result)
+      console.log("Ok ! ");
+
+      return cb(null, result);
     })
-  })
-)
+  }))
+
+passport.use('local-signup', new Strategy({
+  // by default, local strategy uses username and password, we will override with email
+  usernameField : 'mail',
+  passwordField : 'password',
+  passReqToCallback: true // allows us to pass back the entire request to the callback
+},
+function (req, email, password, cb) {
+  var user = {
+    pseudo : req.body.username, 
+    mail : req.body.mail, 
+    password : req.body.password, // TODO : salt password
+    rank : -1
+  }
+  console.log(user);
+  db.user.create(user, function (err, result) {
+      // TODO : check if email / pseudo already use 
+      if (err)
+        throw err;
+      return cb(null, user);
+  });
+}));
+
+
 
 passport.serializeUser(function (user, cb) {
   cb(null, user.id)
@@ -98,18 +132,7 @@ app.use('/db', dbRouter)
 app.use('/user', userRouter)
 app.use('/track', trackRouter)
 app.use('/score', scoreRouter)
-
-app.get('/trackSelection', function (req, res) {
-  res.render('hallOfFame', {
-    message: 'Hello World!'
-  })
-})
-
-app.get('/login', (req, res) => {
-  res.render('login', {
-    message: 'Hello World!'
-  })
-})
+app.use('/', authRouter)
 
 /* IO */
 
