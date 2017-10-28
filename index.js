@@ -105,11 +105,6 @@ passport.deserializeUser(function (id, cb) {
   })
 })
 
-// Initialize Passport and restore authentication state, if any, from the
-// session.
-app.use(passport.initialize())
-app.use(passport.session())
-
 /* MIDDLEWARES */
 
 // Use application-level middleware for common functionality, including
@@ -122,6 +117,11 @@ app.use(require('express-session')({
   resave: false,
   saveUninitialized: false
 }))
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.set('view engine', 'hbs')
 
