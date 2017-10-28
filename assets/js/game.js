@@ -57,7 +57,7 @@ var IO = {
         // TODO
         // console.log(data);
         // TODO compute the proper way
-        console.log("new energy");
+        console.log(data.isArtefactTaken);
         energyBar.width = data.energy;
         energyBar.update();
         if(data.isArtefactTaken) {
