@@ -11,30 +11,54 @@
 
         <section class="content">
 
-            <h1 class="catchPhrase">{{message}}</h1>
+            <h1 class="title">Select a track</h1>
 
-            <a href="game"><button class="button">Play dummy track</button></a> <!-- dummy track -->
+            {{!-- <a href="game"><button class="button">Play dummy track</button></a>  --}}
 
             <!-- ********** MOST PLAYED TRACKS ********** -->
-            
-            <section id="mostPlayed">
-                
+
+            <section id="mostPlayed" class="flex-col">
+                <h2 class="title">Most played tracks</h2>
+                <div class="track-list flex-row">
+                    <div class="track"><a href="game"><button class="button button-track">Orelsan - Basique</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">Led Zeppelin - Good Times, Bad Times</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">System Of A Down - Chop Suey!</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">King Crimson - In The Court Of The Crimson King</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">Kanye West - I Love Kanye</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">Neil Young - Heart Of Gold</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">Soundgarden - Slaves & Bulldozers</button></a></div>
+                </div>
             </section>
 
             <!-- ********** YOUTUBE SEARCH BAR ********** -->
 
-            <div id="ytBrowser"></div>
+            <div id="ytBrowser">
+                <input type="text" class="input" placeholder="type a song you like">
+                <button class="button button-small">M-glass-ico</button>
+            </div>
 
             <!-- ********** FAVORITE TRACKS ********** -->
 
-            <section id="favorites">
-                
+            <section id="favorites" class="flex-col">
+                <h2 class="title">Favorite tracks</h2>
+                <div class="track-list">
+                    {{!-- <div class="track"><a href="game"><button class="button">Orelsan - Basique</button></a></div> --}}
+                </div>
             </section>
 
             <!-- ********** TREND TRACKS ********** -->
 
-            <section id="trendings">
-                
+            <section id="trendings" class="flex-col">
+                <h2 class="title">Trend tracks</h2>
+                <div class="track-list flex-row">
+                    <div class="track"><a href="game"><button class="button button-track">Orelsan - Basique</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">Led Zeppelin - Good Times, Bad Times</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">System Of A Down - Chop Suey!</button></a></div>
+                    <div class="track"><a href="game"><button class="button button-track">King Crimson - In The Court Of The Crimson King</button></a></div>
+                    {{!-- <div class="track"><a href="game"><button class="button button-track">Kanye West - I Love Kanye</button></a></div> --}}
+                    {{!-- <div class="track"><a href="game"><button class="button button-track">Neil Young - Heart Of Gold</button></a></div> --}}
+                    {{!-- <div class="track"><a href="game"><button class="button button-track">Soundgarden - Slaves & Bulldozers</button></a></div> --}}
+                </div>
             </section>
 
         </section>
