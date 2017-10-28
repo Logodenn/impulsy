@@ -71,31 +71,22 @@ var IO = {
         }
 	},
 
-	gameOver : function(data) {
+	gameOver : function (data) {
 		endGame();
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
-	},
-	
+    },
 	onAudioChunk: function(data) {
-		App.Audio.chunkArray.push(data.chunk);
-	},
-	onAudioEnd: function() {
-		var fileReader = new FileReader();
-		var source = App.Audio.audioContext.createBufferSource();
-		var blob = new Blob(App.Audio.chunkArray);
+        chunkPlayer._onAudioChunk(data.chunk);
 
-		fileReader.onloadend = function () {
-			App.Audio.audioContext.decodeAudioData(this.result, function(buffer) {
-				source.buffer = buffer;
-				source.connect(App.Audio.audioContext.destination);
-				source.start();
-			});
-		}
-
-		fileReader.readAsArrayBuffer(blob);
-	}
+        if (!chunkPlayer._startTime) {
+            chunkPlayer._start();
+        }
+    },
+    onAudioEnd: function () {
+        clearInterval(chunkPlayer._timer);
+    }
 };
 
 // ******************** App ******************** //
@@ -103,7 +94,7 @@ var IO = {
 var App = {
 
     gameId: 0,
-	myRole: '',   // 'Player' or 'Host'
+    myRole: '',   // 'Player' or 'Host'
 
     /**
      * The Socket.IO socket object identifier. This is unique for
@@ -218,12 +209,6 @@ var App = {
 			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
-	},
-
-	// ********** Audio ********** //
-	Audio : {
-		audioContext: new (window.AudioContext || window.webkitAudioContext)(),
-		chunkArray: []
 	}
 };
 
