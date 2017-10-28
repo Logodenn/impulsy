@@ -54,17 +54,20 @@ var IO = {
     },
     
     onEnergy : function(data) {
-        // TODO
-        // console.log(data);
-        // TODO compute the proper way
-        console.log(data.isArtefactTaken);
-        energyBar.width = data.energy;
+
+        var gameState = data.data; // Dirty, back should send data, not data.data
+        // gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
+
+        // Handle energy
+        energyBar.width = gameState.energy;
         energyBar.update();
-        if(data.isArtefactTaken) {
-            console.log("vvv sould be redrawn as taken");
-            // console.log(listeArtefacts[data.bar].img.src);
-            // console.log(listeArtefacts);
-            // listeArtefacts[data.bar].img.src = "../img/artefactTaken.png";
+
+        // Handle artefact checking
+        if(gameState.isArtefactTaken) {
+            App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
+            console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
+            // console.log(listeArtefacts); cote Thomas
+            listeArtefacts[gameState.bar].img.src = "../img/artefactTaken.png";
         }
 	},
 
@@ -182,11 +185,16 @@ var App = {
 
 			console.log(game);
 
+            // Settings
             App.gameId 				= game.gameId;
 			App.mySocketId 			= game.mySocketId;
 			App.myRole 				= 'Host';
-			App.Player.position 	= game.position;
-			App.latency 	        = latency;
+            App.latency 	        = latency;
+            
+            // Logic
+			App.Player.position 	    = game.position;
+            App.Player.artefactsToTake 	= game.arrayArtefacts;
+            App.Player.artefactsTaken   = [];
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
@@ -205,6 +213,7 @@ var App = {
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
         },
         
+        // In case the player does not move but the position is right
         onEnergy : function(data) {
 			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
