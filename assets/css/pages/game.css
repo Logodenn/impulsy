@@ -9,6 +9,21 @@
 	/* height: 300px; */
 }
 
+#score {
+	position: fixed;
+    top: 50px;
+	right: 50px;
+	color: var(--color-focus);
+}
+
+#score #artefactsTaken {
+	color: var(--color-active);
+}
+
+#score #artefactsToTake {
+	color: var(--color-background-light);
+}
+
 /********** Code for tablet **********/
 
 #moveButtons {
