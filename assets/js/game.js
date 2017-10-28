@@ -57,6 +57,7 @@ var IO = {
         // TODO
         // console.log(data);
         // TODO compute the proper way
+        console.log("new energy");
         energyBar.width = data.energy;
         energyBar.update();
         if(data.isArtefactTaken) {
@@ -176,7 +177,8 @@ var App = {
 
         gameInit: function (data) {
 
-			var game = data.game;
+            var game    = data.game;
+            var latency = data.latency;
 
 			console.log(game);
 
@@ -184,6 +186,7 @@ var App = {
 			App.mySocketId 			= game.mySocketId;
 			App.myRole 				= 'Host';
 			App.Player.position 	= game.position;
+			App.latency 	        = latency;
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 

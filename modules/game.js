@@ -4,7 +4,7 @@ const util = require('util');
 const logger = require('../utils/logger')(module);
 const AudioContext = require('web-audio-api').AudioContext;
 const SlowStream = require('slow-stream');
-const arthefactCheckingLatency = 3000;
+const arthefactCheckingLatency = 4000;
 const context = new AudioContext();
 var io;
 var gameSocket;
