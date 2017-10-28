@@ -69,6 +69,28 @@ passport.use('local-login', new Strategy({
     })
   }))
 
+passport.use('local-signup', new Strategy({
+  // by default, local strategy uses username and password, we will override with email
+  usernameField : 'mail',
+  passwordField : 'password',
+  passReqToCallback: true // allows us to pass back the entire request to the callback
+},
+function (req, email, password, cb) {
+  var user = {
+    pseudo : req.body.username, 
+    mail : req.body.mail, 
+    password : req.body.password, // TODO : salt password
+    rank : -1
+  }
+  console.log(user);
+  db.user.create(user, function (err, result) {
+      // TODO : check if email / pseudo already use 
+      if (err)
+        throw err;
+      return cb(null, user);
+  });
+}));
+
 passport.serializeUser(function (user, cb) {
   cb(null, user.id)
 })
@@ -114,18 +136,6 @@ app.use('/user', userRouter)
 app.use('/track', trackRouter)
 app.use('/score', scoreRouter)
 app.use('/', authRouter)
-
-app.get('/trackSelection', function (req, res) {
-  res.render('hallOfFame', {
-    message: 'Hello World!'
-  })
-})
-
-app.get('/login', (req, res) => {
-  res.render('login', {
-    message: 'Hello World!'
-  })
-})
 
 /* IO */
 
