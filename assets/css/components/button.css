@@ -10,8 +10,12 @@
 }
 
 .button-small {
-  padding: 20px;
+  /* padding: 20px; */
   width: auto;
+  max-width: 200px;
+  /* height: 50px; */
+  /* width: 50px; */
+  padding: 11px 18px 5px 18px;
 }
 
 .button-track {
