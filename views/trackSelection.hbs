@@ -32,17 +32,20 @@
 
             <!-- ********** YOUTUBE SEARCH BAR ********** -->
 
-            <div id="ytBrowser">
-                <input type="text" class="input" placeholder="type a song you like">
-                <button class="button button-small">M-glass-ico</button>
-            </div>
+            <section id="ytSearch" class="flex-col">
+                <h2 class="title">Search through YouTube</h2>
+                <div id="ytBrowser" class="inputWrapper flex-row">
+                    <input type="text" class="input" placeholder="type a song...">
+                    <button class="button button-small"><img src="../img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
+                </div>
+            </section>
 
             <!-- ********** FAVORITE TRACKS ********** -->
 
             <section id="favorites" class="flex-col">
                 <h2 class="title">Favorite tracks</h2>
-                <div class="track-list">
-                    {{!-- <div class="track"><a href="game"><button class="button">Orelsan - Basique</button></a></div> --}}
+                <div class="track-list flex-row">
+                    <div class="track"><a href="game"><button class="button button-track">Orelsan - Basique</button></a></div>
                 </div>
             </section>
 
