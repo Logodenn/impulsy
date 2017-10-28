@@ -43,8 +43,9 @@ var IO = {
     },
 
     onGameStarted : function(data) {
-		startGame();
-		// TODO
+        startGame(); // TODO
+        // Set score view
+        document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
     },
 
     onPlayerMove : function(data) {
@@ -65,7 +66,12 @@ var IO = {
         // Handle artefact checking
         if(gameState.isArtefactTaken) {
             App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
-            console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
+            // console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
+
+            // Write score in view
+            document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+
+            // Update artefact visual
             // console.log(listeArtefacts); cote Thomas
             listeArtefacts[gameState.bar].img.src = "../img/artefactTaken.png";
         }
