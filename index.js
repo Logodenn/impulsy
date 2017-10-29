@@ -127,11 +127,6 @@ app.get('/login', function(req, res)
 module.exports = http;
 
 
-
-
-
-
-
 ///////////////////////TESTS//////////////////////////////////////////////
 
 
@@ -141,25 +136,23 @@ module.exports = http;
     console.log(results);
 });*/
 
-/*var user= controller.user.getU("jiji",function (err,results) {
-    results.getScores(function (err,results) {
-        console.log(results);
-    });
+/*var user = controller.user.getUser("coco@gmail.com", false, function (err, result) {
+    console.log(result.id);
 });*/
 
-/*
-u={pseudo : "hello", mail: "coco@gmail.com",rank : 34, password : "KJKJKJKhhh"};
+
+/*u={pseudo : "heliote",rank : 34, password : "KJKJKJKhhh"};
 controller.user.create(u,function (err,results) {
     console.log(results);
-});
-*/
+});*/
+
 
 /*var user= controller.user.delete("momo",function (err,results) {
     console.log(results);
 });*/
 
 
-/*up={user_id: 1, pseudo : "heljilo", mail: "coco@gmail.comd",rank : 34, password : "KJKJKJKhhh"};
+/*up={user_id: 2, pseudo : "jojo", mail: "cgtr@gmail.com",rank : 34, password : "KJKJKJKhhh"};
 
 var user= controller.user.update(up,function (err,results) {
     console.log(results);
@@ -200,8 +193,43 @@ var user= controller.user.removeFavoriteTrack("momo","lolo",function (err,result
 /*var score= controller.score.list(function (err,results) {
     console.log(results);
 });*/
+/*
+u={duration : "3423", user_id :2 , track_id : 3};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});
 
-/*u={duration : "3423", user_id :1 , track_id : 2};
+u={duration : "3423", user_id :4 , track_id : 1};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});*/
+/*
+u={duration : "78", user_id :4 , track_id : 5};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});
+
+u={duration : "73847", user_id :3 , track_id : 4};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});*/
+
+/*u={duration : "98", user_id :3 , track_id : 1};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});
+
+u={duration : "987", user_id :3 , track_id : 1};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});
+
+u={duration : "987", user_id :3 , track_id : 2};
+controller.score.create(u,function (err,results) {
+    console.log(results);
+});
+
+u={duration : "987", user_id :3 , track_id : 5};
 controller.score.create(u,function (err,results) {
     console.log(results);
 });*/
@@ -221,6 +249,8 @@ var user= controller.score.update(u,function (err,results) {
     console.log(results);
 });*/
 
+
+
 /////////////////TRACK///////////////////////
 
 
@@ -234,16 +264,19 @@ var user = controller.track.getT("Julien", function (err, results) {
 });
 */
 
-/*var u={name :"Julien", link:"ftozertiuioj68bh", information:"{'aaa':'aazzz', 'fez':'ty'}"};
+/*var u={name :"ManuChao", link:"uefdhu", difficulty : "Hard",information:"{'aaa':'aazzz', 'fez':'ty'}"};
+controller.track.create(u,function (err,results) {
+    console.log(results);
+});
+
+var u={name :"Orelsan", link:"csdscddc", difficulty : "Hard",information:"{'aaa':'aazzz', 'fez':'ty'}"};
 controller.track.create(u,function (err,results) {
     console.log(results);
 });*/
 
-/*
-var user= controller.track.delete("Julien",function (err,results) {
+/*var user= controller.track.delete("Julien",function (err,results) {
     console.log(results);
-});
-*/
+});*/
 
 
 
@@ -251,6 +284,14 @@ var user= controller.track.delete("Julien",function (err,results) {
 var user= controller.track.update(u,function (err,results) {
     console.log(results);
 });*/
+
+/*controller.track.getMostPlayedTracks(function (err, results){
+    console.log(results);
+});*/
+
+controller.track.getUserMostPlayedTracks(2,function (err, results){
+    console.log(results);
+});
 
 /////////////////FRIENDS///////////////////////
 
