@@ -3,9 +3,10 @@
     src: url("../../font/cartoon.ttf");
 }
 
-* {
+body * {
     font-family: "cartoon";
-    font-size: 1.5rem;
+    /* font-size: 2.4rem; */
+    font-size: 36px;
     color: var(--color-font-light);
     /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
 }
