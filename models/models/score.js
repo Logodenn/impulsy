@@ -21,13 +21,11 @@ module.exports = function (orm, db) {
 
     Score.hasOne('user', db.models.user,{
         required: true,
-        //reverse: 'pseudo',
         reverse: "scores",
         autoFetch: true
     });
     Score.hasOne('track', db.models.track,{
         required: true,
-        //reverse: 'name',
         reverse : "scores",
         autoFetch: true
     });
