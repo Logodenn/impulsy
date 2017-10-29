@@ -123,9 +123,11 @@ module.exports = {
 
                         if (track.link) trackUpdate.link = track.link;
 
+                        if (track.difficulty) trackUpdate.difficulty = track.difficulty;
+
                         if (track.information) trackUpdate.information = JSON.stringify(track.information);
 
-                        logger.debug(track);
+                        logger.info(track);
                         trackUpdate.save(function (err) {
                             if (err) {
                                 logger.debug(err);
@@ -137,6 +139,51 @@ module.exports = {
                         });
                     }
                 });
+            }
+        });
+    },
+
+    getMostPlayedTracks: function (cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("SELECT track_id, COUNT(*) as nb" +
+                    " from score " +
+                    "group by track_id" +
+                    " order by nb desc", function (err, data) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        //console.log("rt");
+
+                        cb(null, data);
+                    }
+                })
+            }
+        });
+    },
+
+
+    getUserMostPlayedTracks: function (user_id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("SELECT track_id, COUNT(*) as nb" +
+                    " from score where user_id=? " +
+                    "group by track_id " +
+                    "order by nb desc", [user_id], function (err, data) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, data);
+                    }
+                })
             }
         });
     }
