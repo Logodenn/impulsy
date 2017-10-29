@@ -24,22 +24,36 @@ module.exports = {
         });
     },
 
-    getUser: function (pseudo, cb) {
+    getUser: function (param, isPseudo, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
                 cb(err);
             }
             else {
-                db.models.user.find({pseudo: pseudo}, function (err, user) {
-                    if (err) {
-                        logger.error(err);
-                        cb(err);
-                    } else {
-                        cb(null, user[0]);
-                    }
-                    logger.info("Done!");
-                });
+                // identification du user à partir de son pseudo
+                if (isPseudo) {
+                    db.models.user.find({pseudo: param}, function (err, user) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, user[0]);
+                        }
+                        logger.info("Done!");
+                    });
+                    // identification du user à partir de son mail
+                } else {
+                    db.models.user.find({mail: param}, function (err, user) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, user[0]);
+                        }
+                        logger.info("Done!");
+                    });
+                }
             }
         });
     },
