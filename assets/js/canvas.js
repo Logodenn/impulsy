@@ -7,14 +7,12 @@ var blocUnit = 100;
 var smallBar = {
     height  : blocUnit * 2,
     width   : blocUnit / 4,
-    // position: App.Canvas.bar.big.position + App.Canvas.bar.big.height / 4
     position: null
 }
 
 var bigBar = {
     height  : smallBar.height * 2,
     width   : blocUnit / 4,
-    // position: App.Canvas.bar.energy.position + App.Canvas.bar.energy.height + blocUnit
     position: null
 }
 
@@ -23,14 +21,6 @@ var energyBar = {
     width   : null,
     position: blocUnit,
     // color   : "#FFD51D",
-
-    // // x: 250,
-    // x: null,
-    // draw: function() {
-    //     ctx = myGameArea.context;
-    //     ctx.fillStyle = this.color;
-    //     ctx.fillRect(this.x, this.y, this.width, this.height);
-    // }
 }
 
 var Canvas = {    
@@ -60,9 +50,7 @@ var tabColorToChange = ["g-", "r+", "r-", "g+"];
 
 // ******************** Game variables ******************** //
 
-var amplitudes 	= [0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0];
-var artefacts 	=  [1, 0, 2, 3, 0, 1, 2, 2, 0, 1, 2, 1, 1, 2, 2, 3, 0, 1, 2, 1, 1, 0, 2, 2, 1, 1, 1, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2, 1, 1, 1, 2, 3, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1];
-var time 		= 0;
+var time = 0;
 
 // ******************** Components ******************** //
 
@@ -70,6 +58,14 @@ var player;
 var pulsers 		= [];
 var listeBarres 	= [];
 var listeArtefacts 	= [];
+
+// ******************** Images ******************** //
+
+var imgArtefact = new Image();
+imgArtefact.src = "../img/artefact.png";
+
+var imgArtefactTaken = new Image();
+imgArtefactTaken.src= "../img/artefactTaken.png";
 
 // ******************** Player ******************** //
 
@@ -118,6 +114,12 @@ function Artefact(posY) {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
+
+	self.isTaken     = function() {
+		
+				self.img    = imgArtefactTaken;
+		
+			}
 
 	self.ctx = myGameArea.context;
 	ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
@@ -256,15 +258,15 @@ function updateGameArea() {
 }
 
 function addAmplitudeAndArtefact() {
-	var amplitude  = new Amplitude(amplitudes[time]);
+	var amplitude  = new Amplitude(App.Player.audioSpectrum[time]);
 	listeBarres.push(amplitude);
 
-	var artefact = new Artefact(bigBar.position + artefacts[time] * blocUnit);
+	var artefact = new Artefact(bigBar.position + App.Player.artefactsToTake[time] * blocUnit);
 	listeArtefacts.push(artefact);
 
 	time++;
 
-	if(time > artefacts.length) {
+	if(time > App.Player.artefactsToTake.length) {
 		myGameArea.stopAddition();
 	}
 }
@@ -360,7 +362,8 @@ function updateGameScene(data) {
 	energyBar.update();
 
 	// Handle artefact checking
-	if(gameState.isArtefactTaken) {
+	// if(gameState.isArtefactTaken) {
+	if(listeArtefacts[gameState.bar].isTaken()) {
 		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
