@@ -361,7 +361,7 @@ function updateGameScene(data) {
 
 	// Handle artefact checking
 	// if(gameState.isArtefactTaken) {
-	if(listeArtefacts[gameState.bar].isTaken()) {
+	if(gameState.isArtefactTaken) {
 		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
@@ -370,7 +370,7 @@ function updateGameScene(data) {
 
 		// Update artefact visual
 		// console.log(listeArtefacts); cote Thomas
-		listeArtefacts[gameState.bar].img.src = "../img/artefactTaken.png";
+		listeArtefacts[gameState.bar].isTaken()
 	}
 }
 
