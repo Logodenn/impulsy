@@ -20,13 +20,11 @@
             <section id="mostPlayed" class="flex-col">
                 <h2 class="title">Most played tracks</h2>
                 <div class="track-list flex-row">
-                    <div class="track"><a href="game"><button class="button button-track">Orelsan - Basique</button></a></div>
-                    <div class="track"><a href="game"><button class="button button-track">Led Zeppelin - Good Times, Bad Times</button></a></div>
-                    <div class="track"><a href="game"><button class="button button-track">System Of A Down - Chop Suey!</button></a></div>
-                    <div class="track"><a href="game"><button class="button button-track">King Crimson - In The Court Of The Crimson King</button></a></div>
-                    <div class="track"><a href="game"><button class="button button-track">Kanye West - I Love Kanye</button></a></div>
-                    <div class="track"><a href="game"><button class="button button-track">Neil Young - Heart Of Gold</button></a></div>
-                    <div class="track"><a href="game"><button class="button button-track">Soundgarden - Slaves & Bulldozers</button></a></div>
+                    {{#each mostPlayed}}
+                        <div class="track"><a href="game/{{track_id}}"><button class="button button-track">
+                            {{name}}
+                            </button></a></div>
+                    {{/each }}
                 </div>
             </section>
 
