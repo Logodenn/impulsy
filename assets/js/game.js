@@ -116,18 +116,12 @@ var App = {
     // Event handlers for buttons
     bindEvents: function () {
 		// Host
-		// document.querySelector("#startGameButton").on('click', App.Host.onCreateClick);
-
-        // Player
-		// App.$doc.on('click', '.btnAnswer',App.Player.onPlayerAnswerClick);
-		// TODO gérer playerMove ici ?
     },
 
 	// ********** Host ********** //
     Host : {
 
         players : [],
-        currentCorrectAnswer: '',
         difficulty: "lazy",
 
         onDifficultyClick: function (difficulty) {
