@@ -43,8 +43,9 @@ var IO = {
     },
 
     onGameStarted : function(data) {
-		startGame();
-		// TODO
+        startGame(); // TODO
+        // Set score view
+        document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
     },
 
     onPlayerMove : function(data) {
@@ -54,44 +55,44 @@ var IO = {
     },
     
     onEnergy : function(data) {
-        // TODO
-        // console.log(data);
-        // TODO compute the proper way
-        energyBar.width = data.energy;
+
+        var gameState = data.data; // Dirty, back should send data, not data.data
+        // gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
+
+        // Handle energy
+        energyBar.width = gameState.energy;
         energyBar.update();
-        if(data.isArtefactTaken) {
-            console.log("vvv sould be redrawn as taken");
-            // console.log(listeArtefacts[data.bar].img.src);
-            // console.log(listeArtefacts);
-            // listeArtefacts[data.bar].img.src = "../img/artefactTaken.png";
+
+        // Handle artefact checking
+        if(gameState.isArtefactTaken) {
+            App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
+            // console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
+
+            // Write score in view
+            document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+
+            // Update artefact visual
+            // console.log(listeArtefacts); cote Thomas
+            listeArtefacts[gameState.bar].img.src = "../img/artefactTaken.png";
         }
 	},
 
-	gameOver : function(data) {
+	gameOver : function (data) {
 		endGame();
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
-	},
-	
+    },
 	onAudioChunk: function(data) {
-		App.Audio.chunkArray.push(data.chunk);
-	},
-	onAudioEnd: function() {
-		var fileReader = new FileReader();
-		var source = App.Audio.audioContext.createBufferSource();
-		var blob = new Blob(App.Audio.chunkArray);
+        chunkPlayer._onAudioChunk(data.chunk);
 
-		fileReader.onloadend = function () {
-			App.Audio.audioContext.decodeAudioData(this.result, function(buffer) {
-				source.buffer = buffer;
-				source.connect(App.Audio.audioContext.destination);
-				source.start();
-			});
-		}
-
-		fileReader.readAsArrayBuffer(blob);
-	}
+        if (!chunkPlayer._startTime) {
+            chunkPlayer._start();
+        }
+    },
+    onAudioEnd: function () {
+        clearInterval(chunkPlayer._timer);
+    }
 };
 
 // ******************** App ******************** //
@@ -99,7 +100,7 @@ var IO = {
 var App = {
 
     gameId: 0,
-	myRole: '',   // 'Player' or 'Host'
+    myRole: '',   // 'Player' or 'Host'
 
     /**
      * The Socket.IO socket object identifier. This is unique for
@@ -171,19 +172,29 @@ var App = {
                 // Hide buttons
                 document.querySelector("#difficultyButtons").classList.add("hidden");
                 document.querySelector("#startButtons").classList.add("hidden");
+
+                // Display score
+                document.querySelector("#score").classList.remove("hidden");
 			}
         },
 
         gameInit: function (data) {
 
-			var game = data.game;
+            var game    = data.game;
+            var latency = data.latency;
 
 			console.log(game);
 
+            // Settings
             App.gameId 				= game.gameId;
 			App.mySocketId 			= game.mySocketId;
 			App.myRole 				= 'Host';
-			App.Player.position 	= game.position;
+            App.latency 	        = latency;
+            
+            // Logic
+			App.Player.position 	    = game.position;
+            App.Player.artefactsToTake 	= game.arrayArtefacts;
+            App.Player.artefactsTaken   = [];
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
@@ -202,16 +213,11 @@ var App = {
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
         },
         
+        // In case the player does not move but the position is right
         onEnergy : function(data) {
 			console.log('Player moved at position : ' + App.Player.position);
 			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
-	},
-
-	// ********** Audio ********** //
-	Audio : {
-		audioContext: new (window.AudioContext || window.webkitAudioContext)(),
-		chunkArray: []
 	}
 };
 
