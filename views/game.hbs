@@ -7,7 +7,7 @@
         <link href="css/pages/game.css" rel="stylesheet">
         
         <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/socket.io-stream.js"></script>
+        <script src="js/chunkPlayer.js"></script>
         <script src="js/game.js"></script>
         <script src="js/canvas.js"></script>
     </head>
@@ -24,6 +24,10 @@
             <div id="startButtons" class="buttonWrapper">
                 <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button>
                 <button id="startGameButton" class="button" state="disabled" onclick="App.Host.onStartClick()">Ready: start game</button>
+            </div>
+
+            <div id="score" class="hidden">
+                <span id="artefactsTaken">0</span> / <span id="artefactsToTake">32</span>
             </div>
 
             <div id="canvasWrapper"></div>
