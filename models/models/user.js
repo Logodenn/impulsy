@@ -16,6 +16,7 @@ module.exports = function (orm, db) {
                 serialize: function () {
                     var scores;
                     var friends;
+                    var favoriteTracks;
 
                     if (this.scores) {
                         scores = this.scores.map(function (c) {
@@ -33,6 +34,14 @@ module.exports = function (orm, db) {
                         friends = [];
                     }
 
+                    if (this.favoriteTracks) {
+                        favoriteTracks = this.favoriteTracks.map(function (c) {
+                            return c.serialize();
+                        });
+                    } else {
+                        favoriteTracks = [];
+                    }
+
                     return {
                         id: this.id,
                         pseudo: this.pseudo,
@@ -40,7 +49,8 @@ module.exports = function (orm, db) {
                         mail: this.mail,
                         rank: this.rank,
                         scores: scores,
-                        friends: friends
+                        friends: friends,
+                        favoriteTracks: favoriteTracks
                     };
 
                 }
@@ -49,6 +59,12 @@ module.exports = function (orm, db) {
 
     User.hasMany('friends', db.models.user, {}, {
         reverse: "users",
+        autoFetch: true,
+        key: true,
+    });
+
+    User.hasMany('favoriteTracks', db.models.track, {}, {
+        reverse: "favoriteTracks",
         autoFetch: true,
         key: true,
     });
