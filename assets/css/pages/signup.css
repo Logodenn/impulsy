@@ -1,0 +1,24 @@
+
+@import '../main.css';
+
+.catchPhrase {
+	text-transform: uppercase;
+	text-align: center;
+	/* color: var(--color-font-light); */
+}
+
+.buttonWrapper {
+	/* width: 750px; */
+}
+
+.inputWrapper {
+	margin: 10px;
+}
+
+.form {
+	align-items: end;
+}
+
+.form button{
+	align-self: center;
+}
