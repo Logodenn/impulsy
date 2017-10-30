@@ -97,6 +97,7 @@ var App = {
 			App.Player.position 	    = game.position;
             App.Player.artefactsToTake 	= game.arrayArtefacts;
             App.Player.artefactsTaken   = [];
+            App.Player.audioSpectrum 	= game.arraySpectrum;
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
