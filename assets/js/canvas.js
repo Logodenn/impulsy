@@ -292,13 +292,6 @@ function startGame() {
 
 	window.onkeyup = function(e) {
 
-		// TODO: bind with canvas drawing
-		// fill(COLOR.player);
-		// rect(left, top, blocUnit, height);
-
-		// TODO
-		// Dynamize player position on canvas
-
 		var key = e.keyCode ? e.keyCode : e.which;
 		// a : top = 65
 		// z : midtop = 90
@@ -369,7 +362,6 @@ function updateGameScene(data) {
 		document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
 
 		// Update artefact visual
-		// console.log(listeArtefacts); cote Thomas
 		listeArtefacts[gameState.bar].isTaken()
 	}
 }
