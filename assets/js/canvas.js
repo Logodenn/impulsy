@@ -181,7 +181,7 @@ function Amplitude(height) {
 
 function EnergyBar() {
 	this.color 		= "#FFD51D";
-	this.width 		= energyBar.width;
+	this.width 		= App.Player.artefactsToTake;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= (Canvas.width * 0.5) - (this.width * 0.5);
