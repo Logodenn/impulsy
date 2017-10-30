@@ -275,6 +275,9 @@ function addAmplitudeAndArtefact() {
 
 function startGame() {
 
+	// Set score view
+	document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
+
 	myGameArea.start();
 
 	player 		= new Player()
@@ -345,6 +348,28 @@ function startGame() {
 		// ******************** Notify websocket ******************** //
 		console.log(player.y);
 		App.Player.onMove(App.Player.position);
+	}
+}
+
+function updateGameScene(data) {
+	var gameState = data.data; // Dirty, back should send data, not data.data
+	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
+
+	// Handle energy
+	energyBar.width = gameState.energy;
+	energyBar.update();
+
+	// Handle artefact checking
+	if(gameState.isArtefactTaken) {
+		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
+		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
+
+		// Write score in view
+		document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+
+		// Update artefact visual
+		// console.log(listeArtefacts); cote Thomas
+		listeArtefacts[gameState.bar].img.src = "../img/artefactTaken.png";
 	}
 }
 
