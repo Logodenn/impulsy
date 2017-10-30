@@ -115,11 +115,9 @@ function Artefact(posY) {
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
 
-	self.isTaken     = function() {
-		
-				self.img    = imgArtefactTaken;
-		
-			}
+	self.isTaken = function() {
+		self.img = imgArtefactTaken;
+	}
 
 	self.ctx = myGameArea.context;
 	ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
