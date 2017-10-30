@@ -7,14 +7,12 @@ var blocUnit = 100;
 var smallBar = {
     height  : blocUnit * 2,
     width   : blocUnit / 4,
-    // position: App.Canvas.bar.big.position + App.Canvas.bar.big.height / 4
     position: null
 }
 
 var bigBar = {
     height  : smallBar.height * 2,
     width   : blocUnit / 4,
-    // position: App.Canvas.bar.energy.position + App.Canvas.bar.energy.height + blocUnit
     position: null
 }
 
@@ -23,14 +21,6 @@ var energyBar = {
     width   : null,
     position: blocUnit,
     // color   : "#FFD51D",
-
-    // // x: 250,
-    // x: null,
-    // draw: function() {
-    //     ctx = myGameArea.context;
-    //     ctx.fillStyle = this.color;
-    //     ctx.fillRect(this.x, this.y, this.width, this.height);
-    // }
 }
 
 var Canvas = {    
@@ -60,9 +50,7 @@ var tabColorToChange = ["g-", "r+", "r-", "g+"];
 
 // ******************** Game variables ******************** //
 
-var amplitudes 	= [0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0];
-var artefacts 	=  [1, 0, 2, 3, 0, 1, 2, 2, 0, 1, 2, 1, 1, 2, 2, 3, 0, 1, 2, 1, 1, 0, 2, 2, 1, 1, 1, 1, 2, 3, 0, 1, 2, 1, 0, 1, 2, 1, 1, 1, 2, 3, 0, 1, 2, 1, 2, 1, 2, 1, 2, 1];
-var time 		= 0;
+var time = 0;
 
 // ******************** Components ******************** //
 
@@ -70,6 +58,14 @@ var player;
 var pulsers 		= [];
 var listeBarres 	= [];
 var listeArtefacts 	= [];
+
+// ******************** Images ******************** //
+
+var imgArtefact = new Image();
+imgArtefact.src = "../img/artefact.png";
+
+var imgArtefactTaken = new Image();
+imgArtefactTaken.src= "../img/artefactTaken.png";
 
 // ******************** Player ******************** //
 
@@ -117,6 +113,10 @@ function Artefact(posY) {
 		this.x -= 1;
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	}
+
+	self.isTaken = function() {
+		self.img = imgArtefactTaken;
 	}
 
 	self.ctx = myGameArea.context;
@@ -256,15 +256,15 @@ function updateGameArea() {
 }
 
 function addAmplitudeAndArtefact() {
-	var amplitude  = new Amplitude(amplitudes[time]);
+	var amplitude  = new Amplitude(App.Player.audioSpectrum[time]);
 	listeBarres.push(amplitude);
 
-	var artefact = new Artefact(bigBar.position + artefacts[time] * blocUnit);
+	var artefact = new Artefact(bigBar.position + App.Player.artefactsToTake[time] * blocUnit);
 	listeArtefacts.push(artefact);
 
 	time++;
 
-	if(time > artefacts.length) {
+	if(time > App.Player.artefactsToTake.length) {
 		myGameArea.stopAddition();
 	}
 }
@@ -274,6 +274,9 @@ function addAmplitudeAndArtefact() {
 // **************************************************************************************************** //
 
 function startGame() {
+
+	// Set score view
+	document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
 
 	myGameArea.start();
 
@@ -288,13 +291,6 @@ function startGame() {
 	// ******************** Player movement ******************** //
 
 	window.onkeyup = function(e) {
-
-		// TODO: bind with canvas drawing
-		// fill(COLOR.player);
-		// rect(left, top, blocUnit, height);
-
-		// TODO
-		// Dynamize player position on canvas
 
 		var key = e.keyCode ? e.keyCode : e.which;
 		// a : top = 65
@@ -345,6 +341,28 @@ function startGame() {
 		// ******************** Notify websocket ******************** //
 		console.log(player.y);
 		App.Player.onMove(App.Player.position);
+	}
+}
+
+function updateGameScene(data) {
+	var gameState = data.data; // Dirty, back should send data, not data.data
+	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
+
+	// Handle energy
+	energyBar.width = gameState.energy;
+	energyBar.update();
+
+	// Handle artefact checking
+	// if(gameState.isArtefactTaken) {
+	if(gameState.isArtefactTaken) {
+		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
+		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
+
+		// Write score in view
+		document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+
+		// Update artefact visual
+		listeArtefacts[gameState.bar].isTaken()
 	}
 }
 
