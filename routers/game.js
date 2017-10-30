@@ -1,9 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const db = require('./models/controllers');
 
 router
 .get("/", (req, res) => {
-    res.render('game', { message: 'Hello World' });
+    //{tickets:tickets}
+    // Trend track --> Youtube ? 
+    // Most played track 
+    // Favorite track --> player connected ? 
+    // 
+    res.render('game', { mostPlayed: db.models.track.mostPlayed });
 });
 
 module.exports = router;
