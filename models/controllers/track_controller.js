@@ -155,16 +155,15 @@ module.exports = {
                 logger.error(err);
                 cb(err);
             } else {
-                db.driver.execQuery("SELECT track_id, COUNT(*) as nb" +
-                    " from score " +
-                    "group by track_id" +
-                    " order by nb desc", function (err, data) {
+                db.driver.execQuery("SELECT score.track_id, track.name, COUNT(*) AS nb" +
+                    " FROM score INNER JOIN track ON score.track_id = track.id" +
+                    " GROUP BY score.track_id" +
+                    " ORDER BY nb desc", function (err, data) {
                     if (err) {
-                        logger.error(err);
+                        logger.error(err);                     
                         cb(err);
                     } else {
                         //console.log("rt");
-
                         cb(null, data);
                     }
                 })
