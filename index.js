@@ -35,61 +35,62 @@ const db = require('./models/controllers')
 environment(app)
 
 /* PASSPORT SETUP */
-function validateEmail(email) {
-  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(email);
+function validateEmail (email) {
+  var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(email)
 }
 
 passport.use('local-login', new Strategy({
     // by default, local strategy uses username and password, we will override with email
-    usernameField: 'username',
-    passwordField: 'password',
-    passReqToCallback: true // allows us to pass back the entire request to the callback
-  },
-  function (req, login, password, cb) {
-    // try if it's an email or a username
-    if (validateEmail(login)) email = true;
-    else email = false;
-    //db.user.getUser(login, email, function (err, result) {
-    db.user.getUser(login, function (err, result) {
-      if (err) {
-        console.log(err);
-        return cb(err);
-      }
-      console.log(result);
-      if (!result) {
-        return cb(null, false);
-      }
-      if (result.password !== password) { // TODO salt password with username/email   ?
-        return cb(null, false);
-      }
-      console.log("Ok ! ");
+  usernameField: 'username',
+  passwordField: 'password',
+  passReqToCallback: true // allows us to pass back the entire request to the callback
+},
+function (req, login, password, cb) {
+  // try if it's an email or a username
+  // const email = validateEmail(login)
 
-      return cb(null, result);
-    })
-  }))
+  // db.user.getUser(login, email, function (err, result) {
+  db.user.getUser(login, function (err, result) {
+    if (err) {
+      console.log(err)
+      return cb(err)
+    }
+    console.log(result)
+    if (!result) {
+      return cb(null, false)
+    }
+    if (result.password !== password) { // TODO salt password with username/email   ?
+      return cb(null, false)
+    }
+    console.log('Ok ! ')
+
+    return cb(null, result)
+  })
+}))
 
 passport.use('local-signup', new Strategy({
-  // by default, local strategy uses username and password, we will override with email
-  usernameField : 'mail',
-  passwordField : 'password',
+    // by default, local strategy uses username and password, we will override with email
+  usernameField: 'mail',
+  passwordField: 'password',
   passReqToCallback: true // allows us to pass back the entire request to the callback
 },
 function (req, email, password, cb) {
   var user = {
-    pseudo : req.body.username, 
-    mail : req.body.mail, 
-    password : req.body.password, // TODO : salt password
-    rank : -1
+    pseudo: req.body.username,
+    mail: req.body.mail,
+    password: req.body.password, // TODO : salt password
+    rank: -1
   }
-  console.log(user);
+  console.log(user)
   db.user.create(user, function (err, result) {
-      // TODO : check if email / pseudo already use 
-      if (err)
-        throw err;
-      return cb(null, user);
-  });
-}));
+    // TODO : check if email / pseudo already use
+    if (err) {
+      throw err
+    }
+    return cb(null, user)
+  })
+}))
 
 passport.serializeUser(function (user, cb) {
   cb(null, user.id)
