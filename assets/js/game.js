@@ -1,99 +1,3 @@
-// var model = {
-// 	gameName	: "Impulsy",
-// 	catchPhrase	: "Ride the music!"
-// }
-
-/*var context = {gameName: "Impulsy", catchPhrase: "Ride the music!"};
-var html    = template(context);*/
-
-// *********************************************************************************************************** //
-// **************************************** WEBSOCKET INITIALIZATION **************************************** //
-// ********************************************************************************************************* //
-
-// ******************** IO ******************** //
-
-var IO = {
-
-    init: function() {
-        IO.socket = io.connect();
-        IO.bindEvents();
-    },
-
-    bindEvents : function() {
-        IO.socket.on('connected', IO.onConnected);
-        IO.socket.on('newGameCreated', IO.onNewGameCreated);
-        IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('playerMove', IO.onPlayerMove);
-        IO.socket.on('energy', IO.onEnergy);
-        IO.socket.on('gameOver', IO.onGameOver);
-		IO.socket.on('audioChunk', IO.onAudioChunk);
-		IO.socket.on('audioEnd', IO.onAudioEnd);
-    },
-
-    onConnected : function() {
-        // Cache a copy of the client's socket.IO session ID on the App
-        App.mySocketId = IO.socket.sessionid;
-        // console.log(data.message);
-    },
-
-    onNewGameCreated : function(data) {
-		// gameId
-		// mySocketId
-        App.Host.gameInit(data);
-    },
-
-    onGameStarted : function(data) {
-        startGame(); // TODO
-        // Set score view
-        document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
-    },
-
-    onPlayerMove : function(data) {
-		// TODO
-		// Notify players that a player has moved
-		player.update();		
-    },
-    
-    onEnergy : function(data) {
-
-        var gameState = data.data; // Dirty, back should send data, not data.data
-        // gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
-
-        // Handle energy
-        energyBar.width = gameState.energy;
-        energyBar.update();
-
-        // Handle artefact checking
-        if(gameState.isArtefactTaken) {
-            App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
-            // console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
-
-            // Write score in view
-            document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
-
-            // Update artefact visual
-            // console.log(listeArtefacts); cote Thomas
-            listeArtefacts[gameState.bar].img.src = "../img/artefactTaken.png";
-        }
-	},
-
-	gameOver : function (data) {
-		endGame();
-		// TODO
-		// Notify players that game has ended
-		// remove listeners
-    },
-	onAudioChunk: function(data) {
-        chunkPlayer._onAudioChunk(data.chunk);
-
-        if (!chunkPlayer._startTime) {
-            chunkPlayer._start();
-        }
-    },
-    onAudioEnd: function () {
-        clearInterval(chunkPlayer._timer);
-    }
-};
 
 // ******************** App ******************** //
 
@@ -116,12 +20,16 @@ var App = {
     // Event handlers for buttons
     bindEvents: function () {
 		// Host
+
+        // Player
     },
 
 	// ********** Host ********** //
     Host : {
 
         players : [],
+        currentCorrectAnswer: '',
+        trackId: "3TygesLODpU",
         difficulty: "lazy",
 
         onDifficultyClick: function (difficulty) {
@@ -147,9 +55,9 @@ var App = {
                 // Active state
                 document.querySelector("#"+this.difficulty).attributes.state.value = "active";
 
-				console.log('Clicked "Create A Game" ' + youtubeVideoId + ' - ' + this.difficulty);
+				console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
 				IO.socket.emit('hostCreateNewGame', {
-					youtubeVideoId	: youtubeVideoId,
+					youtubeVideoId	: this.trackId,
 					difficulty		: this.difficulty
 				});
 
@@ -189,6 +97,7 @@ var App = {
 			App.Player.position 	    = game.position;
             App.Player.artefactsToTake 	= game.arrayArtefacts;
             App.Player.artefactsTaken   = [];
+            App.Player.audioSpectrum 	= game.arraySpectrum;
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
@@ -215,10 +124,4 @@ var App = {
 	}
 };
 
-IO.init();
 App.init();
-
-// Dummy values for testing purpose
-
-var youtubeVideoId 	= "3TygesLODpU";
-var difficulty 		= "lazy";
