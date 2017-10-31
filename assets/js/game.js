@@ -95,9 +95,9 @@ var App = {
             
             // Logic
 			App.Player.position 	    = game.position;
-            App.Player.artefactsToTake 	= game.arrayArtefacts;
+            App.Player.artefactsToTake 	= game.arrayArtefacts.slice(0);
             App.Player.artefactsTaken   = [];
-            App.Player.audioSpectrum 	= game.arraySpectrum;
+            App.Player.audioSpectrum 	= game.arraySpectrum.slice(0);
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 

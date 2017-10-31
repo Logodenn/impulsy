@@ -274,7 +274,7 @@ function addAmplitudeAndArtefact() {
 // **************************************************************************************************** //
 
 function startGame() {
-
+	
 	// Set score view
 	document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
 
@@ -355,6 +355,7 @@ function updateGameScene(data) {
 	// Handle artefact checking
 	// if(gameState.isArtefactTaken) {
 	if(gameState.isArtefactTaken) {
+		
 		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
