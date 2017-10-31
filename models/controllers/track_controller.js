@@ -147,7 +147,7 @@ module.exports = {
         });
     },
 
-    getMostPlayedTracks: function (cb) {
+    getTrendTracks: function (cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
