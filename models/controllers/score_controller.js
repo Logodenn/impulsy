@@ -114,6 +114,8 @@ module.exports = {
 
                         if (score.duration) scoreUpdate.duration = score.duration;
 
+                        if (score.difficulty) scoreUpdate.difficulty = score.difficulty;
+
                         scoreUpdate.save(function (err) {
                             if (err) {
                                 logger.debug(err);

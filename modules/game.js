@@ -58,7 +58,6 @@ function hostCreateNewGame(data) {
     game = gameCreate
     if (err) logger.error(err);
     else {
-      console.log(game);
       gameSocket.emit('newGameCreated', {
         game,
         latency: arthefactCheckingLatency
