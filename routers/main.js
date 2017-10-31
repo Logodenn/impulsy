@@ -6,11 +6,9 @@ const numberOfTrend = 10;
 const numberOfUserMostPlayed = 10;
 const numberOfUserFavorite = 10;
 router
-  .get("/", (req, res) => {
-    res.render('index', {
-      message: 'Hello World'
-    });
-  });
+.get("/", (req, res) => {
+    res.render('index', { message : "Hello world !"});
+});
 
 router
   .get('/hallOfFame', function (req, res) {
