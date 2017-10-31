@@ -1,13 +1,7 @@
 
 @import '../main.css';
 
-.content {
-	/* background: red; */
-}
-
-.buttonWrapper {
-	/* height: 300px; */
-}
+/********** Score **********/
 
 #score {
 	position: fixed;
@@ -22,6 +16,12 @@
 
 #score #artefactsToTake {
 	color: var(--color-background-light);
+}
+
+/********** Canvas **********/
+
+#canvasWrapper {
+	position: fixed;
 }
 
 /********** Code for tablet **********/
