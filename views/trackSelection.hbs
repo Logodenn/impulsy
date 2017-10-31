@@ -26,7 +26,7 @@
             <section id="mostPlayedTracks" class="flex-col">
                 <h2 class="title">Your most played tracks</h2>
                 <div class="track-list flex-row">
-                    {{#each numberOfUserMostPlayed}}
+                    {{#each userMostPlayed}}
                         <div class="track"><a href="game/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
