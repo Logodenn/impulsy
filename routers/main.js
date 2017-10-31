@@ -32,7 +32,7 @@ router
             // Favorite User track
             req.user.getFavoriteTracks((err, userFavorite) => {
               if (err) console.log(err);
-              data.userFavorite = mostPlayed.slice(0, numberOfUserFavorite);
+              data.userFavorite = userFavorite.slice(0, numberOfUserFavorite);
               data.userConnected = true;
               res.render('trackSelection', data);
             })
