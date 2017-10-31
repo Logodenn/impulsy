@@ -8,6 +8,7 @@ var COLOR = {
 }
 
 var blocUnit = 100;
+var visualCoefficient = 4;
 
 var smallBar = {
     height  : blocUnit * 2,
@@ -193,13 +194,13 @@ function EnergyBarSlot() {
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
-	this.y 			= energyBar.position;
+	this.y 			= energyBar.position * 2;
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		// this.x = (Canvas.width * 0.5) - (this.width * 0.5); // TODO
 		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
-		console.log("Slot posX: " + this.x + " " + this.width);
+		console.log("Slot posX: " + this.x + " width " + this.width);
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 
@@ -213,7 +214,6 @@ function EnergyBarSlot() {
 function EnergyBar() {
 
 	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5);
-	console.log("energyBar xPosition is : " + computedX);
 
 	this.color 		= COLOR.energyBar;
 	this.width 		= App.Player.artefactsToTake.length;
@@ -287,6 +287,7 @@ function updateGameArea() {
 	}
 
 	energyBar.update();
+	energyBarSlot.update();
 	player.update();
 }
 
@@ -375,7 +376,7 @@ function startGame() {
 		}
 
 		// ******************** Notify websocket ******************** //
-		console.log(player.y);
+		// console.log(player.y);
 		App.Player.onMove(App.Player.position);
 	}
 }
