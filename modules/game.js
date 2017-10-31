@@ -61,26 +61,28 @@ function hostCreateNewGame(data) {
       gameSocket.emit('newGameCreated', {
         game,
         latency: arthefactCheckingLatency
-      });
+      })
 
       youtube.getAudioStream(youtubeVideoId, false, 'highest', (err, command) => {
-        let pipe = command.pipe(new SlowStream({
-          maxWriteInterval: 15
-        }));
-        pipe.on('end', () => {
-          io.sockets.in(game.gameId).emit('audioEnd');
+        game.audioStreamPipe = command.pipe(new SlowStream({
+          maxWriteInterval: 50
+        }))
+
+        game.audioStreamPipe.on('end', () => {
+          io.sockets.in(game.gameId).emit('audioEnd')
         })
 
-        pipe.on('data', (chunk) => {
+        game.audioStreamPipe.on('data', (chunk) => {
           io.sockets.in(game.gameId).emit('audioChunk', {
             chunk: chunk
-          });
-        });
-      });
+          })
+        })
+      })
     }
-  });
+  })
+
   // Join the Room and wait for the players
-  gameSocket.join(thisGameId.toString());
+  gameSocket.join(thisGameId.toString())
 };
 
 /**
@@ -147,6 +149,10 @@ function endGame(victory) {
     if (err) logger.error(err);
   });
   gameSocket.disconnect(true);
+
+  game.audioStreamPipe.pause()
+  game.audioStreamPipe.destroy()
+
   logger.info('End of the game this is a ' + victory);
 }
 
@@ -194,7 +200,7 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
       currentBar: 0,
       difficulty: difficulty // difficulty of the level 
     };
-    
+
     if (typeof result != 'undefined') { // Search if the sound exist
       game.arraySpectrum = result.information.arraySpectrum;
       game.arrayArtefacts = result.information.arrayArtefacts;
@@ -210,7 +216,7 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
               game.arraySpectrum = bars;
               game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
               game.energy = game.arraySpectrum.length; // duration of the music 
-              
+
               // TODO voir avec Pierre pour link et sound
               // sound = titre musique et link lien vers vidéo 
               track_information = {
@@ -230,7 +236,7 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
                 else game.trackId = result.trackId;
               });
               logger.debug('Track saved !')
-              
+
             }
           });
         }
