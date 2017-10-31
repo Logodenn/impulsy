@@ -32,7 +32,12 @@ var IO = {
     },
 
     onGameStarted : function(data) {
-        startGame(); // TODO Game.startGame()
+        startGame();
+
+        // TODO: Change chunkPLayer and create a new chunkPlayer
+        if (!chunkPlayer._startTime) {
+            chunkPlayer._start();
+        }
     },
 
     onPlayerMove : function(data) {
@@ -54,10 +59,6 @@ var IO = {
     },
 	onAudioChunk: function(data) {
         chunkPlayer._onAudioChunk(data.chunk);
-
-        if (!chunkPlayer._startTime) {
-            chunkPlayer._start();
-        }
     },
     onAudioEnd: function () {
         clearInterval(chunkPlayer._timer);

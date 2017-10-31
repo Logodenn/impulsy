@@ -18,7 +18,6 @@ const io = require('socket.io').listen(http)
 /* GAME */
 
 const game = require('./modules/game.js')
-
 /* ROUTERS */
 
 const mainRouter = require('./routers/main')
@@ -48,23 +47,18 @@ passport.use('local-login', new Strategy({
 },
 function (req, login, password, cb) {
   // try if it's an email or a username
-  // const email = validateEmail(login)
-
-  // db.user.getUser(login, email, function (err, result) {
-  db.user.getUser(login, function (err, result) {
-    if (err) {
+  const email = validateEmail(login)
+  db.user.getUser(login, email, function (err, result) {
+    if (err) {    
       console.log(err)
       return cb(err)
     }
-    console.log(result)
     if (!result) {
       return cb(null, false)
     }
     if (result.password !== password) { // TODO salt password with username/email   ?
       return cb(null, false)
     }
-    console.log('Ok ! ')
-
     return cb(null, result)
   })
 }))
@@ -92,20 +86,6 @@ function (req, email, password, cb) {
   })
 }))
 
-passport.serializeUser(function (user, cb) {
-  cb(null, user.id)
-})
-
-passport.deserializeUser(function (id, cb) {
-  db.users.findById(id, function (err, user) {
-    if (err) {
-      return cb(err)
-    }
-
-    cb(null, user)
-  })
-})
-
 /* MIDDLEWARES */
 
 // Use application-level middleware for common functionality, including
@@ -115,8 +95,9 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(require('express-session')({
   secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false
+  name: 'serializedUser',
+  resave: true,
+  saveUninitialized: true
 }))
 
 // Initialize Passport and restore authentication state, if any, from the
@@ -127,6 +108,17 @@ app.use(passport.session())
 app.set('view engine', 'hbs')
 
 app.use(express.static(path.join(__dirname, '/assets')))
+
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  db.user.getUserId(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 /* ROUTER SETUP */
 
