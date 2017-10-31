@@ -129,8 +129,6 @@ module.exports = {
 
                         if (track.link) trackUpdate.link = track.link;
 
-                        if (track.difficulty) trackUpdate.difficulty = track.difficulty;
-
                         if (track.information) trackUpdate.information = JSON.stringify(track.information);
 
                         logger.info(track);

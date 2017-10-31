@@ -18,6 +18,12 @@
   padding: 11px 18px 5px 18px;
 }
 
+#homeButton {
+  position: fixed;
+  top: 50px;
+	left: 50px;
+}
+
 .button-track {
   padding: 5px 10px;
   font-family: "Calibri";
