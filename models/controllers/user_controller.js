@@ -9,8 +9,7 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
+            } else {
                 db.models.user.find().all(function (err, users) {
                     if (err) {
                         logger.error(err);
@@ -24,36 +23,47 @@ module.exports = {
         });
     },
 
-    getUser: function (param, isPseudo, cb) {
+    getUserId: function (id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
                 cb(err);
             }
-            else {
-                // identification du user à partir de son pseudo
-                if (isPseudo) {
-                    db.models.user.find({pseudo: param}, function (err, user) {
-                        if (err) {
-                            logger.error(err);
-                            cb(err);
-                        } else {
-                            cb(null, user[0]);
-                        }
-                        logger.info("Done!");
-                    });
-                    // identification du user à partir de son mail
+            db.models.user.get(id, function (err, user) {
+                if (err) {
+                    logger.error(err);
+                    cb(err);
                 } else {
-                    db.models.user.find({mail: param}, function (err, user) {
-                        if (err) {
-                            logger.error(err);
-                            cb(err);
-                        } else {
-                            cb(null, user[0]);
-                        }
-                        logger.info("Done!");
-                    });
+                    cb(null, user);
                 }
+                logger.info("Done!");
+            });
+        });
+    },
+    getUser: function (param, isMail, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                if (isMail) {
+                    couple = {
+                        mail: param
+                    };
+                } else {
+                    couple = {
+                        pseudo: param
+                    };
+                }
+                db.models.user.find(couple, function (err, user) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        cb(null, user[0]);
+                    }
+                    logger.info("Done!");
+                });
             }
         });
     },
@@ -63,8 +73,7 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
+            } else {
                 db.models.user.create(user, function (err, message) {
                     if (err) {
                         logger.error(err);
@@ -84,9 +93,10 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo}, function (err, user) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo
+                }, function (err, user) {
                     if (err) {
                         logger.error(err);
                         cb(err);
@@ -99,7 +109,9 @@ module.exports = {
                                 logger.info("user " + user[0].id + " removed !");
 
                                 //TODO attention si user undefined
-                                db.models.score.find({user_id: user[0].id}).remove(function (err) {
+                                db.models.score.find({
+                                    user_id: user[0].id
+                                }).remove(function (err) {
                                     if (err) {
                                         logger.error(err);
                                         cb(err);
@@ -159,9 +171,10 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo}, function (err, user) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo
+                }, function (err, user) {
                     if (err) {
                         logger.error(err);
                         cb(err);
@@ -186,14 +199,17 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo1}, function (err, user1) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo1
+                }, function (err, user1) {
                     if (err) {
                         logger.error(err);
                         cb(err);
                     } else {
-                        db.models.user.find({pseudo: pseudo2}, function (err, user2) {
+                        db.models.user.find({
+                            pseudo: pseudo2
+                        }, function (err, user2) {
                             if (err) {
                                 logger.error(err);
                                 cb(err);
@@ -235,14 +251,17 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo1}, function (err, user1) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo1
+                }, function (err, user1) {
                     if (err) {
                         logger.error(err);
                         cb(err);
                     } else {
-                        db.models.user.find({pseudo: pseudo2}, function (err, user2) {
+                        db.models.user.find({
+                            pseudo: pseudo2
+                        }, function (err, user2) {
                             if (err) {
                                 logger.error(err);
                                 cb(err);
@@ -264,9 +283,10 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo}, function (err, user) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo
+                }, function (err, user) {
                     if (err) {
                         logger.error(err);
                         cb(err);
@@ -291,14 +311,17 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo}, function (err, user) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo
+                }, function (err, user) {
                     if (err) {
                         logger.error(err);
                         cb(err);
                     } else {
-                        db.models.track.find({name: name}, function (err, track) {
+                        db.models.track.find({
+                            name: name
+                        }, function (err, track) {
                             if (err) {
                                 logger.error(err);
                                 cb(err);
@@ -339,14 +362,17 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.user.find({pseudo: pseudo}, function (err, user) {
+            } else {
+                db.models.user.find({
+                    pseudo: pseudo
+                }, function (err, user) {
                     if (err) {
                         logger.error(err);
                         cb(err);
                     } else {
-                        db.models.track.find({name: name}, function (err, track) {
+                        db.models.track.find({
+                            name: name
+                        }, function (err, track) {
                             if (err) {
                                 logger.error(err);
                                 cb(err);
