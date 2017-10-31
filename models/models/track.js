@@ -4,7 +4,6 @@ module.exports = function (orm, db) {
     var Track = db.define("track", {
             name: {type: 'text'},
             link: {type: 'text'},
-            difficulty: {type: 'text'},
             information: Object
         },
         {
