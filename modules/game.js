@@ -135,7 +135,7 @@ function endGame(victory) {
   clearInterval(new_positions);
   if (victory) victory = "victory";
   else victory = "loose"
-  io.sockets.in(game.gameId).emit('enfOfGame', {
+  io.sockets.in(game.gameId).emit('gameOver', {
     "result": victory,
     "score": game.nbArtefacts
   });
