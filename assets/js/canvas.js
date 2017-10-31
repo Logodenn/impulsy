@@ -187,20 +187,20 @@ function Amplitude(height) {
 
 function EnergyBarSlot() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5);
+	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5 * visualCoefficient);
 	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.Player.artefacts.length;
+	this.width 		= App.Player.artefacts.length * visualCoefficient;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
-	this.y 			= energyBar.position * 2;
+	this.y 			= energyBar.position;
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		// this.x = (Canvas.width * 0.5) - (this.width * 0.5); // TODO
 		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
-		console.log("Slot posX: " + this.x + " width " + this.width);
+		// console.log("Slot posX: " + this.x + " width " + this.width);
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 
@@ -213,10 +213,10 @@ function EnergyBarSlot() {
 
 function EnergyBar() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5);
+	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5 * visualCoefficient);
 
 	this.color 		= COLOR.energyBar;
-	this.width 		= App.Player.artefactsToTake.length;
+	this.width 		= App.Player.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
@@ -226,6 +226,7 @@ function EnergyBar() {
 		ctx.fillStyle = this.color;
 		// this.x = (Canvas.width * 0.5) - (this.width * 0.5);
 		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
+		// this.width = App.Player.energy * visualCoefficient; TODO this line should be used but App.Player.energy is not refreshed
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 
@@ -286,8 +287,8 @@ function updateGameArea() {
 		pulsers[i].update();
 	}
 
-	energyBar.update();
 	energyBarSlot.update();
+	energyBar.update();
 	player.update();
 }
 
@@ -386,7 +387,7 @@ function updateGameScene(data) {
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 
 	// Handle energy
-	energyBar.width = gameState.energy;
+	energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
 	energyBarSlot.update();
 	energyBar.update();
 
