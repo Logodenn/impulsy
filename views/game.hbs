@@ -8,13 +8,24 @@
         
         <script src="/socket.io/socket.io.js"></script>
         <script src="js/chunkPlayer.js"></script>
+        <script src="js/ws.js"></script>
         <script src="js/game.js"></script>
         <script src="js/canvas.js"></script>
     </head>
     <body>
 
         <section class="content">
+<<<<<<< HEAD
             {{mostPlayed}}
+=======
+
+            {{!-- HOME BUTTON --}}
+
+            <a href="/">
+                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+            </a>
+ 
+>>>>>>> dev
             <div id="difficultyButtons" class="buttonWrapper flex-row">
                 <button id="lazy" class="button" state="active" onclick="App.Host.onDifficultyClick('lazy')">Lazy</button>
                 <button id="easy" class="button" state="passive" onclick="App.Host.onDifficultyClick('easy')">Easy</button>

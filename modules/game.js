@@ -187,7 +187,7 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
   // TODO : ajouter ici les morts des amis par rapport aux player
   db.track.getTrack(sound, function (err, result) {
     if (err) logger.error(err);
-    var game = {
+    game = {
       gameId: gameId,
       socketId: socketId,
       position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
