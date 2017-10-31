@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Impulsy - Sign up!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/pages/signup.css" rel="stylesheet">
+        <script src="js/signup.js"></script>
+    </head>
+    <body>
+
+        <section class="content">
+
+            {{!-- HOME BUTTON --}}
+
+            <a href="/">
+                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+            </a>
+
+            <h1 class="catchPhrase">Impulsy - Ride the music</h1>
+
+            <div id="formWrapper" class="flex-row">
+
+                {{!-- SIGN UP FORM --}}
+
+                <form id="signupForm" action="http://127.0.0.1:5000/register" method="post" class="form flex-col">
+
+                    <div class="inputWrapper">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" class="input">
+                    </div>
+
+                    <div class="inputWrapper">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" class="input">
+                    </div>
+
+                    <div class="inputWrapper">
+                        <label for="passwordConfirmation">Confirm password</label>
+                        <input type="password" id="passwordConfirmation" name="passwordConfirmation" class="input">
+                    </div>
+
+                    <div class="inputWrapper">
+                        <label for="mail">Mail</label>
+                        <input type="text" id="mail" name="mail" class="input">
+                    </div>
+
+                    <button class="button" type="submit" form="signupForm" state="passive" onclick="validateMail()">Sign up</button>
+                    
+                </form>
+
+            </div>
+
+            <div id="redirectWrapper" class="flex-row">
+                <h2 class="title">Already have an account?</h2>
+                <a href="login">
+                    <button class="button">Login</button>
+                </a>
+            </div>
+
+        </section>
+        
+    </body>
+</html>
