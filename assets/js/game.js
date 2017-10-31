@@ -94,7 +94,9 @@ var App = {
             App.latency 	        = latency;
             
             // Logic
+            App.Player.energy           = game.energy;
 			App.Player.position 	    = game.position;
+            App.Player.artefacts 	    = game.arrayArtefacts.slice(0);
             App.Player.artefactsToTake 	= game.arrayArtefacts.slice(0);
             App.Player.artefactsTaken   = [];
             App.Player.audioSpectrum 	= game.arraySpectrum.slice(0);

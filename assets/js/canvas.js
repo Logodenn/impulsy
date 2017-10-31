@@ -2,6 +2,11 @@
 // **************************************** CANVAS SETUP **************************************** //
 // ********************************************************************************************* //
 
+var COLOR = {
+	energyBar		: "#FAC32C",
+	energyBarSlot	: "#716383"
+}
+
 var blocUnit = 100;
 
 var smallBar = {
@@ -177,19 +182,49 @@ function Amplitude(height) {
 	this.ctx.fillRect(this.x, this.y, this.width, this.height);
 }
 
-// ******************** EnergyBar ******************** //
+// ******************** EnergyBarSlot ******************** //
 
-function EnergyBar() {
-	this.color 		= "#FFD51D";
-	this.width 		= App.Player.artefactsToTake;
+function EnergyBarSlot() {
+
+	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5);
+	
+	this.color 		= COLOR.energyBarSlot;
+	this.width 		= App.Player.artefacts.length;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
-	this.x			= (Canvas.width * 0.5) - (this.width * 0.5);
+	this.x			= computedX;
 	this.y 			= energyBar.position;
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
-		this.x = (Canvas.width * 0.5) - (this.width * 0.5);
+		// this.x = (Canvas.width * 0.5) - (this.width * 0.5); // TODO
+		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
+		console.log("Slot posX: " + this.x + " " + this.width);
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+
+	this.ctx 			= myGameArea.context;
+	this.ctx.fillStyle 	= this.color;
+	this.ctx.fillRect(this.x, this.y, this.width, this.height);
+}
+
+// ******************** EnergyBar ******************** //
+
+function EnergyBar() {
+
+	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5);
+	console.log("energyBar xPosition is : " + computedX);
+
+	this.color 		= COLOR.energyBar;
+	this.width 		= App.Player.artefactsToTake.length;
+	this.height 	= energyBar.height;
+	// this.x 			= Canvas.width / 10;
+	this.x			= computedX;
+	this.y 			= energyBar.position;
+	this.update 	= function() {
+		ctx = myGameArea.context;
+		ctx.fillStyle = this.color;
+		// this.x = (Canvas.width * 0.5) - (this.width * 0.5);
 		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
@@ -280,8 +315,9 @@ function startGame() {
 
 	myGameArea.start();
 
-	player 		= new Player()
-	energyBar 	= new EnergyBar()
+	player 			= new Player();
+	energyBarSlot 	= new EnergyBarSlot();
+	energyBar 		= new EnergyBar();
 
 	for (var i = 0; i < 4; i++) {
 		var pulser = new Pulsers(bigBar.position + i * blocUnit);
@@ -350,6 +386,7 @@ function updateGameScene(data) {
 
 	// Handle energy
 	energyBar.width = gameState.energy;
+	energyBarSlot.update();
 	energyBar.update();
 
 	// Handle artefact checking
