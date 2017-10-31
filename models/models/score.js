@@ -3,7 +3,8 @@ var orm = require('orm');
 module.exports = function (orm, db) {
     var Score = db.define("score", {
             date: { type: 'date', required: true, time: true},
-            duration: { type: 'integer', required: true}
+            duration: { type: 'integer', required: true},
+            difficulty: {type: 'text'}
         },
         {
             methods: {
