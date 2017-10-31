@@ -7,6 +7,7 @@ var chunkPlayer = {
   _playedChunk: 0,
   _source: undefined,
   _playing: false,
+  _blob: undefined,
 
   _onAudioChunk: function (chunk) {
     chunkPlayer._audioBuffer.push(chunk)
@@ -20,14 +21,14 @@ var chunkPlayer = {
         var chunkCount = chunkPlayer._audioBuffer.length
         var fileReader = new FileReader()
 
-        var blob = new Blob(chunkPlayer._audioBuffer)
+        chunkPlayer._blob = new Blob(chunkPlayer._audioBuffer)
 
-        fileReader.readAsArrayBuffer(blob)
+        fileReader.readAsArrayBuffer(chunkPlayer._blob)
         fileReader.onloadend = function () {
           chunkPlayer._audioContext.decodeAudioData(this.result, function (buffer) {
             if (chunkPlayer._playing) {
               chunkPlayer._source.stop(0.015)
-              chunkPlayer._playing = false;
+              chunkPlayer._playing = false
             }
 
             chunkPlayer._source = chunkPlayer._audioContext.createBufferSource()
