@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>{{ gameName }} + {{ catchPhrase }}</title>
+        <title>Impulsy - Login!</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="css/pages/login.css" rel="stylesheet">
@@ -11,12 +11,13 @@
 
         <section class="content">
 
-            <h1 class="catchPhrase">Impulsy - Ride the music</h1>
+            {{!-- HOME BUTTON --}}
 
-            <div id="buttons" class="buttonWrapper flex-row">
-                <button id="displayLoginForm" class="button" state="active" onclick="displayForm('login')">Use your account</button>
-                <button id="displaySignupForm" class="button" state="passive" onclick="displayForm('signup')">New to Impulsy?</button>
-            </div>
+            <a href="/">
+                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+            </a>
+
+            <h1 class="catchPhrase">Impulsy - Ride the music</h1>
 
             <div id="formWrapper" class="flex-row">
 
@@ -26,46 +27,25 @@
 
                     <div class="inputWrapper">
                         <label for="lusername">Username</label>
-                        <input type="text" id="lusername" name = "username" class="input">
+                        <input type="text" id="lusername" name="username" class="input">
                     </div>
 
                     <div class="inputWrapper">
                         <label for="lpassword">Password</label>
-                        <input type="text" id="lpassword" name = "password" class="input">
+                        <input type="password" id="lpassword" name="password" class="input">
                     </div>
 
                     <button class="button" type="submit" form="loginForm" state="passive">Log in</button>
 
                 </form>
 
-                {{!-- SIGN UP FORM --}}
+            </div>
 
-                <form id="signupForm" action="http://127.0.0.1:5000/register" method="post" class="form flex-col hidden">
-
-                    <div class="inputWrapper">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" class="input">
-                    </div>
-
-                    <div class="inputWrapper">
-                        <label for="password">Password</label>
-                        <input type="text" id="password" name="password" class="input">
-                    </div>
-
-                    <div class="inputWrapper">
-                        <label for="passwordConfirmation">Confirm password</label>
-                        <input type="text" id="passwordConfirmation" name="passwordConfirmation" class="input">
-                    </div>
-
-                    <div class="inputWrapper">
-                        <label for="mail">Mail</label>
-                        <input type="text" id="mail" name="mail" class="input">
-                    </div>
-
-                    <button class="button" type="submit" form="signupForm" state="passive" onclick="validateMail()">Sign up</button>
-                    
-                </form>
-
+            <div id="redirectWrapper" class="flex-row">
+                <h2 class="title">Need an account?</h2>
+                <a href="signup">
+                    <button class="button">Sign up</button>
+                </a>
             </div>
 
         </section>
