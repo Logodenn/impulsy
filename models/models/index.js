@@ -29,10 +29,6 @@ module.exports = function (cb) {
                 logger.info("Database created");
 
                 db.settings.set('instance.returnAllErrors', true);
-/*
-                db.sync(function (err) {
-                    logger.error(err);
-                });*/
                 setup(db, cb);
             }
         });
