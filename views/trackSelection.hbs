@@ -4,8 +4,8 @@
         <title>Impulsy - Ride the music!</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/pages/trackSelection.css" rel="stylesheet">
-        <script src="js/trackSelection.js"></script>
+        <link href="/css/pages/trackSelection.css" rel="stylesheet">
+        <script src="/js/trackSelection.js"></script>
     </head>
     <body>
 
@@ -14,7 +14,7 @@
             {{!-- HOME BUTTON --}}
 
             <a href="/">
-                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+                <button id="homeButton" class="button button-small"><img src="/img/home.svg" alt="Home" width="30px" height="30px"></button>
             </a>
 
             <h1 class="title">Select a track</h1>
@@ -27,7 +27,7 @@
                 <h2 class="title">Your most played tracks</h2>
                 <div class="track-list flex-row">
                     {{#each userMostPlayed}}
-                        <div class="track"><a href="game/{{track_id}}"><button class="button button-track">
+                        <div class="track"><a href="/game/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
                     {{/each }}
@@ -40,7 +40,7 @@
                 <h2 class="title">Favorite tracks</h2>
                 <div class="track-list flex-row">
                     {{#each userFavorite}}
-                        <div class="track"><a href="game/{{track_id}}"><button class="button button-track">
+                        <div class="track"><a href="/game/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
                     {{/each }}
@@ -54,7 +54,7 @@
                 <h2 class="title">Search through YouTube</h2>
                 <div id="ytBrowser" class="inputWrapper flex-row">
                     <input type="text" class="input" placeholder="type a song...">
-                    <button class="button button-small"><img src="../img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
+                    <button class="button button-small"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
                 </div>
             </section>
 
@@ -65,7 +65,7 @@
                 <h2 class="title">Trend tracks</h2>
                 <div class="track-list flex-row">
                     {{#each trend}}
-                        <div class="track"><a href="game/{{track_id}}"><button class="button button-track">
+                        <div class="track"><a href="/game/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
                     {{/each }}
