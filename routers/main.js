@@ -54,29 +54,23 @@ router
     var track;
     var trackId = parseInt(req.params.id);    
     if (Number.isInteger(trackId)) {
-      console.log("number");
       // It's from our database
       db.track.get(trackId, (err, result) => {
         if (err) console.log(err);
         else track = result;
-        console.log(track);
       });
     } else {
-      console.log("youtube");
       // It's from youtube  
-      // Savoir si la musique existe 
       db.track.getTrackLink(req.params.id, (err,result) => {
         if (err) console.log(err);
         else {
           if (result) {
             track = result;
-            console.log("track en db");
           } else {
             local = false;
             youtube.getInfo(req.params.id, (err, result) => {
               if (err) console.log(err);
               else {
-                console.log(result);
                 youtube.getAudioStream(req.params.id, local, "lowest", function (err, stream) {
                   if (err) console.log(err);
                   else {
@@ -99,9 +93,6 @@ router
                           if (err) console.log(err);
                           else track.id = result.id;
                         });
-                        //dPdhFOH1rxM
-                        console.log("track youtube inconnue");
-                        console.log(track);
                       }
                     });
                   }
