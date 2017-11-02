@@ -17,7 +17,8 @@ const io = require('socket.io').listen(http)
 
 /* GAME */
 
-const game = require('./modules/game.js')
+// const game = require('./modules/game.js')
+const GameManager = require('./modules/GameManager')
 /* ROUTERS */
 
 const mainRouter = require('./routers/main')
@@ -133,10 +134,6 @@ app.use('/', authRouter)
 /* IO */
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
-io.sockets.on('connection', function (socket) {
-  logger.info('Connection of a client')
-
-  game.initGame(io, socket)
-})
+new GameManager(io)
 
 module.exports = http
