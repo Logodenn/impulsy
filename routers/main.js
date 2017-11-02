@@ -65,9 +65,6 @@ router
     // Savoir si la musique existe 
     res.render('trackSelection');
   });
-<div class="player">
-      <iframe id="player" width="560" height="315" src="https://www.youtube.com/v/dQw4w9WgXcQ?autoplay=1&controls=1&disablekb=0&rel=0&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
-    </div>
 
 
 module.exports = router;
