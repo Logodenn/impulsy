@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/controllers');
-
+var cookies = require( "cookies" )
 const numberOfTrend = 10;
 const numberOfUserMostPlayed = 10;
 const numberOfUserFavorite = 10;
@@ -47,12 +47,27 @@ router
   });
 
 router
-  .get('/game/:id', function (req, res) {
-    res.render('game', {
-      mostPlayed: req.params.id
-    });
-  });
+  .get('/trackSelection/:id', function (req, res) {
+    if (Number.isInteger(id))
+    {
+      // c'est dans notre base
 
+    }
+    else 
+    {
+      // c'est youtube  
+    }
+    // TODO : 
+    // id ou youtube ? 
+    // https://youtu.be/biYdUZXfz9I 
+    // https://youtu.be/Y4uOM7s38XA
+    // https://youtu.be/VgxDubF1TJA
+    // Savoir si la musique existe 
+    res.render('trackSelection');
+  });
+<div class="player">
+      <iframe id="player" width="560" height="315" src="https://www.youtube.com/v/dQw4w9WgXcQ?autoplay=1&controls=1&disablekb=0&rel=0&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
+    </div>
 
 
 module.exports = router;
