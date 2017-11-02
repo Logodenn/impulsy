@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models/controllers');
 var cookies = require( "cookies" )
+const youtube = require('./youtube');
 const numberOfTrend = 10;
 const numberOfUserMostPlayed = 10;
 const numberOfUserFavorite = 10;
@@ -58,6 +59,37 @@ router
       // c'est youtube  
       // Savoir si la musique existe 
       // ajouter à la bdd 
+      // méthode de Pierre pour récupérer 
+      // ici local à false
+      youtube.getAudioStream(soundName, local, "lowest", function (err, stream) {
+        if (err) logger.error(err);
+        else {
+          youtube.getBars(stream, 1, function (err, bars) {
+            if (err) logger.error(err);
+            else {
+              var arraySpectrum = bars;
+              // On fou ou le getArrayArthefacts ?
+              var arrayArtefacts = getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
+              track_information = {
+                arraySpectrum: arraySpectrum,
+                arrayArtefacts: arrayArtefacts
+              };
+              track = {
+                name: soundName,
+                link: req.params.id,
+                information: track_information
+              };
+              db.track.create(track, function (err, result) {
+                if (err) logger.error(err);
+                //else game.trackId = result.trackId;
+              });
+              logger.debug('Track saved !')
+
+            }
+          });
+        }
+      });
+
     }
     // TODO : 
     // id ou youtube ? 
