@@ -49,10 +49,14 @@ router
 
 router
   .get('/trackSelection/:id', function (req, res) {
+    var track;
     if (Number.isInteger(req.params.id))
     {
       // c'est dans notre base
-
+      db.track.get(req.params.id, (err, result)=> {
+          if (err) console.log(err);
+          else track = result; 
+      })
     }
     else 
     {
@@ -91,12 +95,8 @@ router
       });
 
     }
-    // TODO : 
-    // id ou youtube ? 
-    // https://youtu.be/biYdUZXfz9I 
-    // https://youtu.be/Y4uOM7s38XA
-    // https://youtu.be/VgxDubF1TJA
-    // stocker la musique dans un cookies 
+    // stocker track dans un cookies 
+
     res.render('trackSelection');
   });
  
