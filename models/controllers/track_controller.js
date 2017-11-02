@@ -24,7 +24,7 @@ module.exports = {
         });
     },
 
-    getTrack: function (name, cb) {
+    getTrackName: function (name, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -37,6 +37,33 @@ module.exports = {
                         cb(err);
                     } else {
                         if(track.length != 0)  
+                        {
+                            cb(null, track[0]);
+                        }
+                        else
+                        {
+                            cb(null, undefined);
+                        }
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    getTrackLink: function (link, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.track.find({link: link}, function (err, track) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        if(track.length != 0)
                         {
                             cb(null, track[0]);
                         }
