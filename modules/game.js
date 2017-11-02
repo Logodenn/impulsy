@@ -206,41 +206,6 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
       game.arrayArtefacts = result.information.arrayArtefacts;
       game.energy = result.information.arraySpectrum.length; // duration of the music 
       game.track = result.id;
-    } else { // The sound doesn't exist, we create and save it  
-      youtube.getAudioStream(sound, local, "lowest", function (err, stream) {
-        if (err) logger.error(err);
-        else {
-          youtube.getBars(stream, 1, function (err, bars) {
-            if (err) logger.error(err);
-            else {
-              game.arraySpectrum = bars;
-              game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-              game.energy = game.arraySpectrum.length; // duration of the music 
-
-              // TODO voir avec Pierre pour link et sound
-              // sound = titre musique et link lien vers vidéo 
-              track_information = {
-                arraySpectrum: game.arraySpectrum,
-                arrayArtefacts: game.arrayArtefacts
-              };
-              logger.debug(track_information.arraySpectrum);
-              logger.debug(track_information.arrayArtefacts);
-              track = {
-                name: sound,
-                link: "",
-                information: track_information
-              };
-              logger.debug(track.information)
-              db.track.create(track, function (err, result) {
-                if (err) logger.error(err);
-                else game.trackId = result.trackId;
-              });
-              logger.debug('Track saved !')
-
-            }
-          });
-        }
-      });
     }
     callback(null, game)
     logger.debug('Game created !')
