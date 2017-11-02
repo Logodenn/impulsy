@@ -33,10 +33,9 @@ var IO = {
 
     onGameStarted : function(data) {
         startGame();
-
         // TODO: Change chunkPLayer and create a new chunkPlayer
         if (!chunkPlayer._startTime) {
-            chunkPlayer._start();
+            setTimeout(chunkPlayer._start, 4270);
         }
     },
 
