@@ -1,3 +1,5 @@
+const logger = require('winston');
+
 /**
  * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
  * Attention if barSize is less than one, the randomNumber generated can be less than 0

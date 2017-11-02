@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const artefacts = require('../utils/artefacts')
+const getArrayArthefacts = require('../utils/artefacts')
 const db = require('../models/controllers');
 var cookies = require("cookies")
 const youtube = require('../modules/youtube');
@@ -77,21 +77,20 @@ router
               if (err) console.log(err);
               else {
                 console.log(result);
-                soundName = result.title;
-                youtube.getAudioStream(soundName, local, "lowest", function (err, stream) {
+                youtube.getAudioStream(req.params.id, local, "lowest", function (err, stream) {
                   if (err) console.log(err);
                   else {
                     youtube.getBars(stream, 1, function (err, bars) {
                       if (err) console.log(err);
                       else {
                         var arraySpectrum = bars;
-                        var arrayArtefacts = artefacts.getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
+                        var arrayArtefacts = getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
                         track_information = {
                           arraySpectrum: arraySpectrum,
                           arrayArtefacts: arrayArtefacts
                         };
                         var track = {
-                          name: soundName,
+                          name: result.title,
                           link: req.params.id,
                           information: track_information
                         };
