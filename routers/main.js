@@ -48,7 +48,7 @@ router
 
 router
   .get('/trackSelection/:id', function (req, res) {
-    if (Number.isInteger(id))
+    if (Number.isInteger(req.params.id))
     {
       // c'est dans notre base
 
@@ -56,18 +56,17 @@ router
     else 
     {
       // c'est youtube  
+      // Savoir si la musique existe 
+      // ajouter à la bdd 
     }
     // TODO : 
     // id ou youtube ? 
     // https://youtu.be/biYdUZXfz9I 
     // https://youtu.be/Y4uOM7s38XA
     // https://youtu.be/VgxDubF1TJA
-    // Savoir si la musique existe 
+    // stocker la musique dans un cookies 
     res.render('trackSelection');
   });
-<div class="player">
-      <iframe id="player" width="560" height="315" src="https://www.youtube.com/v/dQw4w9WgXcQ?autoplay=1&controls=1&disablekb=0&rel=0&enablejsapi=1" frameborder="0" allowfullscreen></iframe>
-    </div>
-
+ 
 
 module.exports = router;
