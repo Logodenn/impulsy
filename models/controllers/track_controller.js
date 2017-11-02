@@ -51,6 +51,33 @@ module.exports = {
         });
     },
 
+    getTrack: function (link, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            }
+            else {
+                db.models.track.find({link: link}, function (err, track) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        if(track.length != 0)
+                        {
+                            cb(null, track[0]);
+                        }
+                        else
+                        {
+                            cb(null, undefined);
+                        }
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
 
     // Attention : bien respecter le format suivant pour le champs information : '{"arrayArtefact":"123423", "arraySpectrum":"24132"}'
     create: function (track, cb) {
