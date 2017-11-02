@@ -24,7 +24,7 @@ module.exports = {
         });
     },
 
-    getTrack: function (name, cb) {
+    getTrackName: function (name, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -51,7 +51,7 @@ module.exports = {
         });
     },
 
-    getTrack: function (link, cb) {
+    getTrackLink: function (link, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
