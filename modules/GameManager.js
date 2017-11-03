@@ -1,5 +1,7 @@
-const logger = require('../utils/logger')
+const logger = require('../utils/logger')(module)
 const Game = require('./Game')
+
+let instance = null
 
 module.exports = class GameManager {
   constructor (io) {
@@ -9,9 +11,19 @@ module.exports = class GameManager {
     this.bindEvents()
   }
 
+  static getInstance () {
+    return instance
+  }
+
   bindEvents () {
-    this.io.sockets.on('hostCreateNewGame', () => {
-      this.createGame()
+    logger.info('GameManager bindEvents')
+
+    this.io.on('connection', (socket) => {
+      socket.on('hostCreateNewGame', () => {
+        const gameId = this.createGame()
+
+        socket.emit('newGameCreated', this.games[gameId].getMetaData())
+      })
     })
   }
 
@@ -19,6 +31,10 @@ module.exports = class GameManager {
     const game = new Game(this, this.io)
 
     this.games[game.id] = game
+
+    logger.info(`Game ${game.id} is created`)
+
+    return game.id
   }
 
   deleteGame (game) {

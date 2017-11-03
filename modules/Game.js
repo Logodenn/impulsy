@@ -1,6 +1,7 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
 
+const GameManager = require('./GameManager')
 const Player = require('./Player')
 
 const gameSpeed = 500
@@ -8,13 +9,11 @@ const positionCheckDelay = 4000
 
 module.exports = class Game {
   constructor (gameManager, io) {
-    // this.id = uuid()
-    this.gameManager = gameManager
-    this.id = '1'
-    logger.info(this.id)
+    this.id = uuid()
     this.isGameStarted = false
 
-    this.io = io.of(`/${this.id}`)
+    // this.io = io.of(`/${this.id}`)
+    this.io = io
     this.difficulty = 'lazy'
 
     this.players = {}
@@ -27,11 +26,11 @@ module.exports = class Game {
   }
 
   bindEvents () {
-    this.io.on('connection', (socket) => {
+    /* this.io.on('connection', (socket) => {
       this.joinGame(socket)
 
       socket.on('hostStartGame', () => { this.startGame() })
-    })
+    }) */
   }
 
   startGame () {
@@ -67,6 +66,7 @@ module.exports = class Game {
 
   joinGame (clientSocket) {
     logger.info(`New player - socket ${clientSocket.id}`)
+
     this.players[clientSocket.id] = new Player(clientSocket)
 
     clientSocket.on('disconnect', () => {
@@ -75,15 +75,15 @@ module.exports = class Game {
       logger.info(`Client ${clientSocket.id} is disconnected`)
 
       if (this.players.length === 0) {
-        //this.gameManager.deleteGame(this)
+        // this.gameManager.deleteGame(this)
       }
     })
 
     clientSocket.emit('gameJoined', { gameId: this.id })
-    /*clientSocket.emit('newGameCreated', {
+    /* clientSocket.emit('newGameCreated', {
       game: { arrayArtefacts: this.artefacts, arraySpectrum: [ 0, 1, 1, 0, 1, 1, 1, 0, 1 ] },
       gg: this.positionCheckDelay
-    })*/
+    }) */
   }
 
   win (player) {
@@ -153,6 +153,21 @@ module.exports = class Game {
       // TODO: Change this name: 'nbArtefacts'
       nbArtefacts: player.takenArtefactsCount,
       bar: this.currentBar
+    }
+  }
+
+  getMetaData () {
+    return {
+      game: {
+        gameId: this.id,
+        position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
+        currentBar: 0,
+        difficulty: this.difficulty, // difficulty of the level
+        arraySpectrum: [ 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 ],
+        arrayArtefacts: [ 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 ],
+        energy: 20, // duration of the music 
+        track: 'ziizahi'
+      }
     }
   }
 }
