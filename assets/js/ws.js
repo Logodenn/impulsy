@@ -51,6 +51,7 @@ var IO = {
 	},
 
 	gameOver : function (data) {
+        console.log(data);
 		endGame();
 		// TODO
 		// Notify players that game has ended
