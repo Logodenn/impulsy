@@ -134,6 +134,9 @@ app.use('/', authRouter)
 /* IO */
 
 // Listen for Socket.IO Connections. Once connected, start the game logic.
-new GameManager(io)
+let g = new GameManager(io)
+io.on('hostCreateNewGame', () => {
+  logger.info('HostCreateNewGame')
+})
 
 module.exports = http
