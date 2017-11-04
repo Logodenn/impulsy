@@ -78,7 +78,7 @@ router
             track = result;
               // stocker track dans un cookies
               if (track) {
-                  res.cookie('track', track).render('trackSelection', {'gameId': gameId}); //Sets name = express
+                  res.cookie('track', track).render('difficulty', {'gameId': gameId}); //Sets name = express
               } else {
                   console.log(track)
               }
@@ -111,7 +111,7 @@ router
                               track.id = result.id;
                               // stocker track dans un cookies
                               if (track) {
-                                  res.cookie('track', track).render('trackSelection', {'gameId': gameId}); //Sets name = express
+                                  res.cookie('track', track).render('difficulty', {'gameId': gameId}); //Sets name = express
                               } else {
                                   console.log(track)
                               }
