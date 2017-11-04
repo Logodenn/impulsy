@@ -51,7 +51,6 @@ function hostCreateNewGame(data) {
   var youtubeVideoId = data.youtubeVideoId;
   var difficulty = data.difficulty;
   // Create a unique Socket.IO Room
-  var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
   //createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
   createGame('./sounds/OrelSan - Basique.mp3', true, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
