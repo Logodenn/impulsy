@@ -52,7 +52,8 @@ router
 router
   .get('/trackSelection/:id', function (req, res) {
     var track;
-    var trackId = parseInt(req.params.id);    
+    var trackId = parseInt(req.params.id);
+    var gameId = (Math.random() * 100000) | 0;
     if (Number.isInteger(trackId)) {
       // It's from our database
       db.track.get(trackId, (err, result) => {
@@ -61,7 +62,8 @@ router
           track = result;
             // stocker track dans un cookies
             if (track) {
-                res.cookie('track', track).render('trackSelection'); //Sets name = express
+                console.log(gameId);
+                res.cookie('track', track).render('trackSelection', {'gameId': gameId}); //Sets name = express
             } else {
                 console.log(track)
             }
@@ -76,7 +78,7 @@ router
             track = result;
               // stocker track dans un cookies
               if (track) {
-                  res.cookie('track', track).render('trackSelection'); //Sets name = express
+                  res.cookie('track', track).render('trackSelection', {'gameId': gameId}); //Sets name = express
               } else {
                   console.log(track)
               }
@@ -109,7 +111,7 @@ router
                               track.id = result.id;
                               // stocker track dans un cookies
                               if (track) {
-                                  res.cookie('track', track).render('trackSelection'); //Sets name = express
+                                  res.cookie('track', track).render('trackSelection', {'gameId': gameId}); //Sets name = express
                               } else {
                                   console.log(track)
                               }
