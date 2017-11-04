@@ -50,7 +50,7 @@ router
   });
 
 router
-  .get('/trackSelection/:id', function (req, res) {
+  .get('/difficulty/:id', function (req, res) {
     var track;
     var trackId = parseInt(req.params.id);
     var gameId = (Math.random() * 100000) | 0;
@@ -63,7 +63,7 @@ router
             // stocker track dans un cookies
             if (track) {
                 console.log(gameId);
-                res.cookie('track', track).render('trackSelection', {'gameId': gameId}); //Sets name = express
+                res.cookie('track', track).render('difficulty', {'gameId': gameId}); //Sets name = express
             } else {
                 console.log(track)
             }
