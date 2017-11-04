@@ -57,7 +57,15 @@ router
       // It's from our database
       db.track.get(trackId, (err, result) => {
         if (err) console.log(err);
-        else track = result;
+        else {
+          track = result;
+            // stocker track dans un cookies
+            if (track) {
+                res.cookie('track', track).render('trackSelection'); //Sets name = express
+            } else {
+                console.log(track)
+            }
+        }
       });
     } else {
       // It's from youtube  
@@ -66,6 +74,12 @@ router
         else {
           if (result) {
             track = result;
+              // stocker track dans un cookies
+              if (track) {
+                  res.cookie('track', track).render('trackSelection'); //Sets name = express
+              } else {
+                  console.log(track)
+              }
           } else {
             local = false;
             youtube.getInfo(req.params.id, (err, result) => {
@@ -91,7 +105,15 @@ router
                         // add track to database 
                         db.track.create(track, function (err, result) {
                           if (err) console.log(err);
-                          else track.id = result.id;
+                          else {
+                              track.id = result.id;
+                              // stocker track dans un cookies
+                              if (track) {
+                                  res.cookie('track', track).render('trackSelection'); //Sets name = express
+                              } else {
+                                  console.log(track)
+                              }
+                          }
                         });
                       }
                     });
@@ -103,9 +125,6 @@ router
         }
       });
     }
-    // stocker track dans un cookies 
-
-    res.render('trackSelection');
   });
 
 module.exports = router;
