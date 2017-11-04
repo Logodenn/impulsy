@@ -88,6 +88,8 @@ function (req, email, password, cb) {
 
 /* MIDDLEWARES */
 
+
+//app.createServer( Cookies.express( keys ) )
 // Use application-level middleware for common functionality, including
 app.use(require('cookie-parser')())
 app.use(bodyParser.urlencoded({
