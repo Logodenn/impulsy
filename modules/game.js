@@ -134,8 +134,8 @@ function playerMove(data) {
 function endGame(victory) {
   clearInterval(new_positions);
   if (victory) victory = "victory";
-  else victory = "loose"
-  io.sockets.in(game.gameId).emit('enfOfGame', {
+  else victory = "loose";
+  io.sockets.in(game.gameId).emit('onGameOver', {
     "result": victory,
     "score": game.nbArtefacts
   });
