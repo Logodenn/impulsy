@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Impulsy - Difficulty!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="css/pages/difficulty.css" rel="stylesheet">
+        <script src="js/difficulty.js"></script>
+    </head>
+    <body>
+
+        <section class="content">
+
+            {{!-- HOME BUTTON --}}
+
+            <a href="/">
+                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+            </a>
+
+            <h1 class="catchPhrase">Impulsy - Ride the music</h1>
+
+            <form id="difficultyForm" action="http://127.0.0.1:5000/game/{{gameId}}" method="post" class="form flex-col buttonWrapper">
+                {{!-- <button id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</button>
+                <button id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</button>
+                <button id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</button> --}}
+
+                <label for="dlazy">Lazy</label>
+                <input id="dlazy" type="radio" name="difficulty" value="lazy" checked>
+
+                <label for="deazy">Easy</label>
+                <input id="deasy" type="radio" name="difficulty" value="easy">
+
+                <label for="dcrazy">Crazy</label>
+                <input id="dcrazy" type="radio" name="difficulty" value="crazy">
+
+                <button class="button" type="submit" form="difficultyForm" state="passive">Wait in room</button>
+            </form>
+
+        </section>
+        
+    </body>
+</html>
