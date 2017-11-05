@@ -28,7 +28,7 @@ module.exports = class GameManager {
   }
 
   createGame () {
-    const game = new Game(this, this.io)
+    const game = new Game(this.io)
 
     this.games[game.id] = game
 
