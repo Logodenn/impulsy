@@ -7,22 +7,20 @@ const youtube = require('../modules/youtube');
 const numberOfTrend = 10;
 const numberOfUserMostPlayed = 10;
 const numberOfUserFavorite = 10;
-router
-  .get("/", (req, res) => {
+
+router.get("/", (req, res) => {
     res.render('index', {
       message: "Hello world !"
     });
   });
 
-router
-  .get('/hallOfFame', function (req, res) {
+router.get('/hallOfFame', function (req, res) {
     res.render('hallOfFame', {
       message: "Hello World!"
     });
   });
 
-router
-  .get('/trackSelection', function (req, res) {
+router.get('/trackSelection', function (req, res) {
     // Most played tracks 
     db.track.getTrendTracks((err, trend) => {
       if (err) console.log(err);
@@ -49,8 +47,8 @@ router
 
   });
 
-router
-  .get('/difficulty/:id', function (req, res) {
+router.get('/difficulty/:id', function (req, res) {
+    console.log(res);
     var track;
     var trackId = parseInt(req.params.id);
     var gameId = (Math.random() * 100000) | 0;
