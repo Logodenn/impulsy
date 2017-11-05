@@ -50,8 +50,8 @@ var IO = {
         updateGameScene(data);
 	},
 
-	gameOver : function (data) {
-		endGame();
+	onGameOver : function (data) {
+		endGame(data);
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
