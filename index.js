@@ -137,7 +137,6 @@ app.use('/', authRouter)
 // Listen for Socket.IO Connections. Once connected, start the game logic.
 io.sockets.on('connection', function (socket) {
   logger.info('Connection of a client')
-
   game.initGame(io, socket)
 })
 
