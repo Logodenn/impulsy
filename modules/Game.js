@@ -8,7 +8,7 @@ const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Game {
-  constructor (gameManager, io) {
+  constructor (io) {
     this.id = uuid()
     this.isGameStarted = false
 
@@ -18,7 +18,8 @@ module.exports = class Game {
 
     this.players = {}
     this.loopTimer = null
-    this.artefacts = [ 0, 2, 3, 2, 1, 2, 3, 2, 1 ]
+    this.artefacts = [ 0, 2, 3, 2, 1, 2, 1, 2, 1 ]
+    this.spectrum = [ 1, 0, 1, 0, 1, 1, 0, 0, 0 ]
     this.currentBar = 0
     this.energy = 100
 
@@ -31,6 +32,10 @@ module.exports = class Game {
 
       socket.on('hostStartGame', () => { this.startGame() })
     }) */
+  }
+
+  destroy () {
+    GameManager.getInstance().deleteGame(this)
   }
 
   startGame () {
@@ -161,10 +166,10 @@ module.exports = class Game {
       game: {
         gameId: this.id,
         position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
-        currentBar: 0,
+        currentBar: 0, // TO BE DELETED
         difficulty: this.difficulty, // difficulty of the level
-        arraySpectrum: [ 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 ],
-        arrayArtefacts: [ 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 ],
+        arraySpectrum: this.spectrum,
+        arrayArtefacts: this.artefacts,
         energy: 20, // duration of the music 
         track: 'ziizahi'
       }
