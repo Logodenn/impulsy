@@ -17,8 +17,8 @@ module.exports = function (cb) {
     if (connection) return cb(null, connection);
 
     console.log('HHHHHH')
-    console.log(settings)
     let opt = settings.JAWSDB_URL || settings.database
+    console.log(opt)
 
     orm.connect(opt, function (err, db) {
         if (err) {
@@ -26,7 +26,7 @@ module.exports = function (cb) {
             return cb(err);
         }
         connection = db;
-        db.driver.execQuery("CREATE DATABASE IF NOT EXISTS "+process.env.DB_NAME, function (err, result) {
+        db.driver.execQuery("CREATE DATABASE IF NOT EXISTS "+process.env.DB_DATABASE_NAME, function (err, result) {
             if (err) {
                 logger.error(err);
                 cb(err);
