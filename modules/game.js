@@ -53,7 +53,7 @@ function hostCreateNewGame(data) {
   // Create a unique Socket.IO Room
   // Return the game to the browser client
   //createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
-  createGame('./sounds/OrelSan - Basique.mp3', true, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
+  createGame(youtubeVideoId, true, data.difficulty, data.thisGameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
     else {

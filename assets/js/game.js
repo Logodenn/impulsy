@@ -47,20 +47,21 @@ var App = {
 
         onCreateClick: function () {
 			if(document.querySelector("#createGameButton").attributes.state.value != "disabled") {
-
+                /*
                 // Reset state
                 document.querySelector("#lazy").attributes.state.value = "disabled";
                 document.querySelector("#easy").attributes.state.value = "disabled";
                 document.querySelector("#crazy").attributes.state.value = "disabled";
+                
                 // Active state
                 document.querySelector("#"+this.difficulty).attributes.state.value = "active";
-
+                */
 				console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
 				IO.socket.emit('hostCreateNewGame', {
 					youtubeVideoId	: this.trackId,
 					difficulty		: this.difficulty
 				});
-
+                
 				document.querySelector("#createGameButton").attributes.state.value = "disabled";
 			}
 		},
