@@ -15,7 +15,10 @@ function setup(db, cb) {
 
 module.exports = function (cb) {
     if (connection) return cb(null, connection);
-    orm.connect(settings.database, function (err, db) {
+
+    let opt = settings.JAWSDB_URL || settings.database
+
+    orm.connect(opt, function (err, db) {
         if (err) {
             logger.error(err);
             return cb(err);
