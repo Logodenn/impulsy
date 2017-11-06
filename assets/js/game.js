@@ -29,7 +29,7 @@ var App = {
 
         players : [],
         currentCorrectAnswer: '',
-        trackId: "3TygesLODpU",
+        trackId: "ttEI35HVpqI",
         difficulty: "lazy",
 
         onDifficultyClick: function (difficulty) {
@@ -74,7 +74,7 @@ var App = {
 				IO.socket.emit('hostStartGame');
 
                 // Hide buttons
-                document.querySelector("#difficultyButtons").classList.add("hidden");
+                //document.querySelector("#difficultyButtons").classList.add("hidden");
                 document.querySelector("#startButtons").classList.add("hidden");
 
                 // Display score
@@ -84,11 +84,9 @@ var App = {
 
         gameInit: function (data) {
 
-            var game    = Cookies.get();
+            var game    = data.game;//Cookies.get();
             var latency = data.latency;
-            var track =JSON.parse(game.track.replace('j:',''));
-
-			console.log(game);
+            //var track =JSON.parse(game.track.replace('j:',''));
 
             // Settings
             App.gameId 				= game.gameId;
@@ -98,13 +96,20 @@ var App = {
 
             // Logic
             App.Player.energy           = game.energy;
-			App.Player.position 	    = game.position;
+            App.Player.position 	    = game.position;
+            /*
             App.Player.artefacts 	    = track.information.arrayArtefacts.slice(0);
             App.Player.artefactsToTake 	= track.information.arrayArtefacts.slice(0);
+            */
+            App.Player.artefacts = game.arrayArtefacts.slice(0);
+            App.Player.artefactsToTake = game.arrayArtefacts.slice(0);
             App.Player.artefactsTaken   = [];
-            App.Player.audioSpectrum 	= track.information.arraySpectrum.slice(0);
+            App.Player.audioSpectrum = game.arraySpectrum.slice(0);
+            //App.Player.audioSpectrum 	= track.information.arraySpectrum.slice(0);
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
+
+            console.log(game);
 
             console.log("Game initialized with ID: " + App.gameId + ' by host: ' + App.mySocketId);
         }
