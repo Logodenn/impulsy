@@ -33,10 +33,9 @@ var IO = {
 
     onGameStarted : function(data) {
         startGame();
-
         // TODO: Change chunkPLayer and create a new chunkPlayer
         if (!chunkPlayer._startTime) {
-            chunkPlayer._start();
+            setTimeout(chunkPlayer._start, 4270);
         }
     },
 
@@ -51,8 +50,8 @@ var IO = {
         updateGameScene(data);
 	},
 
-	gameOver : function (data) {
-		endGame();
+	onGameOver : function (data) {
+		endGame(data);
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
