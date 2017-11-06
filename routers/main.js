@@ -60,7 +60,9 @@ router.get('/difficulty/:id', function (req, res) {
           track = result;
             // stocker track dans un cookies
             if (track) {
+                console.log(track);
                 res.cookie('track', track);
+                res.cookie('gameId', gameId);
                 res.render('difficulty', {'gameId': gameId}); //Sets name = express
             } else {
                 console.log(track)
@@ -76,7 +78,9 @@ router.get('/difficulty/:id', function (req, res) {
             track = result;
               // stocker track dans un cookies
               if (track) {
+                  console.log(track);
                   res.cookie('track', track);
+                  res.cookie('gameId', gameId);
                   res.render('difficulty', {'gameId': gameId}); //Sets name = express
               } else {
                   console.log(track)
@@ -110,7 +114,9 @@ router.get('/difficulty/:id', function (req, res) {
                               track.id = result.id;
                               // stocker track dans un cookies
                               if (track) {
+                                  console.log(track);
                                   res.cookie('track', track);
+                                  res.cookie('gameId', gameId);
                                   res.render('difficulty', {'gameId': gameId}); //Sets name = express
                               } else {
                                   console.log(track)
