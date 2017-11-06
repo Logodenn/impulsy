@@ -16,6 +16,8 @@ function setup(db, cb) {
 module.exports = function (cb) {
     if (connection) return cb(null, connection);
 
+    console.log('HHHHHH')
+    console.log(settings)
     let opt = settings.JAWSDB_URL || settings.database
 
     orm.connect(opt, function (err, db) {
