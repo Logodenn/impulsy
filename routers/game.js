@@ -1,16 +1,12 @@
 const express = require('express');
+var cookies = require("cookies")
 const router = express.Router();
 
 
-router
-.get("/:id", (req, res) => {
-            var data = 
-            {
-                gameId : req.params.id,
-                track : req.cookies['track'],
-                difficulty : req.body.difficulty
-            }
-            res.render('game', { data });
-        });
+router.post("/:id", (req, res) => {
+    res.cookie('gameId', req.params.id);
+    res.cookie('difficulty', req.body.difficulty);
+    res.render('game');
+});
 
 module.exports = router;

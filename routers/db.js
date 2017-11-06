@@ -3,7 +3,7 @@ const router = express.Router();
 var models = require('../models/models');
 const youtube = require("../modules/youtube");
 const getArrayArthefacts = require("../utils/artefacts");
-
+const barsPerSeconds = 2;
 router.post("/db", (req, res, next) => {
     models(function (err, db) {
         if (err) return next(err);
@@ -26,7 +26,7 @@ router.post("/db", (req, res, next) => {
                         youtube.getAudioStream("ttEI35HVpqI", false, "lowest", function (err, stream) {
                             if (err) console.log(err);
                             else {
-                                youtube.getBars(stream, 1, function (err, bars) {
+                                youtube.getBars(stream, barsPerSeconds, function (err, bars) {
                                     if (err) console.log(err);
                                     else {
                                         var arraySpectrum = bars;

@@ -7,6 +7,7 @@ const youtube = require('../modules/youtube');
 const numberOfTrend = 10;
 const numberOfUserMostPlayed = 10;
 const numberOfUserFavorite = 10;
+const barsPerSeconds = 2;
 
 router.get("/", (req, res) => {
     res.render('index', {
@@ -48,7 +49,6 @@ router.get('/trackSelection', function (req, res) {
   });
 
 router.get('/difficulty/:id', function (req, res) {
-    console.log(res);
     var track;
     var trackId = parseInt(req.params.id);
     var gameId = (Math.random() * 100000) | 0;
@@ -60,7 +60,6 @@ router.get('/difficulty/:id', function (req, res) {
           track = result;
             // stocker track dans un cookies
             if (track) {
-                console.log(gameId);
                 res.cookie('track', track);
                 res.render('difficulty', {'gameId': gameId}); //Sets name = express
             } else {
@@ -90,7 +89,7 @@ router.get('/difficulty/:id', function (req, res) {
                 youtube.getAudioStream(req.params.id, local, "lowest", function (err, stream) {
                   if (err) console.log(err);
                   else {
-                    youtube.getBars(stream, 1, function (err, bars) {
+                    youtube.getBars(stream, barsPerSeconds, function (err, bars) {
                       if (err) console.log(err);
                       else {
                         var arraySpectrum = bars;
