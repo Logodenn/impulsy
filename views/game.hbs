@@ -4,13 +4,13 @@
         <title>Impulsy - Ride the music!</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/pages/game.css" rel="stylesheet">
+        <link href="/css/pages/game.css" rel="stylesheet">
         
         <script src="/socket.io/socket.io.js"></script>
-        <script src="js/chunkPlayer.js"></script>
-        <script src="js/ws.js"></script>
-        <script src="js/game.js"></script>
-        <script src="js/canvas.js"></script>
+        <script src="/js/chunkPlayer.js"></script>
+        <script src="/js/ws.js"></script>
+        <script src="/js/game.js"></script>
+        <script src="/js/canvas.js"></script>
     </head>
     <body>
 
@@ -35,6 +35,33 @@
             <div id="moveButtons" class="flex-row hidden">
                 <button id="upwardButton" class="button hidden" state="passive" onclick="onTabletMove('up')">Up</button>
                 <button id="downwardButton" class="button hidden" state="passive" onclick="onTabletMove('down')">Do</button>
+            </div>
+
+            {{!-- ENDGAME LAYER --}}
+
+            <div id="endGameLayer" class="flex-col hidden">
+                <span id="gameState"></span>
+                <span>Your score is : $$$</span> 
+
+                {{!-- SAVE SCORE --}} 
+
+                {{!-- if the user hasn't logged in --}}
+                <span>Wanna save your score?</span>
+                <a href="signup">
+                    <button class="button">Sign up</button>
+                </a>
+
+                {{!-- FAVORITE --}}
+
+                <a href="#">
+                    <button class="button">Favorite this track</button>
+                </a>
+
+                {{!-- PLAY --}}
+
+                <a href="trackSelection">
+                    <button class="button">Play again</button>
+                </a>                
             </div>
 
         </section>

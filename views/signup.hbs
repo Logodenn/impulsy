@@ -4,8 +4,8 @@
         <title>Impulsy - Sign up!</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/pages/signup.css" rel="stylesheet">
-        <script src="js/signup.js"></script>
+        <link href="/css/pages/signup.css" rel="stylesheet">
+        <script src="/js/signup.js"></script>
     </head>
     <body>
 
@@ -14,7 +14,7 @@
             {{!-- HOME BUTTON --}}
 
             <a href="/">
-                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+                <button id="homeButton" class="button button-small"><img src="/img/home.svg" alt="Home" width="30px" height="30px"></button>
             </a>
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
@@ -23,7 +23,7 @@
 
                 {{!-- SIGN UP FORM --}}
 
-                <form id="signupForm" action="signup" method="post" class="form flex-col">
+                <form id="signupForm" action="/signup" method="post" class="form flex-col">
 
                     <div class="inputWrapper">
                         <label for="username">Username</label>
@@ -53,7 +53,7 @@
 
             <div id="redirectWrapper" class="flex-row">
                 <h2 class="title">Already have an account?</h2>
-                <a href="login">
+                <a href="/login">
                     <button class="button">Login</button>
                 </a>
             </div>

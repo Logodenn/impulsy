@@ -436,3 +436,16 @@ function onTabletMove(direction) {
 	console.log(player.y);
 	App.Player.onMove(App.Player.position);
 }
+
+function endGame (data) {
+	// TODO pop un filter du endGame
+	if(data.result == "victory") {
+		document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
+	} else {
+		document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.artefacts.length + " artefacts!";
+	}
+	// Show pop up
+	document.querySelector("#endGameLayer").classList.remove("hidden");
+	// Blur canvas
+	document.querySelector("#canvasWrapper").classList.add("blurred");
+}
