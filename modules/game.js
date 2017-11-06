@@ -48,12 +48,14 @@ module.exports.initGame = function (sio, socket) {
  */
 function hostCreateNewGame(data) {
   logger.debug('Creation of the game');
+  console.log(data);
   var youtubeVideoId = data.youtubeVideoId;
   var difficulty = data.difficulty;
+  var gameId = data.gameId;
   // Create a unique Socket.IO Room
   // Return the game to the browser client
   //createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
-  createGame(youtubeVideoId, true, data.difficulty, data.thisGameId, this.id, function (err, gameCreate) {
+  createGame(youtubeVideoId, true, difficulty, gameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
     else {
@@ -81,7 +83,7 @@ function hostCreateNewGame(data) {
   })
 
   // Join the Room and wait for the players
-  gameSocket.join(thisGameId.toString())
+  gameSocket.join(gameId.toString())
 };
 
 /**
@@ -164,10 +166,10 @@ function endGame(victory) {
  * @param {string} socketId id of the socket
  * @param callback 
  */
-function createGame(sound, local, difficulty, gameId, socketId, callback) {
+function createGame(link, local, difficulty, gameId, socketId, callback) {
   logger.debug('Creation of the game object');
   // TODO : ajouter ici les morts des amis par rapport aux player
-  db.track.getTrack(sound, function (err, result) {
+  db.track.getTrackLink(link, function (err, result) {
     if (err) logger.error(err);
     game = {
       gameId: gameId,
