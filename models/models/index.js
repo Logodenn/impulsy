@@ -15,13 +15,18 @@ function setup(db, cb) {
 
 module.exports = function (cb) {
     if (connection) return cb(null, connection);
-    orm.connect(settings.database, function (err, db) {
+
+    console.log('HHHHHH')
+    let opt = settings.JAWSDB_URL || settings.database
+    console.log(opt)
+
+    orm.connect(opt, function (err, db) {
         if (err) {
             logger.error(err);
             return cb(err);
         }
         connection = db;
-        db.driver.execQuery("CREATE DATABASE IF NOT EXISTS "+process.env.DB_NAME, function (err, result) {
+        db.driver.execQuery("CREATE DATABASE IF NOT EXISTS "+process.env.DB_DATABASE_NAME, function (err, result) {
             if (err) {
                 logger.error(err);
                 cb(err);
