@@ -9,7 +9,7 @@
     </head>
     <body>
 
-        <section class="content">
+        <sectionl class="content">
 
             {{!-- HOME BUTTON --}}
 
@@ -27,7 +27,7 @@
                 <h2 class="title">Your most played tracks</h2>
                 <div class="track-list flex-row">
                     {{#each userMostPlayed}}
-                        <div class="track"><a href="/game/{{track_id}}"><button class="button button-track">
+                        <div class="track"><a href="/difficulty/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
                     {{/each }}
@@ -40,7 +40,7 @@
                 <h2 class="title">Favorite tracks</h2>
                 <div class="track-list flex-row">
                     {{#each userFavorite}}
-                        <div class="track"><a href="/game/{{track_id}}"><button class="button button-track">
+                        <div class="track"><a href="/difficulty/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
                     {{/each }}
@@ -65,13 +65,13 @@
                 <h2 class="title">Trend tracks</h2>
                 <div class="track-list flex-row">
                     {{#each trend}}
-                        <div class="track"><a href="/game/{{track_id}}"><button class="button button-track">
+                        <div class="track"><a href="/difficulty/{{track_id}}"><button class="button button-track">
                             {{name}}
                             </button></a></div>
                     {{/each }}
                 </div>
             </section>
-        </section>
+        </sectionl>
         
     </body>
 </html>
