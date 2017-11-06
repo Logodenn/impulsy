@@ -59,7 +59,8 @@ var App = {
 				console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
 				IO.socket.emit('hostCreateNewGame', {
 					youtubeVideoId	: this.trackId,
-					difficulty		: this.difficulty
+					difficulty		: this.difficulty,
+                    gameId          : Cookies.get('gameId')
 				});
                 
 				document.querySelector("#createGameButton").attributes.state.value = "disabled";
@@ -83,8 +84,9 @@ var App = {
 
         gameInit: function (data) {
 
-            var game    = data.game;
+            var game    = Cookies.get();
             var latency = data.latency;
+            var track =JSON.parse(game.track.replace('j:',''));
 
 			console.log(game);
 
@@ -93,14 +95,14 @@ var App = {
 			App.mySocketId 			= game.mySocketId;
 			App.myRole 				= 'Host';
             App.latency 	        = latency;
-            
+
             // Logic
             App.Player.energy           = game.energy;
 			App.Player.position 	    = game.position;
-            App.Player.artefacts 	    = game.arrayArtefacts.slice(0);
-            App.Player.artefactsToTake 	= game.arrayArtefacts.slice(0);
+            App.Player.artefacts 	    = track.information.arrayArtefacts.slice(0);
+            App.Player.artefactsToTake 	= track.information.arrayArtefacts.slice(0);
             App.Player.artefactsTaken   = [];
-            App.Player.audioSpectrum 	= game.arraySpectrum.slice(0);
+            App.Player.audioSpectrum 	= track.information.arraySpectrum.slice(0);
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
