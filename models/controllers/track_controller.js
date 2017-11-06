@@ -4,13 +4,34 @@ const logger = require('winston');
 
 
 module.exports = {
+    get: function (id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.models.track.get(id, function (err, track) {
+                    if (err) {
+                        logger.error(err);
+                        if (err.code == orm.ErrorCodes.NOT_FOUND) {
+                            cb("track not found");
+                        } else {
+                            cb(err);
+                        }
+                    } else {
+                        cb(null, track);
+                    }
+                });
+            }
+        });
+    },
+
     list: function (cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
+            } else {
                 db.models.track.find().all(function (err, tracks) {
                     if (err) {
                         logger.error(err);
@@ -24,24 +45,47 @@ module.exports = {
         });
     },
 
-    getTrack: function (name, cb) {
+    getTrackName: function (name, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.track.find({name: name}, function (err, track) {
+            } else {
+                db.models.track.find({
+                    name: name
+                }, function (err, track) {
                     if (err) {
                         logger.error(err);
                         cb(err);
                     } else {
-                        if(track.length != 0)  
-                        {
+                        if (track.length != 0) {
                             cb(null, track[0]);
+                        } else {
+                            cb(null, undefined);
                         }
-                        else
-                        {
+                    }
+                    logger.info("Done!");
+                });
+            }
+        });
+    },
+
+    getTrackLink: function (link, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.models.track.find({
+                    link: link
+                }, function (err, track) {
+                    if (err) {
+                        logger.error(err);
+                        cb(err);
+                    } else {
+                        if (track.length != 0) {
+                            cb(null, track[0]);
+                        } else {
                             cb(null, undefined);
                         }
                     }
@@ -58,9 +102,8 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                track.information = JSON.stringify(track.information);                
+            } else {
+                track.information = JSON.stringify(track.information);
                 db.models.track.create(track, function (err, message) {
                     if (err) {
                         logger.error(err);
@@ -80,9 +123,10 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.track.find({name: name}, function (err, track) {
+            } else {
+                db.models.track.find({
+                    name: name
+                }, function (err, track) {
                     if (err) {
                         logger.error(err);
                         cb(err);
@@ -93,7 +137,9 @@ module.exports = {
                                 cb(err);
                             } else {
                                 logger.info("track " + track[0].id + " removed !");
-                                db.models.score.find({id: track[0].id}).remove(function (err) {
+                                db.models.score.find({
+                                    id: track[0].id
+                                }).remove(function (err) {
                                     if (err) {
                                         logger.error(err);
                                         cb(err);
@@ -156,15 +202,16 @@ module.exports = {
                 db.driver.execQuery("SELECT score.track_id, track.name, COUNT(*) AS nb" +
                     " FROM score INNER JOIN track ON score.track_id = track.id" +
                     " GROUP BY score.track_id" +
-                    " ORDER BY nb desc", function (err, data) {
-                    if (err) {
-                        logger.error(err);                     
-                        cb(err);
-                    } else {
-                        //console.log("rt");
-                        cb(null, data);
-                    }
-                })
+                    " ORDER BY nb desc",
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            //console.log("rt");
+                            cb(null, data);
+                        }
+                    })
             }
         });
     },
@@ -179,14 +226,15 @@ module.exports = {
                 db.driver.execQuery("SELECT track_id, COUNT(*) as nb" +
                     " from score where user_id=? " +
                     "group by track_id " +
-                    "order by nb desc", [user_id], function (err, data) {
-                    if (err) {
-                        logger.error(err);
-                        cb(err);
-                    } else {
-                        cb(null, data);
-                    }
-                })
+                    "order by nb desc", [user_id],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    })
             }
         });
     }
