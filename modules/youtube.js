@@ -1,10 +1,9 @@
-const util = require('util')
 const ffmpeg = require('fluent-ffmpeg')
 const ytdl = require('ytdl-core')
 const streamTo = require('stream-to-array')
 const AudioContext = require('web-audio-api').AudioContext
 
-const context = new AudioContext
+const context = new AudioContext()
 const youtubeBaseUrl = 'https://www.youtube.com/watch?v='
 
 module.exports = {
@@ -76,18 +75,16 @@ function computeBars (pcmdata, sampleRate, interval) {
   let amplitudes = []
 
   for (let i = 0; i < n; i++) {
-    // let max = -Infinity
     let sum = 0
+
     for (let k = 0; k < step; k++) {
-      // max = pcmdata[(i + 1) * k] > max ? pcmdata[(i + 1) * k].toFixed(1) : max;
-      sum += pcmdata[(i + 1) * k]
+      sum += pcmdata[i * step + k]
     }
+
     amplitudes.push(Math.abs(sum / step))
-    // amplitudes.push(max);
   }
 
-  let getAverage = arr => arr.reduce((p, c) => p + c, 0) / arr.length
-  let average = getAverage(amplitudes)
+  let average = getArrayAverage(amplitudes)
 
   amplitudes = amplitudes.map((value, index) => {
     let n = value > average ? 1 : 0
@@ -95,4 +92,12 @@ function computeBars (pcmdata, sampleRate, interval) {
   })
 
   return amplitudes
+}
+
+function getArrayAverage (array) {
+  const sum = array.reduce((p, c) => {
+    return p + c
+  }, 0)
+
+  return sum / array.length
 }
