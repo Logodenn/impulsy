@@ -22,7 +22,9 @@ var chunkPlayer = {
   },
 
   _playNextChunk: function () {
-    if (chunkPlayer._playedChunk < chunkPlayer._audioBuffer.length) {
+    if (chunkPlayer._playedChunk > chunkPlayer._audioBuffer.length) {
+      clearInterval(chunkPlayer._timer)
+    } else {
       var chunkCount = chunkPlayer._audioBuffer.length
       var fileReader = new FileReader()
 

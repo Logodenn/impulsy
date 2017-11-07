@@ -60,7 +60,7 @@ var IO = {
         chunkPlayer._onAudioChunk(data.chunk);
     },
     onAudioEnd: function () {
-        clearInterval(chunkPlayer._timer);
+        // This is when the audio data is fully sent
     }
 };
 
