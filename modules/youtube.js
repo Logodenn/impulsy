@@ -50,16 +50,17 @@ module.exports = {
     streamTo(pipe, (err, parts) => {
       if (err) {
         callback(err)
-        return;
+
+        return
       }
 
-      const buffers = parts.map(part => util.isBuffer(part) ? part : Buffer.from(part))
+      const buffers = parts.map(part => Buffer.isBuffer(part) ? part : Buffer.from(part))
       const buff = Buffer.concat(buffers)
 
       context.decodeAudioData(buff, function (audioBuffer) {
         const pcmdata = audioBuffer.getChannelData(0)
         const sampleRate = audioBuffer.sampleRate
-        const duration = audioBuffer.duration
+        // const duration = audioBuffer.duration
 
         const bars = computeBars(pcmdata, sampleRate, 1.0 / frequency)
 
@@ -70,25 +71,26 @@ module.exports = {
 }
 
 function computeBars (pcmdata, sampleRate, interval) {
-  step = sampleRate * interval
-  n = Math.floor(pcmdata.length / step)
-  amplitudes = []
+  const step = sampleRate * interval
+  const n = Math.floor(pcmdata.length / step)
+  let amplitudes = []
 
   for (let i = 0; i < n; i++) {
-    max = -Infinity
-    sum = 0
+    // let max = -Infinity
+    let sum = 0
     for (let k = 0; k < step; k++) {
       // max = pcmdata[(i + 1) * k] > max ? pcmdata[(i + 1) * k].toFixed(1) : max;
       sum += pcmdata[(i + 1) * k]
     }
     amplitudes.push(Math.abs(sum / step))
-    //amplitudes.push(max);
+    // amplitudes.push(max);
   }
 
-  let average = arr => arr.reduce((p, c) => p + c, 0) / arr.length
-  let a = average(amplitudes)
+  let getAverage = arr => arr.reduce((p, c) => p + c, 0) / arr.length
+  let average = getAverage(amplitudes)
+
   amplitudes = amplitudes.map((value, index) => {
-    let n = value > a ? 1 : 0
+    let n = value > average ? 1 : 0
     return n
   })
 
