@@ -50,15 +50,16 @@ router.post("/db", (req, res, next) => {
                                                         if (err) console.log(err);
                                                         else {
                                                             var arraySpectrum2 = bars2;
-                                                            var arrayArtefacts2 = getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
+                                                            var arrayArtefacts2 = getArrayArthefacts(arraySpectrum2); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
                                                             track_information2 = {
                                                                 arraySpectrum: arraySpectrum2,
                                                                 arrayArtefacts: arrayArtefacts2
                                                             };
+                                                            console.log(track_information2);
                                                             var track2 = {
                                                                 name: "Harlem Shake - Sound Effects 30 seconds",
                                                                 link: "HsrBhiLwz_I",
-                                                                information2: track_information2
+                                                                information: track_information2
                                                             };
                                                             // add track to database 
                                                             db.models.track.create(track2, function (err, result) {
