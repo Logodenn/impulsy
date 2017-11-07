@@ -41,25 +41,25 @@
 
             <div id="endGameLayer" class="flex-col hidden">
                 <span id="gameState"></span>
-                <span>Your score is : $$$</span> 
+                {{!-- <span>Your score is : $$$</span>  --}}
 
                 {{!-- SAVE SCORE --}} 
 
                 {{!-- if the user hasn't logged in --}}
                 <span>Wanna save your score?</span>
-                <a href="signup">
-                    <button class="button">Sign up</button>
+                <a href="#">
+                    <button class="button" state="disabled">Sign up</button>
                 </a>
 
                 {{!-- FAVORITE --}}
 
                 <a href="#">
-                    <button class="button">Favorite this track</button>
+                    <button class="button" state="disabled">Favorite this track</button>
                 </a>
 
                 {{!-- PLAY --}}
 
-                <a href="trackSelection">
+                <a href="/">
                     <button class="button">Play again</button>
                 </a>                
             </div>
