@@ -440,9 +440,10 @@ function onTabletMove(direction) {
 function endGame (data) {
 	// TODO pop un filter du endGame
 	if(data.result == "victory") {
-		document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
+		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
+		document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
 	} else {
-		document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.artefacts.length + " artefacts!";
+		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.artefacts.length + " artefacts!";
 	}
 	// Show pop up
 	document.querySelector("#endGameLayer").classList.remove("hidden");
