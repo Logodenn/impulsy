@@ -63,24 +63,27 @@ router.post("/db", (req, res, next) => {
                                                             // add track to database 
                                                             db.models.track.create(track2, function (err, result) {
                                                                 if (err) console.log(err);
-                                            db.models.score.create({
-                                                date: new Date().toLocaleString(),
-                                                duration: 24,
-                                                user_id: 1,
-                                                track_id: 1
-                                            }, function (err, user) {
-                                                if (err) return next(err);
-                                                return res.status(200).send("Done!");
+                                                                db.models.score.create({
+                                                                    date: new Date().toLocaleString(),
+                                                                    duration: 24,
+                                                                    user_id: 1,
+                                                                    track_id: 1
+                                                                }, function (err, user) {
+                                                                    if (err) return next(err);
+                                                                    return res.status(200).send("Done!");
+                                                                });
+                                                            });
+                                                        }
+                                                    });
+                                                }
                                             });
                                         });
                                     }
-                                 });
-                                    }
                                 });
+                            }
                         });
-                    }
                     });
-                }
+                });
             });
         });
     });
