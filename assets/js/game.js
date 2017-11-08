@@ -56,9 +56,11 @@ var App = {
                 // Active state
                 document.querySelector("#"+this.difficulty).attributes.state.value = "active";
                 */
-				console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
+                console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
+                
+                var link = (JSON.parse(Cookies.get().track.replace('j:',''))).link;
 				IO.socket.emit('hostCreateNewGame', {
-					youtubeVideoId	: this.trackId,
+					youtubeVideoId	: link,
 					difficulty		: this.difficulty,
                     gameId          : Cookies.get('gameId')
 				});
