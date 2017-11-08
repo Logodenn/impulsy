@@ -71,7 +71,15 @@ router.post("/db", (req, res, next) => {
                                                                     track_id: 1
                                                                 }, function (err, user) {
                                                                     if (err) return next(err);
-                                                                    return res.status(200).send("Done!");
+                                                                    db.models.score.create({
+                                                                        date: new Date().toLocaleString(),
+                                                                        duration: 24,
+                                                                        user_id: 1,
+                                                                        track_id: 2
+                                                                    }, function (err, user) {
+                                                                        if (err) return next(err);
+                                                                        return res.status(200).send("Done!");
+                                                                    });
                                                                 });
                                                             });
                                                         }
