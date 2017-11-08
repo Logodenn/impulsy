@@ -56,9 +56,11 @@ var App = {
                 // Active state
                 document.querySelector("#"+this.difficulty).attributes.state.value = "active";
                 */
-				console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
+                console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
+                
+                var link = (JSON.parse(Cookies.get().track.replace('j:',''))).link;
 				IO.socket.emit('hostCreateNewGame', {
-					youtubeVideoId	: this.trackId,
+					youtubeVideoId	: link,
 					difficulty		: this.difficulty,
                     gameId          : Cookies.get('gameId')
 				});
@@ -84,9 +86,9 @@ var App = {
 
         gameInit: function (data) {
 
-            var game    = data.game;//Cookies.get();
+            var game    = Cookies.get();
             var latency = data.latency;
-            //var track =JSON.parse(game.track.replace('j:',''));
+            var track =JSON.parse(game.track.replace('j:',''));
 
             // Settings
             App.gameId 				= game.gameId;
@@ -97,15 +99,12 @@ var App = {
             // Logic
             App.Player.energy           = game.energy;
             App.Player.position 	    = game.position;
-            /*
+            
             App.Player.artefacts 	    = track.information.arrayArtefacts.slice(0);
-            App.Player.artefactsToTake 	= track.information.arrayArtefacts.slice(0);
-            */
-            App.Player.artefacts = game.arrayArtefacts.slice(0);
-            App.Player.artefactsToTake = game.arrayArtefacts.slice(0);
+            App.Player.artefactsToTake 	= track.information.arrayArtefacts.slice(0);            
             App.Player.artefactsTaken   = [];
-            App.Player.audioSpectrum = game.arraySpectrum.slice(0);
-            //App.Player.audioSpectrum 	= track.information.arraySpectrum.slice(0);
+
+            App.Player.audioSpectrum 	= track.information.arraySpectrum.slice(0);
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
