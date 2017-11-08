@@ -319,11 +319,12 @@ function startGame() {
 
 	myGameArea.start();
 
-	player 			= new Player();
+	player = new Player();
+
 	if(App.Host.difficulty != "lazy") {
 		// Handle energyBar only if ht edifficulty is easy or crazy
 		energyBarSlot 	= new EnergyBarSlot();
-		energyBar 		= new EnergyBar();
+		energyBar		= new EnergyBar();
 	}
 
 	for (var i = 0; i < 4; i++) {
