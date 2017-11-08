@@ -287,8 +287,10 @@ function updateGameArea() {
 		pulsers[i].update();
 	}
 
-	energyBarSlot.update();
-	energyBar.update();
+	if(App.Host.difficulty != "lazy") {
+		energyBarSlot.update();
+		energyBar.update();
+	}
 	player.update();
 }
 
@@ -317,9 +319,13 @@ function startGame() {
 
 	myGameArea.start();
 
-	player 			= new Player();
-	energyBarSlot 	= new EnergyBarSlot();
-	energyBar 		= new EnergyBar();
+	player = new Player();
+
+	if(App.Host.difficulty != "lazy") {
+		// Handle energyBar only if ht edifficulty is easy or crazy
+		energyBarSlot 	= new EnergyBarSlot();
+		energyBar		= new EnergyBar();
+	}
 
 	for (var i = 0; i < 4; i++) {
 		var pulser = new Pulsers(bigBar.position + i * blocUnit);
@@ -386,10 +392,12 @@ function updateGameScene(data) {
 	var gameState = data.data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 
-	// Handle energy
-	energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
-	energyBarSlot.update();
-	energyBar.update();
+	if(App.Host.difficulty != "lazy") {
+		// Handle energy
+		energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
+		energyBarSlot.update();
+		energyBar.update();
+	}
 
 	// Handle artefact checking
 	// if(gameState.isArtefactTaken) {
