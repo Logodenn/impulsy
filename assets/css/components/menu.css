@@ -1,0 +1,34 @@
+
+#burger {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+}
+
+.menu {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: var(--color-disabled);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: left 0.1s;
+}
+
+.menu[state=closed] {
+    left: calc(-250px - 20px * 2);
+    transition: left 0.1s;
+}
+
+.menuItem {
+    border-bottom: solid var(--color-font-light) 2px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+}
+
+.menuCloser {
+    align-self: right;
+}
