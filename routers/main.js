@@ -10,9 +10,29 @@ const numberOfUserFavorite = 10;
 const barsPerSeconds = 2;
 
 router.get("/", (req, res) => {
-    res.render('index', {
-      message: "Hello world !"
-    });
+    // Most played tracks 
+    db.track.getTrendTracks((err, trend) => {
+      if (err) console.log(err);
+      var data = {};
+      data.trend = trend.slice(0, numberOfTrend);
+      // User Most Played Tracks 
+      if (req.user) {
+        db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
+          if (err) console.log(err);
+          data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed);
+          // Favorite User track
+          req.user.getFavoriteTracks((err, userFavorite) => {
+            if (err) console.log(err);
+            data.userFavorite = userFavorite.slice(0, numberOfUserFavorite);
+            data.userConnected = true;
+            res.render('index', data);
+          })
+        })
+      } else {
+        data.userConnected = false;
+        res.render('index', data);
+      }
+    })
   });
 
 router.get('/hallOfFame', function (req, res) {
