@@ -63,6 +63,7 @@ router.get('/difficulty/:id', function (req, res) {
                 console.log(track);
                 res.cookie('track', track);
                 res.cookie('gameId', gameId);
+                res.cookie('position', 1); // This is used by the front
                 res.render('difficulty', {'gameId': gameId}); //Sets name = express
             } else {
                 console.log(track)
