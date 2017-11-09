@@ -3,7 +3,8 @@ var cookies = require("cookies")
 const router = express.Router();
 
 
-router.post("/:id", (req, res) => {
+// router.post("/:id", (req, res) => {
+router.post("/game", (req, res) => {
     res.cookie('gameId', req.params.id);
     res.cookie('track', req.body.track);
     res.cookie('difficulty', req.body.difficulty);
