@@ -5,23 +5,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/css/pages/index.css" rel="stylesheet">
-        <script src="/js/menu.js"></script>
+        <script src="/js/toggleElement.js"></script>
+        <script src="/js/trackSelection.js"></script>
     </head>
     <body>
         <section id="menu" class="menu" state="closed">
-            <div class="menuCloser" onclick="slideMenu('close')">X</div>
+            <div class="menuCloser" onclick="toggleElement('menu','close')">X</div>
             <ul>
                 <li class="menuItem"><a href="login">Log in</a></li>
-                <li class="menuItem"><a href="signup">Sign up</li></a>
-                <li class="menuItem"><a href="hallOfFame">Hall of fame</li></a>
-                <li class="menuItem"><a href="howItWorks">How it works</li></a>
+                <li class="menuItem"><a href="signup">Sign up</a></li>
+                <li class="menuItem"><a href="hallOfFame">Hall of fame</a></li>
+                <li class="menuItem"><a href="howItWorks">How it works</a></li>
             </ul>
         </section>
         <section class="content">
 
             {{!-- Burger --}}
 
-            <button id="burger" class="button button-small" onclick="slideMenu('open')">
+            <button id="burger" class="button button-small" onclick="toggleElement('menu','open')">
                 <img src="../img/home.svg" alt="Home" width="30px" height="30px">
             </button>
 
@@ -36,7 +37,7 @@
                             <div class="track">
                                 <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
                             </div>
-                        {{/each }}
+                        {{/each}}
                     </div>
                 </section>
 
@@ -49,7 +50,7 @@
                             <div class="track">
                                 <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
                             </div>
-                        {{/each }}
+                        {{/each}}
                     </div>
                 </section>
             {{/if}}
@@ -71,11 +72,39 @@
                 <div class="track-list flex-row">
                     {{#each trend}}
                         <div class="track">
-                            <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
+                            <button class="button button-track" onclick="toggleElement('modal','open');selectTrack(this)">{{name}}</button>
                         </div>
-                    {{/each }}
+                    {{/each}}
                 </div>
             </section>
+
+            <div id="modal" class="flex-col modal" state="closed">
+                <span id="selectedTrack"></span>
+                <form id="difficultyForm" action="/game/{{gameId}}" method="post" class="form flex-col buttonWrapper">
+                    {{!-- <button id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</button>
+                    <button id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</button>
+                    <button id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</button> --}}
+
+                    <div class="flex-row">
+                        <div id="lazy" class="inputWrapper button flex-row" state="active" onclick="setDifficulty('lazy')">
+                            <label for="dlazy">Lazy</label>
+                            <input id="dlazy" class="hidden" type="radio" name="difficulty" value="lazy" checked>
+                        </div>
+
+                        <div id="easy" class="inputWrapper button flex-row" state="disabled" onclick="setDifficulty('easy')">
+                            <label for="deazy">Easy</label>
+                            <input id="deasy" class="hidden" type="radio" name="difficulty" value="easy">
+                        </div>
+
+                        <div id="crazy" class="inputWrapper button flex-row" state="disabled" onclick="setDifficulty('crazy')">                    
+                            <label for="dcrazy">Crazy</label>
+                            <input id="dcrazy" class="hidden" type="radio" name="difficulty" value="crazy">
+                        </div>
+                    </div>
+
+                    <a href="/difficulty/{{track_id}}"><button class="button" type="submit" form="difficultyForm" state="passive">Create room</button></a>
+                </form>
+            </div>
         </section>
         
     </body>
