@@ -3,6 +3,7 @@ const router = express.Router();
 var models = require('../models/models');
 const youtube = require("../modules/youtube");
 const getArrayArthefacts = require("../utils/artefacts");
+const moment = require('moment')
 const barsPerSeconds = 2;
 router.post("/db", (req, res, next) => {
     models(function (err, db) {
@@ -65,14 +66,14 @@ router.post("/db", (req, res, next) => {
                                                             db.models.track.create(track2, function (err, result) {
                                                                 if (err) console.log(err);
                                                                 db.models.score.create({
-                                                                    date: new Date().toLocaleString(),
+                                                                    date: moment().format('YYYY-MM-DD HH:mm:ss'),
                                                                     duration: 24,
                                                                     user_id: 1,
                                                                     track_id: 1
                                                                 }, function (err, user) {
                                                                     if (err) return next(err);
                                                                     db.models.score.create({
-                                                                        date: new Date().toLocaleString(),
+                                                                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
                                                                         duration: 24,
                                                                         user_id: 1,
                                                                         track_id: 2
