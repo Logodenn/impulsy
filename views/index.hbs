@@ -10,7 +10,7 @@
     </head>
     <body>
         <section id="menu" class="menu" state="closed">
-            <div class="menuCloser" onclick="toggleElement('menu','close')">X</div>
+            <div class="closer" onclick="toggleElement('menu','close')">X</div>
             <ul>
                 <li class="menuItem"><a href="login">Log in</a></li>
                 <li class="menuItem"><a href="signup">Sign up</a></li>
@@ -79,6 +79,7 @@
             </section>
 
             <div id="modal" class="flex-col modal" state="closed">
+                <div class="closer" onclick="toggleElement('modal','close')">X</div>
                 <span id="selectedTrack"></span>
                 <form id="difficultyForm" action="/game/{{gameId}}" method="post" class="form flex-col buttonWrapper">
                     {{!-- <button id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</button>
