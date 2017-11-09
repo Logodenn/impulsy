@@ -1,14 +1,143 @@
-var express = require('express');
-var app = express();
+/* UTILS */
 
-app.set('port', (process.env.PORT || 5000));
+require('dotenv').config()
+const logger = require('./utils/logger')(module)
+const environment = require('./models/config/environment')
 
-app.use(express.static(__dirname + '/public'));
+/* NODE_MODULES */
 
-app.get('/', function(req, res) {
-  res.send("Hello World!");
+const path = require('path')
+const express = require('express')
+const bodyParser = require('body-parser')
+const passport = require('passport')
+const Strategy = require('passport-local').Strategy
+const app = express()
+const http = require('http').Server(app)
+const io = require('socket.io').listen(http)
+
+/* GAME */
+
+const game = require('./modules/game.js')
+/* ROUTERS */
+
+const mainRouter = require('./routers/main')
+const gameRouter = require('./routers/game')
+const authRouter = require('./routers/auth')
+const dbRouter = require('./routers/db')
+const userRouter = require('./routers/user')
+const trackRouter = require('./routers/track')
+const scoreRouter = require('./routers/score')
+
+/* DB */
+
+const db = require('./models/controllers')
+environment(app)
+
+/* PASSPORT SETUP */
+function validateEmail (email) {
+  var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(email)
+}
+
+passport.use('local-login', new Strategy({
+    // by default, local strategy uses username and password, we will override with email
+  usernameField: 'username',
+  passwordField: 'password',
+  passReqToCallback: true // allows us to pass back the entire request to the callback
+},
+function (req, login, password, cb) {
+  // try if it's an email or a username
+  const email = validateEmail(login)
+  db.user.getUser(login, email, function (err, result) {
+    if (err) {    
+      console.log(err)
+      return cb(err)
+    }
+    if (!result) {
+      return cb(null, false)
+    }
+    if (result.password !== password) { // TODO salt password with username/email   ?
+      return cb(null, false)
+    }
+    return cb(null, result)
+  })
+}))
+
+passport.use('local-signup', new Strategy({
+    // by default, local strategy uses username and password, we will override with email
+  usernameField: 'mail',
+  passwordField: 'password',
+  passReqToCallback: true // allows us to pass back the entire request to the callback
+},
+function (req, email, password, cb) {
+  var user = {
+    pseudo: req.body.username,
+    mail: req.body.mail,
+    password: req.body.password, // TODO : salt password
+    rank: -1
+  }
+  console.log(user)
+  db.user.create(user, function (err, result) {
+    // TODO : check if email / pseudo already use
+    if (err) {
+      throw err
+    }
+    return cb(null, user)
+  })
+}))
+
+/* MIDDLEWARES */
+
+
+//app.createServer( Cookies.express( keys ) )
+// Use application-level middleware for common functionality, including
+app.use(require('cookie-parser')())
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  name: 'serializedUser',
+  resave: true,
+  saveUninitialized: true
+}))
+
+// Initialize Passport and restore authentication state, if any, from the
+// session.
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.set('view engine', 'hbs')
+
+app.use(express.static(path.join(__dirname, '/assets')))
+
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+passport.deserializeUser(function(id, done) {
+  db.user.getUserId(id, function(err, user) {
+    done(err, user);
+  });
 });
+
+/* ROUTER SETUP */
+
+app.use('/', mainRouter)
+app.use('/game', gameRouter)
+app.use('/db', dbRouter)
+app.use('/user', userRouter)
+app.use('/track', trackRouter)
+app.use('/score', scoreRouter)
+app.use('/', authRouter)
+
+/* IO */
+
+// Listen for Socket.IO Connections. Once connected, start the game logic.
+io.sockets.on('connection', function (socket) {
+  logger.info('Connection of a client')
+  game.initGame(io, socket)
+})
+
+module.exports = http

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Impulsy - Ride the music!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/css/pages/hallOfFame.css" rel="stylesheet">
+    </head>
+    <body>
+
+        <section class="content">
+
+            {{!-- HOME BUTTON --}}
+
+            <a href="/">
+                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+            </a>
+
+            <h1 class="title">Hall of fame</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Cumulated score</th>
+                    </tr>
+                </thead>
+                <tbody id="rank"></tbody>
+            </table>
+        </section>
+        
+    </body>
+    <script src="js/hallOfFame.js"></script>
+</html>
