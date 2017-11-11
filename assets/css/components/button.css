@@ -47,3 +47,8 @@
   background: var(--color-disabled);
   border: solid 3px var(--color-disabled);
 }
+
+.burger {
+  /* background: transparent;
+  border: none; */
+}
