@@ -42,7 +42,7 @@ var App = {
             // // Active state
             // document.querySelector("#"+difficulty).attributes.state.value = "active";
 
-            this.difficulty = difficulty;
+            // this.difficulty = difficulty;
 		},
 
         onCreateClick: function () {
