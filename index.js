@@ -14,6 +14,7 @@ const Strategy = require('passport-local').Strategy
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
+const hbs = require('hbs')
 
 /* GAME */
 
@@ -108,6 +109,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.set('view engine', 'hbs')
+hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerPartials(__dirname + '/views/partials/menu');
 
 app.use(express.static(path.join(__dirname, '/assets')))
 
