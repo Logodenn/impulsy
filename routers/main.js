@@ -41,6 +41,12 @@ router.get('/hallOfFame', function (req, res) {
     });
   });
 
+router.get('/howItWorks', function (req, res) {
+  res.render('howItWorks', {
+    message: "Hello World!"
+  });
+});
+
 router.get('/trackSelection', function (req, res) {
     // Most played tracks 
     db.track.getTrendTracks((err, trend) => {
