@@ -30,7 +30,7 @@ var App = {
         players : [],
         currentCorrectAnswer: '',
         trackId: "ttEI35HVpqI",
-        difficulty: "lazy",
+        difficulty: Cookies.get().difficulty || "lazy",
 
         onDifficultyClick: function (difficulty) {
 
