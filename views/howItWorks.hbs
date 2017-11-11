@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Impulsy - How it works!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/css/pages/howItWorks.css" rel="stylesheet">
+        <script src="/js/toggleElement.js"></script>
+    </head>
+    <body>
+        <section id="menu" class="menu" state="closed">
+            <div class="closer" onclick="toggleElement('menu','close')">X</div>
+            <ul>
+                <li class="menuItem"><a href="/login">Log in</a></li>
+                <li class="menuItem"><a href="/signup">Sign up</a></li>
+                <li class="menuItem currentPage"><a href="/hallOfFame">Hall of fame</a></li>
+                <li class="menuItem"><a href="/howItWorks">How it works</a></li>
+            </ul>
+        </section>
+        <section class="content">
+
+            {{!-- Burger --}}
+
+            <button id="burger" class="button button-small" onclick="toggleElement('menu','open')">
+                <img src="../img/burger.svg" alt="Home" width="30px" height="30px">
+            </button>
+
+            <h1 class="title">Impulsy - Ride the music</h1>
+
+            <!-- ********** MOST PLAYED TRACKS ********** -->
+           
+
+            </div>
+        </section>
+        
+    </body>
+</html>
