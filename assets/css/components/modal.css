@@ -10,7 +10,7 @@
 	background-size: 1000% 1000%;
 	animation: rainbow 18s ease infinite; */
 	/* background: var(--color-background); */
-	background: #1f0627;
+	background: var(--color-background-dark);
 }
 
 .modal[state="closed"] {
