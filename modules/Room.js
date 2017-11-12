@@ -1,41 +1,30 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
 
-const GameManager = require('./GameManager')
+const RoomManager = require('./RoomManager')
 const Player = require('./Player')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
 
-module.exports = class Game {
-  constructor (io) {
+module.exports = class Room {
+  constructor () {
     this.id = uuid()
     this.isGameStarted = false
 
-    // this.io = io.of(`/${this.id}`)
-    this.io = io
-    this.difficulty = 'lazy'
-
     this.players = {}
     this.loopTimer = null
-    this.artefacts = [ 0, 2, 3, 2, 1, 2, 1, 2, 1 ]
-    this.spectrum = [ 1, 0, 1, 0, 1, 1, 0, 0, 0 ]
+    this.artefacts = [0, 2, 3, 2, 1, 2, 1, 2, 1]
+    this.spectrum = [1, 0, 1, 0, 1, 1, 0, 0, 0]
+    this.difficulty = 'lazy'
     this.currentBar = 0
     this.energy = 100
 
     this.bindEvents()
   }
 
-  bindEvents () {
-    /* this.io.on('connection', (socket) => {
-      this.joinGame(socket)
-
-      socket.on('hostStartGame', () => { this.startGame() })
-    }) */
-  }
-
   destroy () {
-    GameManager.getInstance().deleteGame(this)
+    RoomManager.deleteRoom(this)
   }
 
   startGame () {
@@ -44,12 +33,13 @@ module.exports = class Game {
       return
     }
 
-    logger.info(`Starting game ${this.id}`)
+    logger.info(`Starting game on room ${this.id}`)
     this.io.emit('gameStarted')
 
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
-        logger.info(`Loop - currentBar ${this.currentBar}`)
+        logger.debug(`Loop - currentBar ${this.currentBar}`)
+
         for (const player in this.players) {
           if (this.currentBar > this.artefacts.length) {
             this.win(player)
@@ -58,40 +48,49 @@ module.exports = class Game {
           } else {
             const data = this.checkRightPosition(player)
 
-            player.socket.emit('energy', {
+            player.socket.emit('updateGame', {
               data
             })
-
-            this.currentBar += 1
           }
         }
+
+        this.currentBar += 1
       }, gameSpeed)
     }, positionCheckDelay)
   }
 
-  joinGame (clientSocket) {
-    logger.info(`New player - socket ${clientSocket.id}`)
+  addPlayer (clientSocket) {
+    logger.info(`Room ${this.id} - New player - socket ${clientSocket.id}`)
 
     this.players[clientSocket.id] = new Player(clientSocket)
 
-    clientSocket.on('disconnect', () => {
-      delete this.players[clientSocket.id]
-
-      logger.info(`Client ${clientSocket.id} is disconnected`)
-
-      if (this.players.length === 0) {
-        // this.gameManager.deleteGame(this)
-      }
+    clientSocket.emit('gameJoined', {
+      gameId: this.id
     })
+  }
 
-    clientSocket.emit('gameJoined', { gameId: this.id })
-    /* clientSocket.emit('newGameCreated', {
-      game: { arrayArtefacts: this.artefacts, arraySpectrum: [ 0, 1, 1, 0, 1, 1, 1, 0, 1 ] },
-      gg: this.positionCheckDelay
-    }) */
+  bindPlayerEvents (player) {
+    const socket = player.socket
+
+    socket.on('disconnect', () => {
+      this.onPlayerDisconnect(socket)
+    })
+  }
+
+  onPlayerDisconnect (socket) {
+    logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
+
+    delete this.players[socket.id]
+
+    if (this.players.length === 0) {
+      // this.gameManager.deleteGame(this)
+    }
   }
 
   win (player) {
+    logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
+
+    // Stop the game loop
     clearInterval(this.loopTimer)
 
     player.socket.emit('endOfGame', {
@@ -99,27 +98,11 @@ module.exports = class Game {
       'score': player.takenArtefactsCount,
       'max': this.artefacts.length
     })
-
-    /* score = {
-      duration: game.currentBar,
-      userId: 1, // int
-      trackId: game.trackId
-    }
-
-    db.score.create(score, function (err, result) {
-      if (err) logger.error(err)
-    }) */
-
-    player.disconnect(true)
-
-    /* game.audioStreamPipe.pause()
-    game.audioStreamPipe.destroy() */
-
-    logger.info(`Game ${this.id}: Player ${player.socket.id} wins`)
   }
 
   checkRightPosition (player) {
-    logger.info(`Check position for game ${this.id}`)
+    logger.info(`Room ${this.id} - check position for player ${player.id}`)
+
     let isArtefactTaken = false
 
     if (player.position !== this.artefacts[this.currentBar] && this.difficulty === 'easy') {
@@ -148,31 +131,25 @@ module.exports = class Game {
     }
 
     return {
-      gameId: this.id,
-      socketId: this.io.id,
-      position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
-      currentBar: this.currentBar,
-      difficulty: this.difficulty, // difficulty of the level 
+      position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       energy: this.energy,
       isArtefactTaken: isArtefactTaken,
       // TODO: Change this name: 'nbArtefacts'
-      nbArtefacts: player.takenArtefactsCount,
+      barsCount: player.takenArtefactsCount,
       bar: this.currentBar
     }
   }
 
   getMetaData () {
     return {
-      game: {
-        gameId: this.id,
-        position: 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest 
-        currentBar: 0, // TO BE DELETED
-        difficulty: this.difficulty, // difficulty of the level
-        arraySpectrum: this.spectrum,
-        arrayArtefacts: this.artefacts,
-        energy: 20, // duration of the music 
-        track: 'ziizahi'
-      }
+      id: this.id,
+      position: 0, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      currentBar: 0, // TO BE DELETED
+      difficulty: this.difficulty, // difficulty of the level
+      spectrum: this.spectrum,
+      artefacts: this.artefacts,
+      energy: this.energy, // duration of the music
+      track: 'ziizahi'
     }
   }
 }

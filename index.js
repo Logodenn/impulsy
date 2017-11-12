@@ -1,7 +1,7 @@
 /* UTILS */
 
 require('dotenv').config()
-const logger = require('./utils/logger')(module)
+// const logger = require('./utils/logger')(module)
 const environment = require('./models/config/environment')
 
 /* NODE_MODULES */
@@ -15,10 +15,10 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
 
-/* GAME */
+/* ROOMS */
 
-// const game = require('./modules/game.js')
-const GameManager = require('./modules/GameManager')
+require('./modules/RoomManager')(io)
+
 /* ROUTERS */
 
 const mainRouter = require('./routers/main')
@@ -35,6 +35,7 @@ const db = require('./models/controllers')
 environment(app)
 
 /* PASSPORT SETUP */
+
 function validateEmail (email) {
   var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(email)
@@ -50,7 +51,7 @@ function (req, login, password, cb) {
   // try if it's an email or a username
   const email = validateEmail(login)
   db.user.getUser(login, email, function (err, result) {
-    if (err) {    
+    if (err) {
       console.log(err)
       return cb(err)
     }
@@ -110,16 +111,15 @@ app.set('view engine', 'hbs')
 
 app.use(express.static(path.join(__dirname, '/assets')))
 
+passport.serializeUser(function (user, done) {
+  done(null, user.id)
+})
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  db.user.getUserId(id, function(err, user) {
-    done(err, user);
-  });
-});
+passport.deserializeUser(function (id, done) {
+  db.user.getUserId(id, function (err, user) {
+    done(err, user)
+  })
+})
 
 /* ROUTER SETUP */
 
@@ -130,13 +130,5 @@ app.use('/user', userRouter)
 app.use('/track', trackRouter)
 app.use('/score', scoreRouter)
 app.use('/', authRouter)
-
-/* IO */
-
-// Listen for Socket.IO Connections. Once connected, start the game logic.
-let g = new GameManager(io)
-io.on('hostCreateNewGame', () => {
-  logger.info('HostCreateNewGame')
-})
 
 module.exports = http
