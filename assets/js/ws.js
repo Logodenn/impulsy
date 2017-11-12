@@ -6,6 +6,7 @@ var IO = {
     init: function() {
         IO.socket = io.connect();
         IO.bindEvents();
+        IO.onJoinRoom();
     },
 
     bindEvents : function() {
@@ -34,6 +35,15 @@ var IO = {
         // Cache a copy of the client's socket.IO session ID on the App
         App.mySocketId = IO.socket.sessionid;
         // console.log(data.message);
+    },
+
+    onJoinRoom : function() {
+
+        var data = {
+            roomId: "I have no idea of what I'm doing"
+        }
+        console.log("join room");
+        IO.nsocket.emit('joinRoom', data);
     },
 
     onNewGameCreated : function(data) {
