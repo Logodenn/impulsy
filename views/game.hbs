@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/css/pages/game.css" rel="stylesheet">
-        
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/chunkPlayer.js"></script>
         <script src="/js/ws.js"></script>
@@ -20,12 +20,6 @@
             <a href="/">
                 <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
             </a>
- 
-            <div id="difficultyButtons" class="buttonWrapper flex-row">
-                <button id="lazy" class="button" state="active" onclick="App.Host.onDifficultyClick('lazy')">Lazy</button>
-                <button id="easy" class="button" state="passive" onclick="App.Host.onDifficultyClick('easy')">Easy</button>
-                <button id="crazy" class="button" state="passive" onclick="App.Host.onDifficultyClick('crazy')">Crazy</button>
-            </div>
 
             <div id="startButtons" class="buttonWrapper">
                 <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button>
@@ -41,6 +35,33 @@
             <div id="moveButtons" class="flex-row hidden">
                 <button id="upwardButton" class="button hidden" state="passive" onclick="onTabletMove('up')">Up</button>
                 <button id="downwardButton" class="button hidden" state="passive" onclick="onTabletMove('down')">Do</button>
+            </div>
+
+            {{!-- ENDGAME LAYER --}}
+
+            <div id="endGameLayer" class="flex-col hidden">
+                Your score is <span id="gameState"></span>
+                {{!-- <span>Your score is : $$$</span>  --}}
+
+                {{!-- SAVE SCORE --}} 
+
+                {{!-- if the user hasn't logged in --}}
+                {{!-- <span>Wanna save your score?</span> --}}
+                <a class="hidden" href="#">
+                    <button class="button" state="disabled">Sign up</button>
+                </a>
+
+                {{!-- FAVORITE --}}
+
+                <a class="hidden" href="#">
+                    <button class="button" state="disabled">Favorite this track</button>
+                </a>
+
+                {{!-- PLAY --}}
+
+                <a class="hidden" href="/">
+                    <button class="button">Play again</button>
+                </a>                
             </div>
 
         </section>

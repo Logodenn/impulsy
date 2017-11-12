@@ -1,5 +1,5 @@
 var chunkPlayer = {
-  _audioContext: new (window.AudioContext || window.webkitAudioContext)(),
+  _audioContext: undefined,
   _audioBuffer: [],
   _startTime: undefined,
   _timer: undefined,
@@ -14,6 +14,7 @@ var chunkPlayer = {
   },
 
   _start: function () {
+    chunkPlayer._audioContext = new (window.AudioContext || window.webkitAudioContext)()
     chunkPlayer._startTime = chunkPlayer._audioContext.currentTime
 
     chunkPlayer._playNextChunk()
@@ -21,7 +22,9 @@ var chunkPlayer = {
   },
 
   _playNextChunk: function () {
-    if (chunkPlayer._playedChunk < chunkPlayer._audioBuffer.length) {
+    if (chunkPlayer._playedChunk > chunkPlayer._audioBuffer.length) {
+      clearInterval(chunkPlayer._timer)
+    } else {
       var chunkCount = chunkPlayer._audioBuffer.length
       var fileReader = new FileReader()
 

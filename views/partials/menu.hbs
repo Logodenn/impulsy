@@ -1,0 +1,16 @@
+
+<section id="menu" class="menu" state="closed">
+    <div class="button-small closer" onclick="toggleElement('menu','close')">X</div>
+    <ul>
+        <a href="/"><li class="menuItem {{#if index}}currentPage{{/if}}">Select a track</li></a>
+        <a href="/login"><li class="menuItem {{#if login}}currentPage{{/if}}">Log in</li></a>
+        <a href="/signup"><li class="menuItem {{#if signup}}currentPage{{/if}}">Sign up</li></a>
+        <a href="/hallOfFame"><li class="menuItem {{#if hallOfFame}}currentPage{{/if}}">Hall of fame</li></a>
+        <a href="/howItWorks"><li class="menuItem {{#if howItWorks}}currentPage{{/if}}">How it works</li></a>
+
+        {{!-- {{#each pages}}
+            <a href="/{{href}}"><li class="menuItem {{#if isCurrentPage}}currentPage{{/if}}">{{action}}</li></a>
+        {{/each}} --}}
+        
+    </ul>
+</section>

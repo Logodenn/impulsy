@@ -61,8 +61,8 @@ var IO = {
         updateGameScene(data);
 	},
 
-	gameOver : function (data) {
-		endGame();
+	onGameOver : function (data) {
+		endGame(data);
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
@@ -71,7 +71,7 @@ var IO = {
         chunkPlayer._onAudioChunk(data.chunk);
     },
     onAudioEnd: function () {
-        clearInterval(chunkPlayer._timer);
+        // This is when the audio data is fully sent
     }
 };
 
