@@ -19,8 +19,6 @@ module.exports = class Room {
     this.difficulty = 'lazy'
     this.currentBar = 0
     this.energy = 100
-
-    this.bindEvents()
   }
 
   destroy () {
