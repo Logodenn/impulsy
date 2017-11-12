@@ -48,13 +48,14 @@ module.exports.initGame = function (sio, socket) {
  */
 function hostCreateNewGame(data) {
   logger.debug('Creation of the game');
+  console.log(data);
   var youtubeVideoId = data.youtubeVideoId;
   var difficulty = data.difficulty;
+  var gameId = data.gameId;
   // Create a unique Socket.IO Room
-  var thisGameId = (Math.random() * 100000) | 0;
   // Return the game to the browser client
   //createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
-  createGame('./sounds/OrelSan - Basique.mp3', true, data.difficulty, thisGameId, this.id, function (err, gameCreate) {
+  createGame(youtubeVideoId, true, difficulty, gameId, this.id, function (err, gameCreate) {
     game = gameCreate
     if (err) logger.error(err);
     else {
@@ -82,7 +83,7 @@ function hostCreateNewGame(data) {
   })
 
   // Join the Room and wait for the players
-  gameSocket.join(thisGameId.toString())
+  gameSocket.join(gameId.toString())
 };
 
 /**
@@ -134,8 +135,8 @@ function playerMove(data) {
 function endGame(victory) {
   clearInterval(new_positions);
   if (victory) victory = "victory";
-  else victory = "loose"
-  io.sockets.in(game.gameId).emit('enfOfGame', {
+  else victory = "loose";
+  io.sockets.in(game.gameId).emit('gameOver', {
     "result": victory,
     "score": game.nbArtefacts
   });
@@ -156,29 +157,6 @@ function endGame(victory) {
   logger.info('End of the game this is a ' + victory);
 }
 
-
-
-/**
- * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
- * Attention if barSize is less than one, the randomNumber generated can be less than 0
- * We can change baseLowerBound and baseUpperBound to modify the base position 
- * @param {array} arraySpectrum array of the spectrum generate by the sound
- */
-function getArrayArthefacts(arraySpectrum) {
-  logger.debug('Generation of the array of arthefact');
-  var randomNumbers = [];
-  var baseLowerBound = 1
-  var baseUpperBound = 2
-  arraySpectrum.forEach(function (barSize) {
-    var lowerBound = baseLowerBound - barSize;
-    var upperBound = baseUpperBound + barSize;
-    var randomNumber = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound);
-    // Yay! new random number
-    randomNumbers.push(randomNumber);
-  });
-  return randomNumbers;
-}
-
 /**
  * Function createGame create game object 
  * @param {string} sound string of the youtube video id or path to the sound
@@ -188,10 +166,10 @@ function getArrayArthefacts(arraySpectrum) {
  * @param {string} socketId id of the socket
  * @param callback 
  */
-function createGame(sound, local, difficulty, gameId, socketId, callback) {
+function createGame(link, local, difficulty, gameId, socketId, callback) {
   logger.debug('Creation of the game object');
   // TODO : ajouter ici les morts des amis par rapport aux player
-  db.track.getTrack(sound, function (err, result) {
+  db.track.getTrackLink(link, function (err, result) {
     if (err) logger.error(err);
     game = {
       gameId: gameId,
@@ -206,41 +184,6 @@ function createGame(sound, local, difficulty, gameId, socketId, callback) {
       game.arrayArtefacts = result.information.arrayArtefacts;
       game.energy = result.information.arraySpectrum.length; // duration of the music 
       game.track = result.id;
-    } else { // The sound doesn't exist, we create and save it  
-      youtube.getAudioStream(sound, local, "lowest", function (err, stream) {
-        if (err) logger.error(err);
-        else {
-          youtube.getBars(stream, 1, function (err, bars) {
-            if (err) logger.error(err);
-            else {
-              game.arraySpectrum = bars;
-              game.arrayArtefacts = getArrayArthefacts(game.arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-              game.energy = game.arraySpectrum.length; // duration of the music 
-
-              // TODO voir avec Pierre pour link et sound
-              // sound = titre musique et link lien vers vidéo 
-              track_information = {
-                arraySpectrum: game.arraySpectrum,
-                arrayArtefacts: game.arrayArtefacts
-              };
-              logger.debug(track_information.arraySpectrum);
-              logger.debug(track_information.arrayArtefacts);
-              track = {
-                name: sound,
-                link: "",
-                information: track_information
-              };
-              logger.debug(track.information)
-              db.track.create(track, function (err, result) {
-                if (err) logger.error(err);
-                else game.trackId = result.trackId;
-              });
-              logger.debug('Track saved !')
-
-            }
-          });
-        }
-      });
     }
     callback(null, game)
     logger.debug('Game created !')

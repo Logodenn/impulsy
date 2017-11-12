@@ -5,28 +5,111 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/css/pages/index.css" rel="stylesheet">
+        <script src="/js/toggleElement.js"></script>
+        <script src="/js/trackSelection.js"></script>
     </head>
     <body>
+
+        {{> menu index="true" }}
+            
         <section class="content">
+
+            {{!-- Burger --}}
+
+            <button id="burger" class="button button-small" onclick="toggleElement('menu','open')">
+                <img src="../img/burger.svg" alt="Home" width="30px" height="30px">
+            </button>
 
             <h1 class="title">Impulsy - Ride the music</h1>
 
-            <div id="buttons" class="buttonWrapper flex-col">
-                <a href="trackSelection">
-                    <button class="button">Play</button>
-                </a>
-                <a href="login">
-                    <button class="button">Login</button>
-                </a>
-                <a href="signup">
-                    <button class="button">Sign up</button>
-                </a>
-                <a href="#">
-                    <button class="button" state="disabled">Invite</button>
-                </a>
-                <a href="hallOfFame">
-                    <button class="button">Hall of fame</button>
-                </a>
+            <!-- ********** MOST PLAYED TRACKS ********** -->
+            {{#if userConnected}}
+                <section id="mostPlayedTracks" class="flex-col">
+                    <h2 class="title">Your most played tracks</h2>
+                    <div class="track-list flex-row">
+                        {{#each userMostPlayed}}
+                            <div class="track">
+                                <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
+                            </div>
+                        {{/each}}
+                    </div>
+                </section>
+
+                <!-- ********** FAVORITE TRACKS ********** -->
+
+                <section id="favorites" class="flex-col hidden">
+                    <h2 class="title">Favorite tracks</h2>
+                    <div class="track-list flex-row">
+                        {{#each userFavorite}}
+                            <div class="track">
+                                <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
+                            </div>
+                        {{/each}}
+                    </div>
+                </section>
+            {{/if}}
+
+            <!-- ********** YOUTUBE SEARCH BAR ********** -->
+
+            <section id="ytSearch" class="flex-col hidden">
+                <h2 class="title">Search through YouTube</h2>
+                <div id="ytBrowser" class="inputWrapper flex-row">
+                    <input type="text" class="input" placeholder="type a song...">
+                    <button class="button button-small"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
+                </div>
+            </section>
+
+            <!-- ********** TREND TRACKS ********** -->
+
+            <section id="trendings" class="flex-col">
+                <h2 class="title">Trend tracks</h2>
+                <div class="track-list flex-row">
+                    {{#each trend}}
+                        <div class="track">
+                            <button class="button button-track" onclick="toggleElement('modal','open');selectTrack(this)">{{name}}</button>
+                        </div>
+                    {{/each}}
+                </div>
+            </section>
+
+            <div id="modal" class="flex-col modal" state="closed">
+
+                <!-- ********** HEADER ********** -->
+
+                <div class="closer" onclick="toggleElement('modal','close')">X</div>
+
+                <!-- ********** FORM ********** -->
+
+                <form id="difficultyForm" action="/game/{{gameId}}" method="post" class="form flex-col buttonWrapper">
+                    {{!-- <button id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</button>
+                    <button id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</button>
+                    <button id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</button> --}}
+
+                    <input id="selectedTrack" class="input" type="text" name="track" value="" disabled="disabled" />
+
+                    <div class="flex-row">
+                        <div id="lazy" class="inputWrapper button flex-row" state="active" onclick="setDifficulty('lazy')">
+                            <label for="dlazy">Lazy</label>
+                            <input id="dlazy" class="hidden" type="radio" name="difficulty" value="lazy" checked>
+                        </div>
+
+                        <div id="easy" class="inputWrapper button flex-row" state="disabled" onclick="setDifficulty('easy')">
+                            <label for="deazy">Easy</label>
+                            <input id="deasy" class="hidden" type="radio" name="difficulty" value="easy">
+                        </div>
+
+                        <div id="crazy" class="inputWrapper button flex-row" state="disabled" onclick="setDifficulty('crazy')">                    
+                            <label for="dcrazy">Crazy</label>
+                            <input id="dcrazy" class="hidden" type="radio" name="difficulty" value="crazy">
+                        </div>
+                    </div>
+
+                    <!-- ********** SUBMIT ********** -->
+
+                    <a href="/game">
+                        <button class="button" type="submit" form="difficultyForm" state="passive">Create room</button>
+                    </a>
+                </form>
             </div>
         </section>
         

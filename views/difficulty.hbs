@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Impulsy - Difficulty!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/css/pages/difficulty.css" rel="stylesheet">
+        <script src="/js/difficulty.js"></script>
+    </head>
+    <body>
+
+        <section class="content">
+
+            {{!-- HOME BUTTON --}}
+
+            <a href="/">
+                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
+            </a>
+
+            <h1 class="catchPhrase">Impulsy - Ride the music</h1>
+
+            <form id="difficultyForm" action="/game/{{gameId}}" method="post" class="form flex-col buttonWrapper">
+                {{!-- <button id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</button>
+                <button id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</button>
+                <button id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</button> --}}
+
+                <div id="lazy" class="inputWrapper button flex-row" state="active" onclick="setDifficulty('lazy')">
+                    <label for="dlazy">Lazy</label>
+                    <input id="dlazy" class="hidden" type="radio" name="difficulty" value="lazy" checked>
+                </div>
+
+                <div id="easy" class="inputWrapper button flex-row" state="disabled" onclick="setDifficulty('easy')">
+                    <label for="deazy">Easy</label>
+                    <input id="deasy" class="hidden" type="radio" name="difficulty" value="easy">
+                </div>
+
+                <div id="crazy" class="inputWrapper button flex-row" state="disabled" onclick="setDifficulty('crazy')">                    
+                    <label for="dcrazy">Crazy</label>
+                    <input id="dcrazy" class="hidden" type="radio" name="difficulty" value="crazy">
+                </div>
+
+                <button class="button" type="submit" form="difficultyForm" state="passive">Create room</button>
+            </form>
+
+        </section>
+        
+    </body>
+</html>
