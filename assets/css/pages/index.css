@@ -1,6 +1,13 @@
 
 @import '../main.css';
 
-.buttonWrapper {
-	/* height: 450px; */
+h2.title {
+    border-bottom: solid 3px var(--color-background-light);
+    border-radius: 3px;
+    margin-bottom: 10px;    
+}
+
+.inputWrapper {
+    margin: 10px;
+    align-items: center;
 }

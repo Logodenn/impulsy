@@ -51,7 +51,7 @@ module.exports = {
                 cb(err);
             }
             else {
-                score.date=new Date();
+                score.date = new Date();
                 //new Date().toISOString();
                 db.models.score.create(score, function (err, message) {
                     if (err) {
@@ -130,7 +130,73 @@ module.exports = {
             }
         });
     },
-};
+    bestPlayers: function (track_id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select pseudo, duration" +
+                    " from score join user on user_id=user.id" +
+                    " where track_id = ? " +
+                    "order by duration desc", [track_id],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    },
+
+    bestScoresTrack: function (track_id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select pseudo, duration" +
+                    " from score join user on user_id=user.id" +
+                    " where track_id = ? " +
+                    "order by duration desc", [track_id],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    },
+
+    bestScores: function (cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select pseudo,sum(duration) as score_total" +
+                    " from score join user on user_id=user.id" +
+                    " group by pseudo " +
+                    "order by score_total desc;",[],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    }
+}
+;
 
 /*
 module.exports = {

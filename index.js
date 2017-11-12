@@ -14,6 +14,7 @@ const Strategy = require('passport-local').Strategy
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
+const hbs = require('hbs')
 
 /* ROOMS */
 
@@ -90,6 +91,7 @@ function (req, email, password, cb) {
 
 /* MIDDLEWARES */
 
+// app.createServer( Cookies.express( keys ) )
 // Use application-level middleware for common functionality, including
 app.use(require('cookie-parser')())
 app.use(bodyParser.urlencoded({
@@ -108,6 +110,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.set('view engine', 'hbs')
+hbs.registerPartials(path.join(__dirname, '/views/partials'))
+hbs.registerPartials(path.join(__dirname, '/views/partials/menu'))
 
 app.use(express.static(path.join(__dirname, '/assets')))
 
