@@ -11,3 +11,7 @@ h2.title {
     margin: 10px;
     align-items: center;
 }
+
+.button label{
+    color: var(--color-background);
+}
