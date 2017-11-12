@@ -111,7 +111,6 @@ app.use(passport.session())
 
 app.set('view engine', 'hbs')
 hbs.registerPartials(path.join(__dirname, '/views/partials'))
-hbs.registerPartials(path.join(__dirname, '/views/partials/menu'))
 
 app.use(express.static(path.join(__dirname, '/assets')))
 
