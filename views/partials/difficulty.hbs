@@ -7,7 +7,7 @@
 
     <!-- ********** FORM ********** -->
 
-    <form id="difficultyForm" action="/game/{{gameId}}" method="post" class="form flex-col buttonWrapper">
+    <form id="difficultyForm" action="/room" method="post" class="form flex-col buttonWrapper">
         {{!-- <button id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</button>
         <button id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</button>
         <button id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</button> --}}
@@ -33,7 +33,7 @@
 
         <!-- ********** SUBMIT ********** -->
 
-        <a href="/game">
+        <a href="/room">
             <button class="button" type="submit" form="difficultyForm" state="passive">Create room</button>
         </a>
     </form>
