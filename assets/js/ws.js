@@ -28,11 +28,12 @@ var IO = {
     },
 
     joinRoom : function() {
+        // TODO get le roomId via l'url ou via le back
         var data = {
             roomId: "I have no idea of what I'm doing"
         }
         console.log("joinRoom: room " + data.roomId);
-        IO.socket.emit('joinRoom', data);
+        IO.socket.emit('joinRoom', data.roomId);
     },
 
     onNewGameCreated : function(data) {
