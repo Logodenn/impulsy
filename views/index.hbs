@@ -9,16 +9,9 @@
         <script src="/js/trackSelection.js"></script>
     </head>
     <body>
-        <section id="menu" class="menu " state="closed">
-            <div class="button-small closer" onclick="toggleElement('menu','close')">X</div>
-            <ul>
-                <a href="/"><li class="menuItem currentPage">Select a track</li></a>
-                <a href="/login"><li class="menuItem">Log in</li></a>
-                <a href="/signup"><li class="menuItem">Sign up</li></a>
-                <a href="/hallOfFame"><li class="menuItem">Hall of fame</li></a>
-                <a href="/howItWorks"><li class="menuItem">How it works</li></a>
-            </ul>
-        </section>
+
+        {{> menu index="true" }}
+            
         <section class="content">
 
             {{!-- Burger --}}
