@@ -6,7 +6,7 @@ var IO = {
     init: function() {
         IO.socket = io.connect();
         IO.bindEvents();
-        IO.onJoinRoom();
+        IO.joinRoom();
     },
 
     bindEvents : function() {
@@ -21,29 +21,18 @@ var IO = {
         IO.socket.on('gameJoined', IO.onGameJoined)
     },
 
-    onGameJoined: function (data) {
-        IO.nsocket = io.connect('/' + data.gameId)
-        console.log('/' + data.gameId)
-
-        IO.nsocket.on('gameStarted', IO.onGameStarted);
-        IO.nsocket.on('playerMove', IO.onPlayerMove);
-        IO.nsocket.on('energy', IO.onEnergy);
-        IO.nsocket.on('gameOver', IO.onGameOver);
-    },
-
     onConnected : function() {
         // Cache a copy of the client's socket.IO session ID on the App
         App.mySocketId = IO.socket.sessionid;
         // console.log(data.message);
     },
 
-    onJoinRoom : function() {
-
+    joinRoom : function() {
         var data = {
             roomId: "I have no idea of what I'm doing"
         }
-        console.log("join room");
-        IO.nsocket.emit('joinRoom', data);
+        console.log("joinRoom: room " + data.roomId);
+        IO.socket.emit('joinRoom', data);
     },
 
     onNewGameCreated : function(data) {
