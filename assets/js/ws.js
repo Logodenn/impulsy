@@ -16,7 +16,18 @@ var IO = {
         IO.socket.on('energy', IO.onEnergy);
         IO.socket.on('gameOver', IO.onGameOver);
 		IO.socket.on('audioChunk', IO.onAudioChunk);
-		IO.socket.on('audioEnd', IO.onAudioEnd);
+        IO.socket.on('audioEnd', IO.onAudioEnd);
+        IO.socket.on('gameJoined', IO.onGameJoined)
+    },
+
+    onGameJoined: function (data) {
+        IO.nsocket = io.connect('/' + data.gameId)
+        console.log('/' + data.gameId)
+
+        IO.nsocket.on('gameStarted', IO.onGameStarted);
+        IO.nsocket.on('playerMove', IO.onPlayerMove);
+        IO.nsocket.on('energy', IO.onEnergy);
+        IO.nsocket.on('gameOver', IO.onGameOver);
     },
 
     onConnected : function() {
