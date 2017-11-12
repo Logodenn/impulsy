@@ -1,4 +1,5 @@
-// const logger = require('../utils/logger')
+const logger = require('../utils/logger')(module)
+const path = require('path')
 const ffmpeg = require('fluent-ffmpeg')
 const ytdl = require('ytdl-core')
 
@@ -22,18 +23,27 @@ const getStream = (_source, _callback) => {
 
 /**
  * allows to get the mp3 stream of a local file
+ * The 'fileName' option is required
  * @param {any} options
  * @param {any} callback
  */
 const getLocalStream = (_options, _callback) => {
-  // TODO: implement this function
-  _callback(new Error('Function not implemented'))
+  if (!_options.fileName) {
+    logger.error('getYoutubeStream: no videoId provided')
+
+    return _callback(new Error('No youtube video Id provided'))
+  }
+
+  // We might want to set up a directory for files
+  const source = path.join(__dirname, '..', 'sounds', _options.fileName)
+
+  getStream(source, _callback)
 }
 
 /**
  * allows to get the mp3 stream of a specific youtube video
- * The video 'videoId' option is required
- * The quality option defaults to 'highest'
+ * The 'videoId' option is required
+ * The 'quality' option defaults to 'highest'
  * @param {any} _options
  * @param {any} _callback
  */
