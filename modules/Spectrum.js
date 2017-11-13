@@ -1,9 +1,6 @@
 const youtube = require('./youtube');
-<<<<<<< HEAD
 const db = require('../models/controllers');
-=======
 const FREQUENCY_CHECKING = 10;
->>>>>>> 6c79abce4f74928d043df2941955b13c76320977
 
 /**
  * Object Spectrum is the envelop of the sound
