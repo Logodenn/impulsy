@@ -4,47 +4,43 @@ const Room = require('./Room')
 const RoomManager = {
   io: null,
 
-  init: (io) => {
-    this.io = io
-    this.rooms = {}
-
-    this.io.on('connection', (socket) => {
-      logger.info(`RoomManager: new client ${socket.id}`)
-
-      this.bindEvents(socket)
-    })
-
-    logger.info('RoomManager: ready')
-  },
-
   bindEvents: (clientSocket) => {
     logger.info('RoomManager: bindEvents for socket', clientSocket.id)
 
     clientSocket.on('joinRoom', (roomId) => {
       // Check if room exists
-      if (this.rooms.hasOwnProperty(roomId)) {
-        this.rooms[roomId].addPlayer(clientSocket)
+      if (RoomManager.rooms.hasOwnProperty(roomId)) {
+        RoomManager.rooms[roomId].addPlayer(clientSocket)
       }
     })
   },
 
   createRoom: () => {
-    const room = new Room(this.io)
+    const room = new Room(RoomManager.io)
 
-    this.rooms[room.id] = room
+    RoomManager.rooms[room.id] = room
 
     return room.id
   },
 
   deleteRoom: (room) => {
-    delete this.rooms[room.id]
+    delete RoomManager.rooms[room.id]
 
     logger.info(`Room ${room.id} is deleted`)
+  },
+
+  init: (io) => {
+    RoomManager.io = io
+    RoomManager.rooms = {}
+
+    RoomManager.io.on('connection', (socket) => {
+      logger.info(`RoomManager: new client ${socket.id}`)
+
+      RoomManager.bindEvents(socket)
+    })
+
+    logger.info('RoomManager: ready')
   }
 }
 
-module.exports = (io) => {
-  RoomManager.init(io)
-
-  return RoomManager
-}
+module.exports = RoomManager
