@@ -18,12 +18,13 @@ const hbs = require('hbs')
 
 /* ROOMS */
 
-require('./modules/RoomManager')(io)
+const RoomManager = require('./modules/RoomManager')
+RoomManager.init(io)
 
 /* ROUTERS */
 
 const mainRouter = require('./routers/main')
-const gameRouter = require('./routers/game')
+const roomRouter = require('./routers/room.router')
 const authRouter = require('./routers/auth')
 const dbRouter = require('./routers/db')
 const userRouter = require('./routers/user')
@@ -111,7 +112,6 @@ app.use(passport.session())
 
 app.set('view engine', 'hbs')
 hbs.registerPartials(path.join(__dirname, '/views/partials'))
-hbs.registerPartials(path.join(__dirname, '/views/partials/menu'))
 
 app.use(express.static(path.join(__dirname, '/assets')))
 
@@ -128,7 +128,7 @@ passport.deserializeUser(function (id, done) {
 /* ROUTER SETUP */
 
 app.use('/', mainRouter)
-app.use('/game', gameRouter)
+app.use('/room', roomRouter)
 app.use('/db', dbRouter)
 app.use('/user', userRouter)
 app.use('/track', trackRouter)
