@@ -1,80 +1,79 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 const getArrayArthefacts = require('../utils/artefacts')
-const db = require('../models/controllers');
-var cookies = require("cookies")
-const youtube = require('../modules/youtube');
-const numberOfTrend = 10;
-const numberOfUserMostPlayed = 10;
-const numberOfUserFavorite = 10;
-const barsPerSeconds = 2;
+const db = require('../models/controllers')
+const cookies = require('cookies')
+// const youtube = require('../modules/youtube')
+const numberOfTrend = 10
+const numberOfUserMostPlayed = 10
+const numberOfUserFavorite = 10
+const barsPerSeconds = 2
 
-router.get("/", (req, res) => {
-    // Most played tracks 
-    db.track.getTrendTracks((err, trend) => {
-      if (err) console.log(err);
-      var data = {};
-      data.trend = trend.slice(0, numberOfTrend);
-      // User Most Played Tracks 
-      if (req.user) {
-        db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
-          if (err) console.log(err);
-          data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed);
-          // Favorite User track
-          req.user.getFavoriteTracks((err, userFavorite) => {
-            if (err) console.log(err);
-            data.userFavorite = userFavorite.slice(0, numberOfUserFavorite);
-            data.userConnected = true;
-            res.render('index', data);
-          })
+router.get('/', (req, res) => {
+  // Most played tracks
+  db.track.getTrendTracks((err, trend) => {
+    if (err) console.log(err)
+    var data = {}
+    data.trend = trend.slice(0, numberOfTrend)
+    // User Most Played Tracks 
+    if (req.user) {
+      db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
+        if (err) console.log(err)
+        data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed)
+        // Favorite User track
+        req.user.getFavoriteTracks((err, userFavorite) => {
+          if (err) console.log(err)
+          data.userFavorite = userFavorite.slice(0, numberOfUserFavorite)
+          data.userConnected = true
+          res.render('index', data)
         })
-      } else {
-        data.userConnected = false;
-        res.render('index', data);
-      }
-    })
-  });
+      })
+    } else {
+      data.userConnected = false
+      res.render('index', data)
+    }
+  })
+})
 
 router.get('/hallOfFame', function (req, res) {
-    res.render('hallOfFame', {
-      message: "Hello World!"
-    });
-  });
+  res.render('hallOfFame', {
+    message: 'Hello World!'
+  })
+})
 
 router.get('/howItWorks', function (req, res) {
   res.render('howItWorks', {
-    message: "Hello World!"
-  });
-});
+    message: 'Hello World!'
+  })
+})
 
 router.get('/trackSelection', function (req, res) {
-    // Most played tracks 
-    db.track.getTrendTracks((err, trend) => {
-      if (err) console.log(err);
-      var data = {};
-      data.trend = trend.slice(0, numberOfTrend);
-      // User Most Played Tracks 
-      if (req.user) {
-        db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
-          if (err) console.log(err);
-          data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed);
-          // Favorite User track
-          req.user.getFavoriteTracks((err, userFavorite) => {
-            if (err) console.log(err);
-            data.userFavorite = userFavorite.slice(0, numberOfUserFavorite);
-            data.userConnected = true;
-            res.render('trackSelection', data);
-          })
+  // Most played tracks
+  db.track.getTrendTracks((err, trend) => {
+    if (err) console.log(err)
+    var data = {}
+    data.trend = trend.slice(0, numberOfTrend)
+    // User Most Played Tracks 
+    if (req.user) {
+      db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
+        if (err) console.log(err)
+        data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed)
+        // Favorite User track
+        req.user.getFavoriteTracks((err, userFavorite) => {
+          if (err) console.log(err)
+          data.userFavorite = userFavorite.slice(0, numberOfUserFavorite)
+          data.userConnected = true
+          res.render('trackSelection', data)
         })
-      } else {
-        data.userConnected = false;
-        res.render('trackSelection', data);
-      }
-    })
+      })
+    } else {
+      data.userConnected = false
+      res.render('trackSelection', data)
+    }
+  })
+})
 
-  });
-
-router.get('/difficulty/:id', function (req, res) {
+/*router.get('/difficulty/:id', function (req, res) {
     var track;
     var trackId = parseInt(req.params.id);
     var gameId = (Math.random() * 100000) | 0;
@@ -160,6 +159,6 @@ router.get('/difficulty/:id', function (req, res) {
         }
       });
     }
-  });
+  });*/
 
-module.exports = router;
+module.exports = router
