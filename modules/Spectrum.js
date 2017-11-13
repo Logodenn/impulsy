@@ -1,12 +1,13 @@
 const youtube = require('./youtube');
+const db = require('../models/controllers');
 
 /**
-	 * Object Spectrum is the envelop of the sound
-	 * @attribute {string} name name of the sound 
-	 * @attribute {string} link link of the sound if is from Youtube 
-	 * @attribute {array} bars array of Bar object 
-	 * @attribute {int} barsPerSeconds int number of bar per second (speed of the song)
-	*/
+ * Object Spectrum is the envelop of the sound
+ * @attribute {string} name name of the sound 
+ * @attribute {string} link link of the sound if is from Youtube 
+ * @attribute {array} bars array of Bar object 
+ * @attribute {int} barsPerSeconds int number of bar per second (speed of the song)
+ */
 module.exports = class Spectrum {
 	constructor() {
 		this.name = null // name of the sound 
@@ -19,7 +20,7 @@ module.exports = class Spectrum {
 	 * Function createSpectrum create the envelop of the sound
 	 * @attribute {string} sound link or name of the sound
 	 * @attribute {bool} local False if is from Youtube, True if is from local storage
-	*/
+	 */
 	createSpectrum(sound, local) {
 		youtube.getAudioStream(sound, local, "lowest", function (err, stream) {
 			if (err) console.log(err);
@@ -27,22 +28,38 @@ module.exports = class Spectrum {
 				youtube.getBars(stream, barsPerSeconds, function (err, barsAmplitude) {
 					if (err) console.log(err);
 					else {
-						barsAmplitude.forEach(function(barAmplitude) {
+						barsAmplitude.forEach(function (barAmplitude) {
 							bar = new Bar();
 							bar.create(barAmplitude);
 							this.bars.append(bar)
-						  });
+						});
 						// add track to database 
 						var track = {
 							name: this.name,
 							link: this.link,
 							information: this.bars
-						};		
+						};
 						db.track.create(track, function (err, result) {
 							if (err) console.log(err);
 						});
 					}
 				});
+			}
+		});
+	}
+
+	/**
+	 * Function loadSpectrum load a spectrum from an id of a track
+	 * @attribute {int} id id of a track
+	 */
+	loadSpectrum(id) {
+		db.track.get(id, (err, result) => {
+			if (err) console.log(err); 
+			else {
+				track = result;
+				this.name = result.name;
+				this.link = result.link;
+				this.bars = result.information;
 			}
 		});
 	}
