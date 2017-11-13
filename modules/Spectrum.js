@@ -1,5 +1,9 @@
 const youtube = require('./youtube');
+<<<<<<< HEAD
 const db = require('../models/controllers');
+=======
+const FREQUENCY_CHECKING = 10;
+>>>>>>> 6c79abce4f74928d043df2941955b13c76320977
 
 /**
  * Object Spectrum is the envelop of the sound
@@ -74,10 +78,49 @@ module.exports = class Bar {
 		this.slots = []
 		this.artefacts = []
 		this.positionPlayers = []
+		this.isCurrentBar = false;
 		//this.rand = null
 	}
 
-	isCurrentBar(Player) {
+	// *
+	// * READ THIS
+	// * there is a masterInterval and a currentBarId global va
+	// * every n sec of the masterInterval, the currentBarId++
+	// * That way, everytime onMove AND onCurrentBar++ (those two events embrace the checking)
+	// * we call spectrum.bars[currentBarId].checkArtefact();
+	// *
+	// * END READ THIS
+	// *
+
+	currentBar(Player) {
+
+		if(this.isCurrentBar) {
+
+			currentBarInterval = setInterval(function () {
+				
+				// TODO enable checking
+	
+			}, FREQUENCY_CHECKING); // TODO check for a perfect refresh value
+		} else {
+			if(currentBarInterval) {
+				clearInterval(currentBarInterval);
+			}
+		}
+		
+	}
+
+	checkArtefact(Player) {
+		// Called on player move or on isCurrentBar timer start
+		if(artefacts[Player.id] == Player.position) {
+			// Artefact taken
+			// TODO notify listeners
+
+			
+
+			// TODO close interval as the artefact is taken - no need for further checks
+			// TODO clear if exists
+			clearInterval(currentBarInterval);
+		}
 
 	}
 
