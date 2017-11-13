@@ -5,7 +5,7 @@ const RoomManager = {
   io: null,
 
   bindEvents: (clientSocket) => {
-    logger.info('RoomManager bindEvents for socket', clientSocket.id)
+    logger.info('RoomManager: bindEvents for socket', clientSocket.id)
 
     clientSocket.on('joinRoom', (roomId) => {
       // Check if room exists
@@ -19,8 +19,6 @@ const RoomManager = {
     const room = new Room(RoomManager.io)
 
     RoomManager.rooms[room.id] = room
-
-    logger.info(`Room ${room.id} is created`)
 
     return room.id
   },
@@ -36,8 +34,12 @@ const RoomManager = {
     RoomManager.rooms = {}
 
     RoomManager.io.on('connection', (socket) => {
+      logger.info(`RoomManager: new client ${socket.id}`)
+
       RoomManager.bindEvents(socket)
     })
+
+    logger.info('RoomManager: ready')
   }
 }
 
