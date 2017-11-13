@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 var models = require('../models/models');
-const youtube = require("../modules/youtube");
+// const youtube = require("../modules/youtube");
 const getArrayArthefacts = require("../utils/artefacts");
 const moment = require('moment')
 const barsPerSeconds = 2;
@@ -24,7 +24,7 @@ router.post("/db", (req, res, next) => {
                         rank: "2"
                     }, function (err, user) {
                         if (err) return next(err);
-                        youtube.getAudioStream("cKfOycpc0t0", false, "lowest", function (err, stream) {
+                        /*youtube.getAudioStream("cKfOycpc0t0", false, "lowest", function (err, stream) {
                             if (err) console.log(err);
                             else {
                                 youtube.getBars(stream, barsPerSeconds, function (err, bars) {
@@ -91,7 +91,7 @@ router.post("/db", (req, res, next) => {
                                     }
                                 });
                             }
-                        });
+                        });*/
                     });
                 });
             });
