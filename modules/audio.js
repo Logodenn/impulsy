@@ -2,11 +2,15 @@ const logger = require('../utils/logger')(module)
 const path = require('path')
 const ffmpeg = require('fluent-ffmpeg')
 const ytdl = require('ytdl-core')
+const streamTo = require('stream-to-array')
+const AudioContext = require('web-audio-api').AudioContext
 
 const youtubeBaseUrl = 'https://www.youtube.com/watch?v='
+const audioContext = new AudioContext()
 
 /**
  * provides the ffmpeg stream of the mp3 data
+ *
  * @param {any} _source
  * @param {any} _callback
  */
@@ -16,7 +20,7 @@ const getStream = (_source, _callback) => {
   })
 
   stream.noVideo()
-        .format('mp3')
+    .format('mp3')
 
   _callback(null, stream)
 }
@@ -24,6 +28,7 @@ const getStream = (_source, _callback) => {
 /**
  * allows to get the mp3 stream of a local file
  * The 'fileName' option is required
+ *
  * @param {any} options
  * @param {any} callback
  */
@@ -44,6 +49,7 @@ const getLocalStream = (_options, _callback) => {
  * allows to get the mp3 stream of a specific youtube video
  * The 'videoId' option is required
  * The 'quality' option defaults to 'highest'
+ *
  * @param {any} _options
  * @param {any} _callback
  */
@@ -64,7 +70,57 @@ const getYoutubeStream = (_options, _callback) => {
   getStream(source, _callback)
 }
 
+/**
+ * computes de amplitudes of an audio stream
+ * '_stream' should be an audio stream
+ * '_frequency' is the number of amplitudes in Hz
+ *
+ * @param {any} _stream 
+ * @param {any} _frequency 
+ * @param {any} _callback 
+ */
+const getAmplitudes = (_stream, _frequency, _callback) => {
+  streamTo(_stream.pipe(), (err, parts) => {
+    if (err) {
+      return _callback(err)
+    }
+
+    const buffers = parts.map(part => Buffer.isBuffer(part) ? part : Buffer.from(part))
+    const buffer = Buffer.concat(buffers)
+
+    audioContext.decodeAudioData(buffer, function (audioBuffer) {
+      const pcmdata = audioBuffer.getChannelData(0)
+      const sampleRate = audioBuffer.sampleRate
+      // const duration = audioBuffer.duration
+
+      // Compute bars
+      let amplitudes = []
+
+      const step = sampleRate / _frequency
+      const n = Math.floor(pcmdata.length / step)
+
+      for (let i = 0; i < n; i++) {
+        let sum = 0
+
+        for (let k = 0; k < step; k++) {
+          sum += pcmdata[i * step + k]
+        }
+
+        amplitudes.push(Math.abs(sum / step))
+      }
+
+      // Normalize amplitudes
+      const ratio = Math.max(...amplitudes)
+
+      amplitudes = amplitudes.map(v => Number((v / ratio).toFixed(2)))
+
+      _callback(null, amplitudes)
+    })
+  })
+}
+
 module.exports = {
+  getAmplitudes,
   getLocalStream,
   getYoutubeStream
 }
