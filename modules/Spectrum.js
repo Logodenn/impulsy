@@ -1,6 +1,13 @@
 const youtube = require('./youtube');
 const db = require('../models/controllers');
 const FREQUENCY_CHECKING = 10;
+/**
+ * Const for the artefact 
+ */
+const NUMBER_OF_POSITION = 4;
+const AMPLITUDE_MAX = 1
+const BASE_LOWER_BOUND = 1
+const BASE_UPPPER_BOUND = 2
 
 /**
  * Object Spectrum is the envelop of the sound
@@ -29,10 +36,12 @@ module.exports = class Spectrum {
 				youtube.getBars(stream, barsPerSeconds, function (err, barsAmplitude) {
 					if (err) console.log(err);
 					else {
+						var i = 0
 						barsAmplitude.forEach(function (barAmplitude) {
 							bar = new Bar();
-							bar.create(barAmplitude);
-							this.bars.append(bar)
+							bar.create(barAmplitude,i);
+							this.bars.append(bar);
+							i++;
 						});
 						// add track to database 
 						var track = {
@@ -122,25 +131,38 @@ module.exports = class Bar {
 	}
 
 	/**
-	 * Function getArrayArthefacts generate the array of arthefact in function of the envelop of the sound
+	 * Function create generate an artefact in function of the amplitude of the sound
 	 * Attention if barSize is less than one, the randomNumber generated can be less than 0
 	 * We can change baseLowerBound and baseUpperBound to modify the base position 
-	 * @param {array} arraySpectrum array of the spectrum generate by the sound
+	 * @param {float} barAmplitude amplitude of the bar
+	 * @param {int} number position of the bar in this spectrum
 	 */
 	// TODO : remake for one amplitude and one random Number
-	getArrayArthefacts() {
-		logger.debug('Generation of the array of arthefact');
-		var randomNumbers = [];
-		var baseLowerBound = 1
-		var baseUpperBound = 2
-		arraySpectrum.forEach(function (barSize) {
-			var lowerBound = baseLowerBound - barSize;
-			var upperBound = baseUpperBound + barSize;
-			var randomNumber = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound);
-			// Yay! new random number
-			randomNumbers.push(randomNumber);
-		});
-		return randomNumbers;
+	create(barAmplitude, number) {
+		console.log("Generation of the bar"+number+" with amplitude = "+barAmplitude);
+		this.id = number;
+		this.amplitude = barAmplitude;
+		var lowerBound = BASE_LOWER_BOUND;
+		var upperBound = BASE_UPPPER_BOUND;
+		var limit = AMPLITUDE_MAX / (NUMBER_OF_POSITION/2);
+		/*
+			Settings for bound
+			The smallest bar is bet
+		*/
+		do {
+			if(this.amplitude>limit){
+				limit+=limit;
+				lowerBound--;
+				upperBound++;
+			}
+			else{
+				break;
+			}
+		}
+		while (limit <= AMPLITUDE_MAX);
+		// Add first artefact 
+		this.artefacts.append(Math.round(Math.random() * (upperBound - lowerBound) + lowerBound));
+		// TODO : ajout artefact pour second joueur
 	}
 
 }
