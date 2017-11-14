@@ -1,41 +1,44 @@
-var orm = require('orm');
-var settings = require('../config/settings');
+const orm = require('orm')
 
-const logger = require('winston');
+const logger = require('../../utils/logger')(module)
+const settings = require('../config/settings')
 
-var connection = null;
+let connection = null
 
-function setup(db, cb) {
-    require('./track')(orm, db);
-    require('./user')(orm, db);
-    require('./score')(orm, db);
+const setup = (db, callback) => {
+  require('./track')(orm, db)
+  require('./user')(orm, db)
+  require('./score')(orm, db)
 
-    return cb(null, db);
+  return callback(null, db)
 }
 
-module.exports = function (cb) {
-    if (connection) return cb(null, connection);
+module.exports = (callback) => {
+  if (connection) {
+    return callback(null, connection)
+  }
 
-    console.log('HHHHHH')
-    let opt = settings.JAWSDB_URL || settings.database
-    console.log(opt)
+  orm.connect(settings.database, (err, db) => {
+    if (err) {
+      logger.error(err)
 
-    orm.connect(opt, function (err, db) {
-        if (err) {
-            logger.error(err);
-            return cb(err);
-        }
-        connection = db;
-        db.driver.execQuery("CREATE DATABASE IF NOT EXISTS "+process.env.DB_DATABASE_NAME, function (err, result) {
-            if (err) {
-                logger.error(err);
-                cb(err);
-            } else {
-                logger.info("Database created");
+      return callback(err)
+    }
 
-                db.settings.set('instance.returnAllErrors', true);
-                setup(db, cb);
-            }
-        });
-    });
-};
+    connection = db
+
+    db.driver.execQuery(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_DATABASE_NAME}`, (err, result) => {
+      if (err) {
+        logger.error(err)
+
+        callback(err)
+      } else {
+        logger.info('Database created')
+
+        db.settings.set('instance.returnAllErrors', true)
+
+        setup(db, callback)
+      }
+    })
+  })
+}

@@ -3,7 +3,7 @@ const router = express.Router()
 const getArrayArthefacts = require('../utils/artefacts')
 const db = require('../models/controllers')
 const cookies = require('cookies')
-// const youtube = require('../modules/youtube')
+const audio = require('../modules/audio')
 const numberOfTrend = 10
 const numberOfUserMostPlayed = 10
 const numberOfUserFavorite = 10
@@ -73,7 +73,7 @@ router.get('/trackSelection', function (req, res) {
   })
 })
 
-/*router.get('/difficulty/:id', function (req, res) {
+router.get('/difficulty/:id', function (req, res) {
     var track;
     var trackId = parseInt(req.params.id);
     var gameId = (Math.random() * 100000) | 0;
@@ -95,8 +95,7 @@ router.get('/trackSelection', function (req, res) {
             }
         }
       });
-    } else {
-      // It's from youtube  
+    } else { 
       db.track.getTrackLink(req.params.id, (err,result) => {
         if (err) console.log(err);
         else {
@@ -113,13 +112,16 @@ router.get('/trackSelection', function (req, res) {
               }
           } else {
             local = false;
-            youtube.getInfo(req.params.id, (err, result) => {
+            audio.getInfo(req.params.id, (err, result) => {
               if (err) console.log(err);
               else {
-                youtube.getAudioStream(req.params.id, local, "lowest", function (err, stream) {
+                audio.getYoutubeStream({
+                  videoId: req.params.id,
+                  quality: 'lowest'
+                }, function (err, stream) {
                   if (err) console.log(err);
                   else {
-                    youtube.getBars(stream, barsPerSeconds, function (err, bars) {
+                    audio.getAmplitudes(stream, barsPerSeconds, function (err, bars) {
                       if (err) console.log(err);
                       else {
                         var arraySpectrum = bars;
@@ -159,6 +161,6 @@ router.get('/trackSelection', function (req, res) {
         }
       });
     }
-  });*/
+  });
 
 module.exports = router
