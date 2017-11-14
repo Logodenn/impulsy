@@ -8,9 +8,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node bin/www",
-    "test": "mocha tests"
+    "test": "mocha tests",
+    "db:create": "node utils/db"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "cookies": "^0.7.1",
