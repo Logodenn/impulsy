@@ -9,10 +9,27 @@ const youtubeBaseUrl = 'https://www.youtube.com/watch?v='
 const audioContext = new AudioContext()
 
 /**
+ * provides information on a specific videoId
+ *
+ * @param {String} _videoId
+ * @param {Function} _callback
+ */
+const getInfo = (_videoId, _callback) => {
+  ytdl.getInfo(`${youtubeBaseUrl}${_videoId}`, (err, info) => {
+    const data = {
+      title: info.title,
+      duration: info.length_seconds
+    }
+
+    _callback(err, data)
+  })
+}
+
+/**
  * provides the ffmpeg stream of the mp3 data
  *
  * @param {any} _source
- * @param {any} _callback
+ * @param {Function} _callback
  */
 const getStream = (_source, _callback) => {
   let stream = ffmpeg({
@@ -29,8 +46,8 @@ const getStream = (_source, _callback) => {
  * allows to get the mp3 stream of a local file
  * The 'fileName' option is required
  *
- * @param {any} options
- * @param {any} callback
+ * @param {Object} _options
+ * @param {Function} _callback
  */
 const getLocalStream = (_options, _callback) => {
   if (!_options.fileName) {
@@ -50,8 +67,8 @@ const getLocalStream = (_options, _callback) => {
  * The 'videoId' option is required
  * The 'quality' option defaults to 'highest'
  *
- * @param {any} _options
- * @param {any} _callback
+ * @param {Object} _options
+ * @param {Function} _callback
  */
 const getYoutubeStream = (_options, _callback) => {
   if (!_options.videoId) {
@@ -75,9 +92,9 @@ const getYoutubeStream = (_options, _callback) => {
  * '_stream' should be an audio stream
  * '_frequency' is the number of amplitudes in Hz
  *
- * @param {any} _stream 
- * @param {any} _frequency 
- * @param {any} _callback 
+ * @param {ReadableStream} _stream
+ * @param {Number} _frequency
+ * @param {Function} _callback
  */
 const getAmplitudes = (_stream, _frequency, _callback) => {
   streamTo(_stream.pipe(), (err, parts) => {
@@ -121,6 +138,7 @@ const getAmplitudes = (_stream, _frequency, _callback) => {
 
 module.exports = {
   getAmplitudes,
+  getInfo,
   getLocalStream,
   getYoutubeStream
 }
