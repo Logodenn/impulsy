@@ -16,6 +16,12 @@ const audioContext = new AudioContext()
  */
 const getInfo = (_videoId, _callback) => {
   ytdl.getInfo(`${youtubeBaseUrl}${_videoId}`, (err, info) => {
+    if (err) {
+      logger.error(err)
+
+      return _callback(err)
+    }
+
     const data = {
       title: info.title,
       duration: info.length_seconds,
@@ -23,7 +29,7 @@ const getInfo = (_videoId, _callback) => {
       thumbnailUrl: info.iurlhq
     }
 
-    _callback(err, data)
+    _callback(null, data)
   })
 }
 
