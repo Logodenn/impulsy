@@ -29,6 +29,7 @@ const authRouter = require('./routers/auth')
 const userRouter = require('./routers/user')
 const trackRouter = require('./routers/track')
 const scoreRouter = require('./routers/score')
+const youtubeRouter = require('./routers/youtube')
 
 /* DB */
 
@@ -131,6 +132,7 @@ app.use('/room', roomRouter)
 app.use('/user', userRouter)
 app.use('/track', trackRouter)
 app.use('/score', scoreRouter)
+app.use('/youtube', youtubeRouter)
 app.use('/', authRouter)
 
 module.exports = http
