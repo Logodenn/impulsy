@@ -18,7 +18,9 @@ const getInfo = (_videoId, _callback) => {
   ytdl.getInfo(`${youtubeBaseUrl}${_videoId}`, (err, info) => {
     const data = {
       title: info.title,
-      duration: info.length_seconds
+      duration: info.length_seconds,
+      id: info.video_id,
+      thumbnailUrl: info.iurlhq
     }
 
     _callback(err, data)
