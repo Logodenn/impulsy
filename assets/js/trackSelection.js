@@ -5,13 +5,25 @@ function selectTrack(element) {
     // console.log(element.innerHTML);
 }
 
+function setFormAction(input) {
+    var keywords = input.value;
+    var action = "/youtube/search/" + keywords;
+    document.querySelector("#ytBrowser").setAttribute("action", action);
+}
+
 function searchThroughYouTube() {
-    // var keywords = "document.querySelector("#ytInput").value";
-    console.log(document.querySelector("#ytBrowser").action.value);
+    // var keywords = document.querySelector("#ytInput").value;
+    // var action = "/youtube/search/" + keywords;
+    
+    // document.querySelector("#ytBrowser").setAttribute(action, action);
+    
+    // alert(document.querySelector("#ytBrowser").attributes.action.value);
+    // console.log();
     //action="/youtube/search/{keywords}"
-    console.log(document.querySelector("#ytBrowser"));
+    // console.log(document.querySelector("#ytBrowser"));
     // TODO return the good path
-    return "/youtube/search/" + document.querySelector("#ytBrowser").action.value;
+    // document.querySelector("#ytBrowser")
+    // return ;
 }
 
 function setDifficulty(difficulty) {
