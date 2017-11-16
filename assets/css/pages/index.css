@@ -15,3 +15,16 @@ h2.title {
 .button label{
     color: var(--color-background);
 }
+
+.thumbWrapper {
+    /* height: 62px; */
+}
+
+.thumb {
+    background: red;
+    padding: 5px 10px;
+    font-family: "Calibri";
+    font-size: 1rem;
+    width: 200px;
+    height: 52px;
+}
