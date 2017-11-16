@@ -11,8 +11,6 @@ const RoomManager = {
       // Check if room exists
       if (RoomManager.rooms.hasOwnProperty(data.roomId)) {
         RoomManager.rooms[data.roomId].addPlayer(clientSocket)
-
-        logger.info(`Player ${clientSocket.id} joined room ${data.roomId}`)
       }
     })
   },
