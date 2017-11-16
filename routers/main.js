@@ -36,10 +36,12 @@ router.get('/', (req, res) => {
 })
 
 router.get('/hallOfFame', function (req, res) {
-  res.render('hallOfFame', {
-    message: 'Hello World!'
+  db.track.usedTracks((err, tracks) => {
+    if (err) console.log(err);
+    console.log(tracks);
+    res.render('hallOfFame', tracks);
   })
-})
+});
 
 router.get('/howItWorks', function (req, res) {
   res.render('howItWorks', {
