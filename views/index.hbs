@@ -48,10 +48,9 @@
             <section id="ytSearch" class="flex-col">
                 <h2 class="title">Search through YouTube</h2>
 
-                <form id="ytBrowser" action="searchThroughYouTube()" method="get" class="form flex-row inputWrapper">
-                    <input id="ytInput" type="search" class="input" placeholder="type a song...">
-                    {{!-- <button class="button button-small" onclick="searchThroughYouTube()"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button> --}}
-                    <button class="button button-small"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
+                <form id="ytBrowser" method="get" class="form flex-row inputWrapper">
+                    <input id="ytInput" type="search" class="input" placeholder="type a song..." onkeypress="setFormAction(this)">
+                    <button class="button button-small" onclick="searchThroughYouTube()"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
                 </form>
 
             </section>
