@@ -5,25 +5,46 @@ function selectTrack(element) {
     // console.log(element.innerHTML);
 }
 
-function setFormAction(input) {
-    var keywords = input.value;
-    var action = "/youtube/search/" + keywords;
-    document.querySelector("#ytBrowser").setAttribute("action", action);
-}
-
 function searchThroughYouTube() {
-    // var keywords = document.querySelector("#ytInput").value;
-    // var action = "/youtube/search/" + keywords;
-    
-    // document.querySelector("#ytBrowser").setAttribute(action, action);
-    
-    // alert(document.querySelector("#ytBrowser").attributes.action.value);
-    // console.log();
-    //action="/youtube/search/{keywords}"
-    // console.log(document.querySelector("#ytBrowser"));
-    // TODO return the good path
-    // document.querySelector("#ytBrowser")
-    // return ;
+
+    var keywords = document.querySelector("#ytInput").value;
+    var action = "/youtube/search/" + keywords;
+
+    // ********** AJAX ********** //
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var jsonResponse = JSON.parse(this.responseText);
+
+            for(var i = 0; i < jsonResponse.length; i++) {
+                console.log(jsonResponse[i]);
+
+                // ********** WRAPPER ********** //
+                var trackWrapper = document.createElement("div");
+                trackWrapper.classList.add("thumbWrapper");
+                trackWrapper.classList.add("flex-col");
+                
+                // ********** TITLE ********** //
+                var titleSpan = document.createElement("span");
+                titleSpan.classList.add("thumb");
+                titleSpan.innerHTML = jsonResponse[i].title;
+                trackWrapper.appendChild(titleSpan);
+                
+                // ********** DURATION ********** //
+                var durationSpan = document.createElement("span");
+                durationSpan.classList.add("thumb");
+                durationSpan.innerHTML = jsonResponse[i].duration;
+                trackWrapper.appendChild(durationSpan);
+
+                // ********** ADD WRAPPER TO PAGE ********** //
+                document.querySelector("#ytResult").appendChild(trackWrapper);
+            }
+        }
+    };
+
+    xhttp.open("GET", action, true);
+    xhttp.send();
 }
 
 function setDifficulty(difficulty) {
