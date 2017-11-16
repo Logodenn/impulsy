@@ -237,6 +237,27 @@ module.exports = {
                     })
             }
         });
+    },
+
+    usedTracks: function (cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select track.id, name, link, information"
+                +" from score join track"
+                 +" on track_id=track.id;", [],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    })
+            }
+        });
     }
 };
 
