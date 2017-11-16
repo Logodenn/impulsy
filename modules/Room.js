@@ -58,12 +58,12 @@ module.exports = class Room {
   }
 
   addPlayer (clientSocket) {
-    logger.info(`Room ${this.id} - New player - socket ${clientSocket.id}`)
+    logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
     this.players[clientSocket.id] = new Player(clientSocket)
 
-    clientSocket.emit('gameJoined', {
-      gameId: this.id
+    clientSocket.emit('roomJoined', {
+      roomId: this.id
     })
   }
 
