@@ -7,10 +7,12 @@ const RoomManager = {
   bindEvents: (clientSocket) => {
     logger.info('RoomManager: bindEvents for socket', clientSocket.id)
 
-    clientSocket.on('joinRoom', (roomId) => {
+    clientSocket.on('joinRoom', (data) => {
       // Check if room exists
-      if (RoomManager.rooms.hasOwnProperty(roomId)) {
-        RoomManager.rooms[roomId].addPlayer(clientSocket)
+      if (RoomManager.rooms.hasOwnProperty(data.roomId)) {
+        RoomManager.rooms[data.roomId].addPlayer(clientSocket)
+
+        logger.info(`Player ${clientSocket.id} joined room ${data.roomId}`)
       }
     })
   },
