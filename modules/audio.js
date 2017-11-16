@@ -59,9 +59,9 @@ const getStream = (_source, _callback) => {
  */
 const getLocalStream = (_options, _callback) => {
   if (!_options.fileName) {
-    logger.error('getYoutubeStream: no videoId provided')
+    logger.error('getLocalStream: no filename provided')
 
-    return _callback(new Error('No youtube video Id provided'))
+    return _callback(new Error('No filename provided'))
   }
 
   // We might want to set up a directory for files
