@@ -100,7 +100,6 @@ function hostStartGame() {
   io.sockets.in(game.gameId).emit('gameStarted');
 
   setTimeout(function () {
-    logger.debug("GO GO GO");
     currentBar = 0;
     new_positions = setInterval(function () {
       if (currentBar > game.arrayArtefacts.length) {
