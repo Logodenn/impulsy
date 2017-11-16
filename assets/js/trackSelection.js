@@ -5,6 +5,15 @@ function selectTrack(element) {
     // console.log(element.innerHTML);
 }
 
+function searchThroughYouTube() {
+    // var keywords = "document.querySelector("#ytInput").value";
+    console.log(document.querySelector("#ytBrowser").action.value);
+    //action="/youtube/search/{keywords}"
+    console.log(document.querySelector("#ytBrowser"));
+    // TODO return the good path
+    return ;
+}
+
 function setDifficulty(difficulty) {
     // Reset state
     document.querySelector("#lazy").attributes.state.value = "passive";
