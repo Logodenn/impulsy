@@ -11,14 +11,7 @@ var IO = {
 
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
-        IO.socket.on('newGameCreated', IO.onNewGameCreated);
-        IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('playerMove', IO.onPlayerMove);
-        IO.socket.on('energy', IO.onEnergy);
-        IO.socket.on('gameOver', IO.onGameOver);
-		IO.socket.on('audioChunk', IO.onAudioChunk);
-        IO.socket.on('audioEnd', IO.onAudioEnd);
-        IO.socket.on('gameJoined', IO.onGameJoined)
+        IO.socket.on('roomJoined', IO.onRoomJoined)
     },
 
     onConnected : function() {
@@ -27,7 +20,21 @@ var IO = {
         // console.log(data.message);
     },
 
+    onRoomJoined: function (data) {
+        // This is where we have to setup game events listeners
+
+        console.log('Successfully joined room ' + data.roomId);
+
+        IO.socket.on('gameStarted', IO.onGameStarted);
+        IO.socket.on('playerMove', IO.onPlayerMove);
+        IO.socket.on('updateGame', IO.onUpdateGame);
+        IO.socket.on('gameOver', IO.onGameOver);
+		IO.socket.on('audioChunk', IO.onAudioChunk);
+        IO.socket.on('audioEnd', IO.onAudioEnd);
+    },
+
     joinRoom : function() {
+        // TODO: we might want to add the sessionId (fro the cookie) to be able to authenticate the user in the back
         var data = {
             roomId: window.location.pathname.split('/')[2] // window.location.path vaut '/room/{roomId}'
         }
@@ -57,7 +64,7 @@ var IO = {
 		player.update();		
     },
     
-    onEnergy : function(data) {
+    onUpdateGame : function(data) {
         // TODO
         updateGameScene(data);
 	},
