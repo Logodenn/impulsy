@@ -11,7 +11,7 @@ function searchThroughYouTube() {
     //action="/youtube/search/{keywords}"
     console.log(document.querySelector("#ytBrowser"));
     // TODO return the good path
-    return ;
+    return "/youtube/search/" + document.querySelector("#ytBrowser").action.value;
 }
 
 function setDifficulty(difficulty) {
