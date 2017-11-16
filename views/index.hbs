@@ -45,12 +45,14 @@
 
             <!-- ********** YOUTUBE SEARCH BAR ********** -->
 
-            <section id="ytSearch" class="flex-col hidden">
+            <section id="ytSearch" class="flex-col">
                 <h2 class="title">Search through YouTube</h2>
-                <div id="ytBrowser" class="inputWrapper flex-row">
-                    <input type="text" class="input" placeholder="type a song...">
-                    <button class="button button-small"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
-                </div>
+
+                <form id="ytBrowser" method="get" class="form flex-row inputWrapper">
+                    <input id="ytInput" type="search" class="input" placeholder="type a song...">
+                    <button class="button button-small" onclick="searchThroughYouTube()"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
+                </form>
+
             </section>
 
             <!-- ********** TREND TRACKS ********** -->
