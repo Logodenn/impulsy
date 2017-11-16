@@ -30,7 +30,7 @@ var App = {
         players : [],
         currentCorrectAnswer: '',
         trackId: "ttEI35HVpqI",
-        difficulty: "lazy",
+        difficulty: Cookies.get().difficulty || "lazy",
 
         onDifficultyClick: function (difficulty) {
 
@@ -42,7 +42,7 @@ var App = {
             // // Active state
             // document.querySelector("#"+difficulty).attributes.state.value = "active";
 
-            this.difficulty = difficulty;
+            // this.difficulty = difficulty;
 		},
 
         onCreateClick: function () {

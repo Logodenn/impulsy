@@ -1,5 +1,5 @@
 
-var difficulty = "lazy";
+// var difficulty = "lazy";
 
 function setDifficulty(difficulty) {
     // Reset state
