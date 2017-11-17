@@ -15,8 +15,6 @@
 
             <h1 class="title">Hall of fame</h1>
 
-            <span>{{tracks}}</span>
-
             <table>
                 <thead>
                     <tr>
@@ -24,7 +22,14 @@
                         <th>Cumulated score</th>
                     </tr>
                 </thead>
-                <tbody id="rank"></tbody>
+                <tbody id="rank">
+                    {{#each bestScores}}
+                        <tr>
+                            <td>{{pseudo}}</td>
+                            <td>{{score_total}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
             </table>
         </section>
         
