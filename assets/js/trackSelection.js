@@ -5,12 +5,11 @@ function selectTrack(element) {
     // console.log(element.innerHTML);
 }
 
-function searchThroughYouTubeBis() {
-    // if (e.keyCode == 13) {
-       console.log(window);
-    //     eval(tb.value);
-    //     return false;
-    // }
+function searchThroughYouTubeBis(e) {
+    if (e.keyCode == 13) {
+        searchThroughYouTube();
+        return false;
+    }
 }
 
 function searchThroughYouTube() {
