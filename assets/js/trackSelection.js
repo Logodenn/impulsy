@@ -21,9 +21,15 @@ function searchThroughYouTube() {
                 console.log(jsonResponse[i]);
 
                 // ********** WRAPPER ********** //
-                var trackWrapper = document.createElement("div");
-                trackWrapper.classList.add("thumbWrapper");
+                var trackWrapper = document.createElement("button");
+                trackWrapper.classList.add("track");
+                trackWrapper.classList.add("button");
+                trackWrapper.classList.add("button-track");
                 trackWrapper.classList.add("flex-col");
+                trackWrapper.classList.add("blurred");
+                trackWrapper.style.backgroundImage = "url(" + jsonResponse[i].thumbnailUrl + ")";
+
+                // TODO href
                 
                 // ********** TITLE ********** //
                 var titleSpan = document.createElement("span");
