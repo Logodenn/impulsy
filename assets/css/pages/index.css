@@ -16,15 +16,29 @@ h2.title {
     color: var(--color-background);
 }
 
-.thumbWrapper {
-    /* height: 62px; */
+#ytSearch .track {
+    border: 0;
+    /* padding: 20px 40px; */
+    width: 280px;
+    /* background: var(--color-active); */
+    border-radius: 3px;
+    border: solid 3px var(--color-background-light);
+    color: var(--color-background);
+    margin: 5px;
+
+    background-position: center;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+#ytSearch .button {
+    /* background: transparent; */
 }
 
 .thumb {
-    background: red;
-    padding: 5px 10px;
+    /* padding: 5px 10px; */
     font-family: "Calibri";
     font-size: 1rem;
-    width: 200px;
-    height: 52px;
+    /* width: 200px;
+    height: 52px; */
 }
