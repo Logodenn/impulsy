@@ -1,7 +1,7 @@
 
 function selectTrack(element) {
-    // document.querySelector("#selectedTrack").innerHTML = element.innerHTML;
     document.querySelector("#selectedTrack").value = element.innerHTML;
+    // dirty way, we should use values, not innerHTML text...
     // console.log(element.innerHTML);
 }
 
@@ -15,7 +15,7 @@ function searchThroughYouTubeBis() {
 
 function searchThroughYouTube() {
 
-    // Flush the previous result
+    // Flush the previous result for animation
     var ytResult = document.querySelector("#ytResult");
     ytResult.innerHTML = "";
 
@@ -28,6 +28,9 @@ function searchThroughYouTube() {
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var jsonResponse = JSON.parse(this.responseText);
+
+            // Flush the previous result for new result
+            ytResult.innerHTML = "";
 
             for(var i = 0; i < jsonResponse.length; i++) {
                 console.log(jsonResponse[i]);
@@ -54,6 +57,13 @@ function searchThroughYouTube() {
                 durationSpan.classList.add("thumb");
                 durationSpan.innerHTML = jsonResponse[i].duration;
                 trackWrapper.appendChild(durationSpan);
+
+                // ********** ADD CLICK EVENT ********** //
+                trackWrapper.onclick = function() {
+                    toggleElement('difficulty','open');
+                    // console.log(titleSpan.innerHTML);
+                    selectTrack(titleSpan);
+                };
 
                 // ********** ADD WRAPPER TO PAGE ********** //
                 ytResult.appendChild(trackWrapper);
