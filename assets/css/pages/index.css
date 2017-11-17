@@ -39,6 +39,11 @@ h2.title {
     /* padding: 5px 10px; */
     font-family: "Calibri";
     font-size: 1rem;
+    text-shadow: 2px 2px 8px var(--color-background),
+                -1px 0px var(--color-background-light),
+                2px 1px var(--color-background),
+                1px 2px var(--color-background),
+                2px -1px var(--color-background);
     /* width: 200px;
     height: 52px; */
 }
