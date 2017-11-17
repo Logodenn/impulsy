@@ -5,7 +5,19 @@ function selectTrack(element) {
     // console.log(element.innerHTML);
 }
 
+function searchThroughYouTubeBis() {
+    // if (e.keyCode == 13) {
+       console.log(window);
+    //     eval(tb.value);
+    //     return false;
+    // }
+}
+
 function searchThroughYouTube() {
+
+    // Flush the previous result
+    var ytResult = document.querySelector("#ytResult");
+    ytResult.innerHTML = "";
 
     var keywords = document.querySelector("#ytInput").value;
     var action = "/youtube/search/" + keywords;
@@ -26,7 +38,7 @@ function searchThroughYouTube() {
                 trackWrapper.classList.add("button");
                 trackWrapper.classList.add("button-track");
                 trackWrapper.classList.add("flex-col");
-                trackWrapper.classList.add("blurred");
+                // trackWrapper.classList.add("blurred");
                 trackWrapper.style.backgroundImage = "url(" + jsonResponse[i].thumbnailUrl + ")";
 
                 // TODO href
@@ -44,7 +56,7 @@ function searchThroughYouTube() {
                 trackWrapper.appendChild(durationSpan);
 
                 // ********** ADD WRAPPER TO PAGE ********** //
-                document.querySelector("#ytResult").appendChild(trackWrapper);
+                ytResult.appendChild(trackWrapper);
             }
         }
     };
