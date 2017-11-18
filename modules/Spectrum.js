@@ -26,44 +26,48 @@ module.exports = class Spectrum {
    * @attribute {string} sound link or name of the sound
    * @attribute {bool} local False if is from Youtube, True if is from local storage
    */
-  createSpectrum (sound, local) {
-    let getStream = audio.getYoutubeStream
+  createSpectrum (sound, local, cb) {
+    let getStream = audio.getYoutubeStream;
+    let self = this;
 
     if (local) {
       getStream = audio.getLocalStream
     }
-
-    getStream({
-      videoId: sound,
-      fileName: sound,
-      quality: 'lowest'
-    }, function (err, stream) {
-      if (err) console.log(err);
-      else {
-        audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
-          if (err) console.log(err);
-          else {
-            barsAmplitude.forEach(function (barAmplitude, i) {
-              let bar = new Bar();
-              bar.create(barAmplitude, i);
-              console.log(this)
-              this.bars.push(bar);
-            });
-
-            // add track to database
-            const track = {
-              name: this.name,
-              link: this.link,
-              information: this.bars
-            };
-
-            db.track.create(track, function (err, result) {
-              if (err) console.log(err);
-            })
-          }
-        })
-      }
+    audio.getInfo(sound, (err, res) =>{
+      self.link = res.id;
+      self.name = res.title;
+      getStream({
+        videoId: sound,
+        fileName: sound,
+        quality: 'lowest'
+      }, function (err, stream) {
+        if (err) console.log(err);
+        else {
+          audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
+            if (err) console.log(err);
+            else {
+              barsAmplitude.forEach(function (barAmplitude, i) {
+                let bar = new Bar();
+                bar.create(barAmplitude, i);
+                self.bars.push(bar);
+              });
+  
+              // add track to database
+              const track = {
+                name: self.name,
+                link: self.link,
+                information: self.bars
+              };
+              db.track.create(track, function (err, result) {
+                if (err) console.log(err);
+                else cb(null, self)
+              })
+            }
+          })
+        }
+      })
     })
+
   }
 
   /**
@@ -79,5 +83,7 @@ module.exports = class Spectrum {
         this.bars = result.information
       }
     })
+    console.log("methode loadSpectrum");
+    console.log(this);
   }
 }
