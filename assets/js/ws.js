@@ -25,6 +25,7 @@ var IO = {
 
         console.log('Successfully joined room ' + data.roomId);
 
+        IO.socket.on('gameMetadata', IO.onGameMetadata);
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
@@ -44,9 +45,9 @@ var IO = {
         IO.socket.emit('joinRoom', data);
     },
 
-    onNewGameCreated : function(data) {
-		// gameId
-		// mySocketId
+    onGameMetadata : function(data) {
+        console.log('onMetadata: ', data)
+
         App.Host.gameInit(data);
     },
 
