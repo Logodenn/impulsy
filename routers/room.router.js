@@ -2,28 +2,38 @@ const express = require('express')
 const RoomManager = require('../modules/RoomManager')
 const router = express.Router()
 const Spectrum = require('../modules/Spectrum')
+const db = require('../models/controllers')
 
 router.post('/', (req, res) => {
   const roomId = RoomManager.createRoom();
-  console.log(req.params);
-  Spectrum = new Spectrum();
-  var trackId = parseInt(req.params.id);
+  var difficulty = req.body.difficulty
+  var spectrum = new Spectrum();
+  var trackId = parseInt(req.body.track);
+  console.log(difficulty);
+  console.log(trackId);
+  console.log(req.body);
   if (Number.isInteger(trackId)){
     // It's from our database
-    Spectrum.loadSpectrum(result.id);
+    spectrum.loadSpectrum(result.id);
   }else{
+    // It's from Youtube
     db.track.getTrackLink(req.params.id, (err,result) => {
       if (err) console.log(err);
       else {
         if (result) {
-            Spectrum.loadSpectrum(result.id);
+            // In our database
+            spectrum.loadSpectrum(result.id);
         } else {
-          Spectrum.createSpectrum(trackId, false);
+            // New sound
+            spectrum.createSpectrum(trackId, false, (err, result)=>{
+            if(err) console.log(err);
+        });
         }
       }
     });
   }
-  console.log(Spectrum);
+  console.log('Fin post room/')
+  console.log(spectrum);
   res.redirect(`/room/${roomId}`);
 })
 
