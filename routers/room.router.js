@@ -4,10 +4,9 @@ const router = express.Router()
 const Spectrum = require('./Spectrum')
 
 router.post('/', (req, res) => {
-  const roomId = RoomManager.createRoom()
-  Spectrum = new Spectrum()
+  const roomId = RoomManager.createRoom();
+  Spectrum = new Spectrum();
   var trackId = parseInt(req.params.id);
-
   if (Number.isInteger(trackId)){
     // It's from our database
     Spectrum.loadSpectrum(result.id);
@@ -24,7 +23,7 @@ router.post('/', (req, res) => {
     });
   }
   
-  res.redirect(`/room/${roomId}`)
+  res.redirect(`/room/${roomId}`);
 })
 
 router.get('/:id', (req, res) => {
