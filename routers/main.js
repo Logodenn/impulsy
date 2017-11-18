@@ -36,10 +36,11 @@ router.get('/', (req, res) => {
 })
 
 router.get('/hallOfFame', function (req, res) {
-  db.track.usedTracks((err, tracks) => {
+
+  db.score.bestScores((err, bestScores) => {
     if (err) console.log(err);
-    console.log(tracks);
-    res.render('hallOfFame', tracks);
+    console.log(bestScores);
+  res.render('hallOfFame', {bestScores :  bestScores});
   })
 });
 
