@@ -1,8 +1,12 @@
 
 function selectTrack(element) {
-    // document.querySelector("#selectedTrack").innerHTML = element.innerHTML;
     document.querySelector("#selectedTrack").value = element.innerHTML;
-    // console.log(element.innerHTML);
+    // Force the onchange event so that the server is aware of the new value
+    document.querySelector("#selectedTrack").onchange();
+}
+
+function checkSelectedTrack() {
+    console.log("input a été changed");
 }
 
 function setDifficulty(difficulty) {
