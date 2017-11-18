@@ -1,8 +1,9 @@
 const logger = require('../utils/logger')(module)
 
 module.exports = class Player {
-  constructor (socket) {
+  constructor (socket, number) {
     this.socket = socket
+    this.number = number
     this.id = socket.id
 
     this._position = 0

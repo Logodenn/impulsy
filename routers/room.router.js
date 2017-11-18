@@ -1,5 +1,5 @@
 const express = require('express')
-const RoomManager = require('../modules/RoomManager')
+const RoomManager = require('../modules/RoomManager').getInstance()
 const router = express.Router()
 
 router.post('/', (req, res) => {

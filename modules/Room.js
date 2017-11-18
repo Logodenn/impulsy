@@ -1,16 +1,15 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
-
-const RoomManager = require('./RoomManager')
 const Player = require('./Player')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor() {
+  constructor () {
     this.id = uuid()
     this.isGameStarted = false
+    this.roomManager = require('./RoomManager').getInstance()
 
     this.players = {}
     this.loopTimer = null
@@ -21,11 +20,11 @@ module.exports = class Room {
     this.energy = 100
   }
 
-  destroy() {
-    RoomManager.deleteRoom(this)
+  destroy () {
+    this.roomManager.deleteRoom(this)
   }
 
-  startGame() {
+  startGame () {
     if (!this.energy || this.players.length === 0 || this.artefacts.length === 0) {
       logger.info('Everything is not setup correctly', this)
       return
@@ -57,46 +56,51 @@ module.exports = class Room {
     }, positionCheckDelay)
   }
 
-  addPlayer(clientSocket) {
+  addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
-    this.players[clientSocket.id] = new Player(clientSocket)
+    const currentNumberOfPlayers = Object.keys(this.players).length
+
+    this.players[clientSocket.id] = new Player(clientSocket, currentNumberOfPlayers)
+
+    this.bindPlayerEvents(this.players[clientSocket.id])
+
     clientSocket.emit('roomJoined', {
       roomId: this.id
     })
 
+    clientSocket.emit('gameMetadata', this.getMetaData(this.players[clientSocket.id]))
+
     for (var playerId in this.players) {
-      if (playerId != clientSocket.id) {
+      if (playerId !== clientSocket.id) {
         this.players[playerId].socket.emit('newPlayer', this.players[clientSocket.id].name)
-        //console.log("connection of "+this.players[clientSocket.id].name);
       }
-    };
+    }
   }
 
-  bindPlayerEvents(player) {
-    const socket = player.socket
+  bindPlayerEvents (player) {
+    const self = this
 
-    socket.on('disconnect', () => {
-      this.onPlayerDisconnect(socket)
+    player.socket.on('disconnect', () => {
+      self.onPlayerDisconnect(player.socket)
     })
   }
 
-  onPlayerDisconnect(socket) {
+  onPlayerDisconnect (socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
 
     delete this.players[socket.id]
 
     if (this.players.length === 0) {
-      // this.gameManager.deleteGame(this)
+      this.destroy()
     } else {
       for (var playerId in this.players) {
-          this.players[playerId].socket.emit('playerDisconnected', this.players[socket.id].name)
-          //console.log("disconnection of "+this.players[clientSocket.id].name);          
-      };
+        this.players[playerId].socket.emit('playerDisconnected', this.players[socket.id].name)
+      }
     }
   }
 
-  win(player) {
+  win (player) {
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
@@ -109,7 +113,7 @@ module.exports = class Room {
     })
   }
 
-  checkRightPosition(player) {
+  checkRightPosition (player) {
     logger.info(`Room ${this.id} - check position for player ${player.id}`)
 
     let isArtefactTaken = false
@@ -149,10 +153,10 @@ module.exports = class Room {
     }
   }
 
-  getMetaData() {
+  getMetaData (player) {
     return {
       id: this.id,
-      position: 0, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
       spectrum: this.spectrum,
