@@ -81,7 +81,7 @@ module.exports = class Room {
     delete this.players[socket.id]
 
     if (this.players.length === 0) {
-      // this.gameManager.deleteGame(this)
+      this.destroy()
     }
   }
 
