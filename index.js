@@ -18,8 +18,7 @@ const hbs = require('hbs')
 
 /* ROOMS */
 
-const RoomManager = require('./modules/RoomManager')
-RoomManager.init(io)
+const RoomManager = require('./modules/RoomManager').getInstance(io)
 
 /* ROUTERS */
 
