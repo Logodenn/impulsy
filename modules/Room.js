@@ -60,11 +60,17 @@ module.exports = class Room {
   addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
-    this.players[clientSocket.id] = new Player(clientSocket)
+    const currentNumberOfPlayers = Object.keys(this.players).length
+
+    this.players[clientSocket.id] = new Player(clientSocket, currentNumberOfPlayers)
+
+    this.bindPlayerEvents(this.players[clientSocket.id])
 
     clientSocket.emit('roomJoined', {
       roomId: this.id
     })
+
+    clientSocket.emit('gameMetadata', this.getMetaData(this.players[clientSocket.id]))
   }
 
   bindPlayerEvents (player) {
@@ -138,10 +144,11 @@ module.exports = class Room {
     }
   }
 
-  getMetaData () {
+  getMetaData (player) {
+    console.log(player)
     return {
       id: this.id,
-      position: 0, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
       spectrum: this.spectrum,
