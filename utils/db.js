@@ -7,6 +7,7 @@ const logger = require('./logger')(module)
 const models = require('../models/models')
 const audio = require('../modules/audio')
 const getArrayArthefacts = require('../utils/artefacts')
+const Spectrum = require('../modules/Spectrum')
 
 let db = null
 
@@ -43,7 +44,9 @@ models((err, _db) => {
           }, callback)
         },
         (user, callback) => {
-          createYoutubeTrack('cKfOycpc0t0', callback)
+          //createYoutubeTrack('cKfOycpc0t0', callback)
+          spectrum = new Spectrum();
+          spectrum.createSpectrum('cKfOycpc0t0', false);
         },
         (track, callback) => {
           createScore({
@@ -54,7 +57,9 @@ models((err, _db) => {
           }, callback)
         },
         (score, callback) => {
-          createYoutubeTrack('HsrBhiLwz_I', callback)
+          spectrum = new Spectrum();
+          spectrum.createSpectrum('HsrBhiLwz_I', false);
+          //createYoutubeTrack('HsrBhiLwz_I', callback)
         },
         (track, callback) => {
           createScore({

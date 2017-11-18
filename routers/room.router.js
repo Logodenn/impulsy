@@ -1,10 +1,11 @@
 const express = require('express')
 const RoomManager = require('../modules/RoomManager')
 const router = express.Router()
-const Spectrum = require('./Spectrum')
+const Spectrum = require('../modules/Spectrum')
 
 router.post('/', (req, res) => {
   const roomId = RoomManager.createRoom();
+  console.log(req.params);
   Spectrum = new Spectrum();
   var trackId = parseInt(req.params.id);
   if (Number.isInteger(trackId)){
@@ -22,7 +23,7 @@ router.post('/', (req, res) => {
       }
     });
   }
-  
+  console.log(Spectrum);
   res.redirect(`/room/${roomId}`);
 })
 
