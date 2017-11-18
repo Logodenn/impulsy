@@ -11,7 +11,10 @@ var IO = {
 
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
-        IO.socket.on('roomJoined', IO.onRoomJoined)
+        IO.socket.on('roomJoined', IO.onRoomJoined);
+        //When a new player join the room all players of this room receive the data of this new player.
+        //Event : newPlayer
+        //IO.socket.on('newPlayer', IO.onRoomJoined);
     },
 
     onConnected : function() {
