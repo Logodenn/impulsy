@@ -1,7 +1,5 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
-
-const RoomManager = require('./RoomManager')
 const Player = require('./Player')
 
 const gameSpeed = 500
@@ -11,6 +9,7 @@ module.exports = class Room {
   constructor () {
     this.id = uuid()
     this.isGameStarted = false
+    this.roomManager = require('./RoomManager').getInstance()
 
     this.players = {}
     this.loopTimer = null
@@ -22,7 +21,7 @@ module.exports = class Room {
   }
 
   destroy () {
-    RoomManager.deleteRoom(this)
+    this.roomManager.deleteRoom(this)
   }
 
   startGame () {
@@ -74,10 +73,10 @@ module.exports = class Room {
   }
 
   bindPlayerEvents (player) {
-    const socket = player.socket
+    const self = this
 
-    socket.on('disconnect', () => {
-      this.onPlayerDisconnect(socket)
+    player.socket.on('disconnect', () => {
+      self.onPlayerDisconnect(player.socket)
     })
   }
 
@@ -145,7 +144,6 @@ module.exports = class Room {
   }
 
   getMetaData (player) {
-    console.log(player)
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
