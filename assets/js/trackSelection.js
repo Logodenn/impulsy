@@ -1,6 +1,7 @@
 
 function selectTrack(element) {
     document.querySelector("#selectedTrack").value = element.innerHTML;
+    document.querySelector("#selectedTrackDisplay").innerHTML   = element.innerHTML;
     // Force the onchange event so that the server is aware of the new value
     document.querySelector("#selectedTrack").onchange();
 }
