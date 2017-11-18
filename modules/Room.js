@@ -8,7 +8,7 @@ const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor () {
+  constructor() {
     this.id = uuid()
     this.isGameStarted = false
 
@@ -21,11 +21,11 @@ module.exports = class Room {
     this.energy = 100
   }
 
-  destroy () {
+  destroy() {
     RoomManager.deleteRoom(this)
   }
 
-  startGame () {
+  startGame() {
     if (!this.energy || this.players.length === 0 || this.artefacts.length === 0) {
       logger.info('Everything is not setup correctly', this)
       return
@@ -57,17 +57,23 @@ module.exports = class Room {
     }, positionCheckDelay)
   }
 
-  addPlayer (clientSocket) {
+  addPlayer(clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
     this.players[clientSocket.id] = new Player(clientSocket)
-
     clientSocket.emit('roomJoined', {
       roomId: this.id
     })
+
+    for (var playerId in this.players) {
+      if (playerId != clientSocket.id) {
+        this.players[playerId].socket.emit('newPlayer', this.players[clientSocket.id].name)
+        //console.log("connection of "+this.players[clientSocket.id].name);
+      }
+    };
   }
 
-  bindPlayerEvents (player) {
+  bindPlayerEvents(player) {
     const socket = player.socket
 
     socket.on('disconnect', () => {
@@ -75,17 +81,22 @@ module.exports = class Room {
     })
   }
 
-  onPlayerDisconnect (socket) {
+  onPlayerDisconnect(socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
 
     delete this.players[socket.id]
 
     if (this.players.length === 0) {
       // this.gameManager.deleteGame(this)
+    } else {
+      for (var playerId in this.players) {
+          this.players[playerId].socket.emit('playerDisconnected', this.players[socket.id].name)
+          //console.log("disconnection of "+this.players[clientSocket.id].name);          
+      };
     }
   }
 
-  win (player) {
+  win(player) {
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
@@ -98,7 +109,7 @@ module.exports = class Room {
     })
   }
 
-  checkRightPosition (player) {
+  checkRightPosition(player) {
     logger.info(`Room ${this.id} - check position for player ${player.id}`)
 
     let isArtefactTaken = false
@@ -138,7 +149,7 @@ module.exports = class Room {
     }
   }
 
-  getMetaData () {
+  getMetaData() {
     return {
       id: this.id,
       position: 0, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
