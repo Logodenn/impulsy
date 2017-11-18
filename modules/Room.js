@@ -70,6 +70,12 @@ module.exports = class Room {
     })
 
     clientSocket.emit('gameMetadata', this.getMetaData(this.players[clientSocket.id]))
+
+    for (var playerId in this.players) {
+      if (playerId !== clientSocket.id) {
+        this.players[playerId].socket.emit('newPlayer', this.players[clientSocket.id].name)
+      }
+    }
   }
 
   bindPlayerEvents (player) {
@@ -87,6 +93,10 @@ module.exports = class Room {
 
     if (this.players.length === 0) {
       this.destroy()
+    } else {
+      for (var playerId in this.players) {
+        this.players[playerId].socket.emit('playerDisconnected', this.players[socket.id].name)
+      }
     }
   }
 

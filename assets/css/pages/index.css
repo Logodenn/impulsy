@@ -15,3 +15,35 @@ h2.title {
 .button label{
     color: var(--color-background);
 }
+
+#ytSearch .track {
+    border: 0;
+    /* padding: 20px 40px; */
+    width: 280px;
+    /* background: var(--color-active); */
+    border-radius: 3px;
+    border: solid 3px var(--color-background-light);
+    color: var(--color-background);
+    margin: 5px;
+
+    background-position: center;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+#ytSearch .button {
+    /* background: transparent; */
+}
+
+.thumb {
+    /* padding: 5px 10px; */
+    font-family: "Calibri";
+    font-size: 1rem;
+    text-shadow: 2px 2px 8px var(--color-background),
+                -1px 0px var(--color-background-light),
+                2px 1px var(--color-background),
+                1px 2px var(--color-background),
+                2px -1px var(--color-background);
+    /* width: 200px;
+    height: 52px; */
+}
