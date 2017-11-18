@@ -28,6 +28,7 @@ var IO = {
 
         console.log('Successfully joined room ' + data.roomId);
 
+        IO.socket.on('newPlayer', IO.onNewPlayer);
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
@@ -45,6 +46,11 @@ var IO = {
         console.log("joinRoom: room " + data.roomId);
 
         IO.socket.emit('joinRoom', data);
+    },
+
+    onNewPlayer: function(data) {
+        console.log(data + " has joined the room");
+        // console.log(data);
     },
 
     onNewGameCreated : function(data) {
