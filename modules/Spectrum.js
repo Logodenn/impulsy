@@ -41,10 +41,16 @@ module.exports = class Spectrum {
         fileName: sound,
         quality: 'lowest'
       }, function (err, stream) {
-        if (err) console.log(err);
+        if (err) {
+          console.log(err);
+          return cb(err)
+        }
         else {
           audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
-            if (err) console.log(err);
+            if (err) {
+              console.log(err);
+              return cb(err)
+            }
             else {
               barsAmplitude.forEach(function (barAmplitude, i) {
                 let bar = new Bar();
@@ -59,8 +65,14 @@ module.exports = class Spectrum {
                 information: self.bars
               };
               db.track.create(track, function (err, result) {
-                if (err) console.log(err);
-                else cb(null, self)
+                if (err) {
+                  console.log(err);
+                  return cb(err)
+                }
+                else {
+                  self.id = result.id
+                  cb(null, self)
+                }
               })
             }
           })
