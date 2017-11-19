@@ -3,14 +3,8 @@ const db = require('../models/controllers')
 const Bar = require('./Bar')
 
 const FREQUENCY_CHECKING = 10
-/**
- * Const for the artefact 
- */
-const NUMBER_OF_POSITIONS = 4
-const AMPLITUDE_MAX = 1
-const BASE_LOWER_BOUND = 1
-const BASE_UPPPER_BOUND = 2
-const MINIMUM_AMPLITUDE = 0.05
+const BAR_PER_SECONDS = 2
+
 
 /**
  * Object Spectrum is the envelop of the sound
@@ -24,7 +18,7 @@ module.exports = class Spectrum {
     this.name = null // name of the sound
     this.link = null
     this.bars = [] // This is track information
-    this.barsPerSeconds = 2 // Number of bars per seconds for youtube modules
+    //this.barsPerSeconds = 2 // Number of bars per seconds for youtube modules
   }
 
   /**
@@ -32,56 +26,74 @@ module.exports = class Spectrum {
    * @attribute {string} sound link or name of the sound
    * @attribute {bool} local False if is from Youtube, True if is from local storage
    */
-  createSpectrum (sound, local) {
-    let getStream = audio.getYoutubeStream
+  createSpectrum (sound, local, cb) {
+    let getStream = audio.getYoutubeStream;
+    let self = this;
 
     if (local) {
       getStream = audio.getLocalStream
     }
-
-    getStream({
-      videoId: sound,
-      fileName: sound,
-      quality: 'lowest'
-    }, function (err, stream) {
-      if (err) console.log(err)
-      else {
-        audio.getAmplitudes(stream, this.barsPerSeconds, function (err, barsAmplitude) {
-          if (err) console.log(err)
-          else {
-            barsAmplitude.forEach(function (barAmplitude, i) {
-              let bar = new Bar()
-              bar.create(barAmplitude, i)
-              this.bars.append(bar)
-            })
-
-            // add track to database
-            const track = {
-              name: this.name,
-              link: this.link,
-              information: this.bars
+    audio.getInfo(sound, (err, res) =>{
+      self.link = res.id;
+      self.name = res.title;
+      getStream({
+        videoId: sound,
+        fileName: sound,
+        quality: 'lowest'
+      }, function (err, stream) {
+        if (err) {
+          console.log(err);
+          return cb(err)
+        }
+        else {
+          audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
+            if (err) {
+              console.log(err);
+              return cb(err)
             }
-
-            db.track.create(track, function (err, result) {
-              if (err) console.log(err)
-            })
-          }
-        })
-      }
+            else {
+              barsAmplitude.forEach(function (barAmplitude, i) {
+                let bar = new Bar();
+                bar.create(barAmplitude, i);
+                self.bars.push(bar);
+              });
+  
+              // add track to database
+              const track = {
+                name: self.name,
+                link: self.link,
+                information: self.bars
+              };
+              db.track.create(track, function (err, result) {
+                if (err) {
+                  console.log(err);
+                  return cb(err)
+                }
+                else {
+                  self.id = result.id
+                  cb(null, self)
+                }
+              })
+            }
+          })
+        }
+      })
     })
+
   }
 
   /**
    * Function loadSpectrum load a spectrum from an id of a track
    * @attribute {int} id id of a track
    */
-  loadSpectrum (id) {
+  loadSpectrum (id, cb) {
     db.track.get(id, (err, result) => {
       if (err) console.log(err)
       else {
-        this.name = result.name
-        this.link = result.link
-        this.bars = result.information
+        this.name = result.name;
+        this.link = result.link;
+        this.bars = result.information;
+        cb(null, this)
       }
     })
   }
