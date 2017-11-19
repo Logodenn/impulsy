@@ -40,19 +40,20 @@ exports = module.exports = class RoomManager {
     })
   }
 
-  createRoom (trackId, callback) {
-    const room = new Room(this.io)
+  createRoom (_trackId, _difficulty, _callback) {
+    const room = new Room(_difficulty)
 
     this.rooms[room.id] = room
 
-    room.spectrum.loadSpectrum(trackId, (err, res) => {
+    room.spectrum.loadSpectrum(_trackId, (err, res) => {
       if (err) {
         logger.error(err)
 
-        return callback(err)
+        return _callback(err)
       }
 
-      callback(null, room.id)
+      logger.info(`Room ${room.id} is created with parameters: { trackId: ${_trackId}, difficulty: ${_difficulty}}`)
+      _callback(null, room.id)
     })
   }
 
