@@ -61,7 +61,7 @@ module.exports = class Room {
 
     const currentNumberOfPlayers = Object.keys(this.players).length
 
-    this.players[clientSocket.id] = new Player(clientSocket, currentNumberOfPlayers)
+    this.players[clientSocket.id] = new Player(clientSocket, currentNumberOfPlayers, clientSocket.request.user)
 
     this.bindPlayerEvents(this.players[clientSocket.id])
 
