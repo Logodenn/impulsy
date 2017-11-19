@@ -12,7 +12,7 @@
         <button id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</button>
         <button id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</button> --}}
         <span id="selectedTrackDisplay"></span>
-        <input id="selectedTrack" class="input" type="text" name="track" value="" onchange="checkSelectedTrack()" />
+        <input id="selectedTrack" class="input" type="hidden" name="track" value="" />
 
         <div class="flex-row">
             <div id="lazy" class="inputWrapper button flex-row" state="active" onclick="setDifficulty('lazy')">
