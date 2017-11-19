@@ -39,8 +39,17 @@ router.get('/hallOfFame', function (req, res) {
 
   db.score.bestScores((err, bestScores) => {
     if (err) console.log(err);
-    console.log(bestScores);
-  res.render('hallOfFame', {bestScores :  bestScores});
+    var data = {}
+    data.bestScores = bestScores
+    data.userConnected = false
+    console.log("req.user")
+    console.log(req.user)
+    if (req.user) {
+      console.log("req.user")
+      console.log(req.user)
+      data.userConnected = true
+    }
+  res.render('hallOfFame', data);
   })
 });
 
