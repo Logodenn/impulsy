@@ -31,6 +31,13 @@
                     {{/each}}
                 </tbody>
             </table>
+
+            {{#if userConnected}}
+                {{!-- TODO get the cumulated score of the login user --}}
+                <span>Your cumulated score is {{score_total}}</span>
+                <span>Your rank is {{rank}}</span>
+            {{/if}}
+
         </section>
         
     </body>
