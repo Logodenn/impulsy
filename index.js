@@ -8,9 +8,13 @@ const environment = require('./models/config/environment')
 
 const path = require('path')
 const express = require('express')
+const session = require('express-session')
+const sessionStore = new session.MemoryStore()
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const Strategy = require('passport-local').Strategy
+const passportSocketIo = require('passport.socketio');
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
@@ -18,8 +22,7 @@ const hbs = require('hbs')
 
 /* ROOMS */
 
-const RoomManager = require('./modules/RoomManager')
-RoomManager.init(io)
+const RoomManager = require('./modules/RoomManager').getInstance(io)
 
 /* ROUTERS */
 
@@ -80,7 +83,7 @@ function (req, email, password, cb) {
     password: req.body.password, // TODO : salt password
     rank: -1
   }
-  console.log(user)
+
   db.user.create(user, function (err, result) {
     // TODO : check if email / pseudo already use
     if (err) {
@@ -98,10 +101,11 @@ app.use(require('cookie-parser')())
 app.use(bodyParser.urlencoded({
   extended: true
 }))
-app.use(require('express-session')({
+app.use(session({
   secret: 'keyboard cat',
   name: 'serializedUser',
   resave: true,
+  store: sessionStore,
   saveUninitialized: true
 }))
 
@@ -124,6 +128,14 @@ passport.deserializeUser(function (id, done) {
     done(err, user)
   })
 })
+
+io.use(passportSocketIo.authorize({
+  key: 'serializedUser',
+  secret: 'keyboard cat',
+  passport: passport,
+  store: sessionStore,
+  cookieParser: cookieParser
+}))
 
 /* ROUTER SETUP */
 
