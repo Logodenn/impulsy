@@ -5,16 +5,15 @@ const Spectrum = require('../modules/Spectrum')
 const db = require('../models/controllers')
 
 router.post('/', (req, res) => {
-  const roomId = RoomManager.createRoom();
   var difficulty = req.body.difficulty
   var spectrum = new Spectrum();
   var trackId = parseInt(req.body.track);
-  console.log(difficulty);
-  console.log(trackId);
-  console.log(req.body);
+  var roomId;
   if (Number.isInteger(trackId)){
     // It's from our database
-    spectrum.loadSpectrum(result.id);
+    roomId = RoomManager.createRoom(trackId);
+    res.redirect(`/room/${roomId}`);
+    console.log(RoomManager.rooms);
   }else{
     // It's from Youtube
     db.track.getTrackLink(req.params.id, (err,result) => {
@@ -22,19 +21,22 @@ router.post('/', (req, res) => {
       else {
         if (result) {
             // In our database
-            spectrum.loadSpectrum(result.id);
+            roomId = RoomManager.createRoom(trackId);
+            res.redirect(`/room/${roomId}`);
         } else {
             // New sound
+            var spectrum = new Spectrum();
             spectrum.createSpectrum(trackId, false, (err, result)=>{
             if(err) console.log(err);
+            else{
+              roomId = RoomManager.createRoom(trackId);
+              res.redirect(`/room/${roomId}`);
+            } 
         });
         }
       }
     });
   }
-  console.log('Fin post room/')
-  console.log(spectrum);
-  res.redirect(`/room/${roomId}`);
 })
 
 router.get('/:id', (req, res) => {
