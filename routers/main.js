@@ -43,11 +43,11 @@ router.get('/hallOfFame', function (req, res) {
 
     var data = {}
     data.userConnected = false
+    data.bestScores = bestScores
 
     if(req.user) {
       data.userConnected = true
       data.userName = req.user.pseudo
-      data.bestScores = bestScores
     }
 
     res.render('hallOfFame', data);
