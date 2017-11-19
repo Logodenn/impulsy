@@ -1,6 +1,6 @@
 const logger = require('../utils/logger')(module)
 const express = require('express')
-const RoomManager = require('../modules/RoomManager')
+const RoomManager = require('../modules/RoomManager').getInstance()
 const router = express.Router()
 const Spectrum = require('../modules/Spectrum')
 const db = require('../models/controllers')
