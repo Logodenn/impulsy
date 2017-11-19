@@ -1,24 +1,49 @@
 const logger = require('../utils/logger')(module)
 const Room = require('./Room')
 
-const RoomManager = {
-  io: null,
+let instance = null
 
-  bindEvents: (clientSocket) => {
+exports = module.exports = class RoomManager {
+  constructor (io) {
+    this.io = io
+    this.rooms = {}
+
+    let self = this
+
+    self.io.on('connection', (socket) => {
+      logger.info(`RoomManager: new client ${socket.id}`)
+
+      self.bindEvents(socket)
+    })
+
+    logger.info('RoomManager: ready')
+  }
+
+  static getInstance (io) {
+    if (instance === null) {
+      instance = new this(io)
+    }
+
+    return instance
+  }
+
+  bindEvents (clientSocket) {
     logger.info('RoomManager: bindEvents for socket', clientSocket.id)
+
+    let self = this
 
     clientSocket.on('joinRoom', (data) => {
       // Check if room exists
-      if (RoomManager.rooms.hasOwnProperty(data.roomId)) {
-        RoomManager.rooms[data.roomId].addPlayer(clientSocket)
+      if (self.rooms.hasOwnProperty(data.roomId)) {
+        self.rooms[data.roomId].addPlayer(clientSocket)
       }
     })
-  },
+  }
 
-  createRoom: (trackId, callback) => {
-    const room = new Room(RoomManager.io)
+  createRoom (trackId, callback) {
+    const room = new Room(this.io)
 
-    RoomManager.rooms[room.id] = room
+    this.rooms[room.id] = room
 
     room.spectrum.loadSpectrum(trackId, (err, res) => {
       if (err) {
@@ -29,26 +54,11 @@ const RoomManager = {
 
       callback(null, room.id)
     })
-  },
+  }
 
-  deleteRoom: (room) => {
-    delete RoomManager.rooms[room.id]
+  deleteRoom (room) {
+    delete this.rooms[room.id]
 
     logger.info(`Room ${room.id} is deleted`)
-  },
-
-  init: (io) => {
-    RoomManager.io = io
-    RoomManager.rooms = {}
-
-    RoomManager.io.on('connection', (socket) => {
-      logger.info(`RoomManager: new client ${socket.id}`)
-
-      RoomManager.bindEvents(socket)
-    })
-
-    logger.info('RoomManager: ready')
   }
 }
-
-module.exports = RoomManager
