@@ -36,19 +36,15 @@ module.exports = class Bar {
 		
 	}
 
-	checkArtefact(Player) {
-		// Called on player move or on isCurrentBar timer start
-		if(artefacts[Player.id] == Player.position) {
-			// Artefact taken
-			// TODO notify listeners
-
-			
-
-			// TODO close interval as the artefact is taken - no need for further checks
-			// TODO clear if exists
-			clearInterval(currentBarInterval);
+	// TODO : what is player.id ? 
+	checkArtefact(player)
+	{
+		if(artefacts[player.id] == player.position) {
+			return true;
+	}
+		else{
+			return false;
 		}
-
 	}
 
 	/**

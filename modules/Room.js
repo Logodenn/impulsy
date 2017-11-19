@@ -153,6 +153,45 @@ module.exports = class Room {
     }
   }
 
+  check(){
+    artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
+    if (artefactTaken){
+      switch(this.difficulty) {
+        case "crazy":
+            this.energy = this.energy - 1;
+            break;
+        case "easy":
+            // Energy doesn't change
+            this.energy = this.energy;
+            break;
+        case "lazy":
+            // Do stuff
+            break;
+        default:
+            logger.error("Check the difficulty or the current bar something is going wrong")
+      }
+      this.nbArtefacts = this.nbArtefacts + 1 
+    }
+    else{
+      switch(this.difficulty) {
+        case "crazy":
+            this.energy = this.energy - 2;
+            break;
+        case "easy":
+            this.energy = this.energy - 1;
+            break;
+        case "lazy":
+            // Do stuff
+            break;
+        default:
+            logger.error("Check the difficulty or the current bar something is going wrong")
+      } 
+    }
+
+  }
+
+
+
   getMetaData (player) {
     return {
       id: this.id,
