@@ -15,15 +15,20 @@ const RoomManager = {
     })
   },
 
-  createRoom: (trackId) => {
+  createRoom: (trackId, callback) => {
     const room = new Room(RoomManager.io)
 
     RoomManager.rooms[room.id] = room
-    room.spectrum.loadSpectrum(trackId, (err, res) =>{
-      if (err) logger.error(err);
-      return room.id
-    });
-    
+
+    room.spectrum.loadSpectrum(trackId, (err, res) => {
+      if (err) {
+        logger.error(err)
+
+        return callback(err)
+      }
+
+      callback(null, room.id)
+    })
   },
 
   deleteRoom: (room) => {
