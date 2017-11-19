@@ -17,7 +17,7 @@ module.exports = class Player {
   }
 
   get name () {
-    return this.user.pseudo || `Guest ${this.number}`
+    return this.user.pseudo || `Guest ${this.number + 1}`
   }
 
   set position (position) {
