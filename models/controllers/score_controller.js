@@ -194,6 +194,26 @@ module.exports = {
                     });
             }
         });
+    },
+
+    meanScore: function (track_id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select AVG(duration) from"
+                +" score where track_id = ?;", [track_id],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
     }
 }
 ;
