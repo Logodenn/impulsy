@@ -1,23 +1,23 @@
 
 function generateRanking(playerList) {
-    var tbody = document.querySelector("#rank");
+    // var tbody = document.querySelector("#rank");
 
-    for(var i = 0; i < playerList.length; i++) {
-        var tr = document.createElement("tr");
+    // for(var i = 0; i < playerList.length; i++) {
+    //     var tr = document.createElement("tr");
 
-        for(var field in playerList[i]) {
-            if(playerList[i].hasOwnProperty(field) && field != "id") {
+    //     for(var field in playerList[i]) {
+    //         if(playerList[i].hasOwnProperty(field) && field != "id") {
 
-                var value = playerList[i][field];
+    //             var value = playerList[i][field];
 
-                var td = document.createElement("td");
-                tr.appendChild(td);
+    //             var td = document.createElement("td");
+    //             tr.appendChild(td);
 
-                td.innerHTML = value;
-            }
-        }
-        tbody.appendChild(tr);
-    }
+    //             td.innerHTML = value;
+    //         }
+    //     }
+    //     tbody.appendChild(tr);
+    // }
 }
 
 var playerList = [

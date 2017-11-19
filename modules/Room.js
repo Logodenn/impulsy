@@ -1,7 +1,5 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
-
-const RoomManager = require('./RoomManager')
 const Player = require('./Player')
 const Spectrum = require('./Spectrum')
 
@@ -12,6 +10,7 @@ module.exports = class Room {
   constructor () {
     this.id = uuid()
     this.isGameStarted = false
+    this.roomManager = require('./RoomManager').getInstance()
 
     this.players = {}
     this.loopTimer = null
@@ -22,7 +21,7 @@ module.exports = class Room {
   }
 
   destroy () {
-    RoomManager.deleteRoom(this)
+    this.roomManager.deleteRoom(this)
   }
 
   startGame () {
@@ -60,18 +59,30 @@ module.exports = class Room {
   addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
-    this.players[clientSocket.id] = new Player(clientSocket)
+    const currentNumberOfPlayers = Object.keys(this.players).length
+
+    this.players[clientSocket.id] = new Player(clientSocket, currentNumberOfPlayers, clientSocket.request.user)
+
+    this.bindPlayerEvents(this.players[clientSocket.id])
 
     clientSocket.emit('roomJoined', {
       roomId: this.id
     })
+
+    clientSocket.emit('gameMetadata', this.getMetaData(this.players[clientSocket.id]))
+
+    for (var playerId in this.players) {
+      if (playerId !== clientSocket.id) {
+        this.players[playerId].socket.emit('newPlayer', this.players[clientSocket.id].name)
+      }
+    }
   }
 
   bindPlayerEvents (player) {
-    const socket = player.socket
+    const self = this
 
-    socket.on('disconnect', () => {
-      this.onPlayerDisconnect(socket)
+    player.socket.on('disconnect', () => {
+      self.onPlayerDisconnect(player.socket)
     })
   }
 
@@ -81,7 +92,11 @@ module.exports = class Room {
     delete this.players[socket.id]
 
     if (this.players.length === 0) {
-      // this.gameManager.deleteGame(this)
+      this.destroy()
+    } else {
+      for (var playerId in this.players) {
+        this.players[playerId].socket.emit('playerDisconnected', this.players[socket.id].name)
+      }
     }
   }
 
@@ -138,10 +153,10 @@ module.exports = class Room {
     }
   }
 
-  getMetaData () {
+  getMetaData (player) {
     return {
       id: this.id,
-      position: 0, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
       spectrum: this.spectrum,

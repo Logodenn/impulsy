@@ -11,7 +11,10 @@ var IO = {
 
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
-        IO.socket.on('roomJoined', IO.onRoomJoined)
+        IO.socket.on('roomJoined', IO.onRoomJoined);
+        //When a new player join the room all players of this room receive the data of this new player.
+        //Event : newPlayer
+        //IO.socket.on('newPlayer', IO.onRoomJoined);
     },
 
     onConnected : function() {
@@ -25,6 +28,7 @@ var IO = {
 
         console.log('Successfully joined room ' + data.roomId);
 
+        IO.socket.on('gameMetadata', IO.onGameMetadata);
         IO.socket.on('gameStarted', IO.onGameStarted);
         IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
@@ -44,9 +48,9 @@ var IO = {
         IO.socket.emit('joinRoom', data);
     },
 
-    onNewGameCreated : function(data) {
-		// gameId
-		// mySocketId
+    onGameMetadata : function(data) {
+        console.log('onMetadata: ', data)
+
         App.Host.gameInit(data);
     },
 
