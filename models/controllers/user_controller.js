@@ -381,5 +381,25 @@ module.exports = {
                 });
             }
         });
+    },
+    bestScores: function (userId, trackId, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select duration from user join score"
+                +" on user_id=user.id"
+                +" where user_id=? and track_id=? order by duration desc;", [userId,trackId],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    })
+            }
+        });
     }
 };

@@ -39,7 +39,7 @@ router.get('/hallOfFame', function (req, res) {
 
   db.score.bestScores((err, bestScores) => {
     if (err) console.log(err);
-    console.log(bestScores);
+    //console.log(bestScores);
   res.render('hallOfFame', {bestScores :  bestScores});
   })
 });
