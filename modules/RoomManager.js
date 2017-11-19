@@ -40,12 +40,20 @@ exports = module.exports = class RoomManager {
     })
   }
 
-  createRoom () {
+  createRoom (trackId, callback) {
     const room = new Room(this.io)
 
     this.rooms[room.id] = room
 
-    return room.id
+    room.spectrum.loadSpectrum(trackId, (err, res) => {
+      if (err) {
+        logger.error(err)
+
+        return callback(err)
+      }
+
+      callback(null, room.id)
+    })
   }
 
   deleteRoom (room) {
