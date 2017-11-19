@@ -7,7 +7,7 @@ const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor () {
+  constructor (_difficulty) {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
@@ -15,7 +15,7 @@ module.exports = class Room {
     this.players = {}
     this.loopTimer = null
     this.spectrum = new Spectrum()
-    this.difficulty = 'lazy'
+    this.difficulty = _difficulty
     this.currentBar = 0
     this.energy = 100
   }
