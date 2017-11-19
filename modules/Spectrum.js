@@ -74,16 +74,15 @@ module.exports = class Spectrum {
    * Function loadSpectrum load a spectrum from an id of a track
    * @attribute {int} id id of a track
    */
-  loadSpectrum (id) {
+  loadSpectrum (id, cb) {
     db.track.get(id, (err, result) => {
       if (err) console.log(err)
       else {
-        this.name = result.name
-        this.link = result.link
-        this.bars = result.information
+        this.name = result.name;
+        this.link = result.link;
+        this.bars = result.information;
+        cb(null, this)
       }
     })
-    console.log("methode loadSpectrum");
-    console.log(this);
   }
 }
