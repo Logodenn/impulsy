@@ -1,13 +1,7 @@
 
 function selectTrack(element) {
-    document.querySelector("#selectedTrack").value = element.innerHTML;
-    document.querySelector("#selectedTrackDisplay").innerHTML   = element.innerHTML;
-    // Force the onchange event so that the server is aware of the new value
-    document.querySelector("#selectedTrack").onchange();
-}
-
-function checkSelectedTrack() {
-    console.log("input a été changed");
+    document.querySelector("#selectedTrack").value = element.getAttribute('data-trackId');
+    document.querySelector("#selectedTrackDisplay").innerHTML = element.innerHTML;
 }
 
 function setDifficulty(difficulty) {
