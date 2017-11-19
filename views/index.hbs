@@ -60,8 +60,7 @@
                 <div class="track-list flex-row">
                     {{#each trend}}
                         <div class="track">
-                            
-                            <button class="button button-track" onclick="toggleElement('difficulty','open');selectTrack(this)">{{track_id}}</button>
+                            <button class="button button-track" data-trackId="{{track_id}}"onclick="toggleElement('difficulty','open');selectTrack(this)">{{name}}</button>
                         </div>
                     {{/each}}
                 </div>
