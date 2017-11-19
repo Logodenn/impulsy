@@ -52,6 +52,7 @@ exports = module.exports = class RoomManager {
         return _callback(err)
       }
 
+      logger.info(`Room ${room.id} is created with parameters: { trackId: ${_trackId}, difficulty: ${_difficulty}}`)
       _callback(null, room.id)
     })
   }
