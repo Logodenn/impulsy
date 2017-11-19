@@ -40,8 +40,10 @@ router.get('/hallOfFame', function (req, res) {
 
   db.score.bestScores((err, bestScores) => {
     if (err) console.log(err);
+
     var data = {}
     data.userConnected = false
+
     if(req.user) {
       data.userConnected = true
       data.userName = req.user.pseudo

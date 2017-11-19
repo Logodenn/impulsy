@@ -17,6 +17,12 @@ function searchThroughYouTube() {
     // Flush the previous result for animation
     var ytResult = document.querySelector("#ytResult");
     ytResult.innerHTML = "";
+    
+    // Animate the search
+    var imgLoading = new Image();
+    imgLoading.src = "../img/loading.svg";
+    imgLoading.classList.add("loading");
+    ytResult.appendChild(imgLoading);
 
     var keywords = document.querySelector("#ytInput").value;
     var action = "/youtube/search/" + keywords;
