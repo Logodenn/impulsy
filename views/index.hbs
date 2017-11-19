@@ -10,7 +10,12 @@
     </head>
     <body>
 
-        {{> menu index="true" }}
+        {{#if userConnected}}
+            {{> menu index="true" userConnected="true"}}
+        {{else}}
+            {{> menu index="true" userConnected="false"}}
+        {{/if}}
+
             
         <section class="content">
 
