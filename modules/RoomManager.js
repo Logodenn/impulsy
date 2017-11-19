@@ -19,8 +19,11 @@ const RoomManager = {
     const room = new Room(RoomManager.io)
 
     RoomManager.rooms[room.id] = room
-    room.spectrum.loadSpectrum(trackId)
-    return room.id
+    room.spectrum.loadSpectrum(trackId, (err, res) =>{
+      if (err) logger.error(err);
+      return room.id
+    });
+    
   },
 
   deleteRoom: (room) => {
