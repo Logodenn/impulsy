@@ -1,8 +1,7 @@
 
 function selectTrack(element) {
-    document.querySelector("#selectedTrack").value = element.innerHTML;
-    // dirty way, we should use values, not innerHTML text...
-    // console.log(element.innerHTML);
+    document.querySelector("#selectedTrack").value = element.getAttribute('data-trackId');
+    document.querySelector("#selectedTrackDisplay").innerHTML = element.innerHTML;
 }
 
 function searchThroughYouTubeBis(e) {

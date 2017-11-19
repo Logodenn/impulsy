@@ -1,6 +1,7 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
 const Player = require('./Player')
+const Spectrum = require('./Spectrum')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
@@ -13,8 +14,7 @@ module.exports = class Room {
 
     this.players = {}
     this.loopTimer = null
-    this.artefacts = [0, 2, 3, 2, 1, 2, 1, 2, 1]
-    this.spectrum = [1, 0, 1, 0, 1, 1, 0, 0, 0]
+    this.spectrum = new Spectrum()
     this.difficulty = 'lazy'
     this.currentBar = 0
     this.energy = 100
