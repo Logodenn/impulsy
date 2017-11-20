@@ -52,7 +52,7 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
           if (err) logger.error(err)
           res.render('hallOfFame', {
             ranks: ranks,
-            userRank: userRank
+            userRank: userRank[0]
           });
         })
       } else {
