@@ -15,6 +15,25 @@
 
             <h1 class="title">Hall of fame</h1>
 
+            {{#if userRank}}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>My rank</th>
+                            <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                            <th>My cumulated score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rank">
+                            <tr>
+                                <td>{{userRank.rank}}</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                <td>{{userRank.score_total}}</td>
+                            </tr>
+                    </tbody>
+                </table>
+            {{/if}}
+
             <table>
                 <thead>
                     <tr>
