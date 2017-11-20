@@ -10,12 +10,16 @@ var IO = {
     ** playerMove(player)
     */
 
+    // ************************************************************ //
     // ******************** WS INITIALIZATION ******************** //
+    // ********************************************************** //
+
     init: function() {
         IO.socket = io.connect();
         IO.bindEvents();
         IO.joinRoom();
     },
+
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
         IO.socket.on('roomJoined', IO.onRoomJoined);
@@ -23,18 +27,17 @@ var IO = {
         //Event : newPlayer
         //IO.socket.on('newPlayer', IO.onRoomJoined);
     },
+
+    // ************************************************************ //
     // ******************** CONNECTION EVENTS ******************** //
+    // ********************************************************** //
+
     onConnected : function() {
         // Cache a copy of the client's socket.IO session ID on the App
         App.mySocketId = IO.socket.sessionid;
+        console.log("onConnected");
     },
-    connection: function() {
-        var data = {
-            sessionId: App.mySocketId
-        }
-        console.log("connection: session " + data.sessionId);
-        IO.socket.emit('joinRoom', data);
-    },
+
     // ******************** ROOM EVENTS ******************** //
     joinRoom : function() {
         // TODO: we might want to add the sessionId (fro the cookie) to be able to authenticate the user in the back
@@ -47,6 +50,8 @@ var IO = {
     onRoomJoined: function (data) {
         // This is where we have to setup game events listeners
         console.log('Successfully joined room ' + data.roomId);
+
+        // TODO recieve gameMetada
 
         IO.socket.on('gameMetadata', IO.onGameMetadata);
         IO.socket.on('gameStarted', IO.onGameStarted);
