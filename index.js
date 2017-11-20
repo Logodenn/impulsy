@@ -129,13 +129,13 @@ passport.deserializeUser(function (id, done) {
   })
 })
 
-io.use(passportSocketIo.authorize({
-  key: 'serializedUser',
-  secret: 'keyboard cat',
-  passport: passport,
-  store: sessionStore,
-  cookieParser: cookieParser
-}))
+// io.use(passportSocketIo.authorize({
+//   key: 'serializedUser',
+//   secret: 'keyboard cat',
+//   passport: passport,
+//   store: sessionStore,
+//   cookieParser: cookieParser
+// }))
 
 /* ROUTER SETUP */
 
