@@ -16,6 +16,7 @@
             <h1 class="title">Hall of fame</h1>
 
             <table>
+                {{!-- TODO handle case where table is huge --}}
                 <thead>
                     <tr>
                         <th>Player</th>
@@ -31,6 +32,15 @@
                     {{/each}}
                 </tbody>
             </table>
+
+            {{#if userConnected}}
+                <div id="userData" class="flex-col">
+                    {{!-- TODO get the cumulated score of the login user --}}
+                    <span>Your cumulated score is {{score_total}}</span>
+                    <span>Your rank is {{rank}}</span>
+                </div>
+            {{/if}}
+
         </section>
         
     </body>
