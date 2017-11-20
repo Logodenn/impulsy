@@ -18,13 +18,15 @@
             <table>
                 <thead>
                     <tr>
+                        <th>Rank</th>
                         <th>Player</th>
                         <th>Cumulated score</th>
                     </tr>
                 </thead>
                 <tbody id="rank">
-                    {{#each bestScores}}
+                    {{#each ranks}}
                         <tr>
+                            <td>{{rank}}</td>
                             <td>{{pseudo}}</td>
                             <td>{{score_total}}</td>
                         </tr>
