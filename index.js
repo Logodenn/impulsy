@@ -134,7 +134,13 @@ io.use(passportSocketIo.authorize({
   secret: 'keyboard cat',
   passport: passport,
   store: sessionStore,
-  cookieParser: cookieParser
+  cookieParser: cookieParser,
+  success: (data, accept) => {
+    accept(null, true)
+  },
+  fail: (data, message, error, accept) => {
+    accept(null, true)
+  }
 }))
 
 /* ROUTER SETUP */
