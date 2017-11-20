@@ -1,7 +1,7 @@
 
 function selectTrack(element) {
-    document.querySelector("#selectedTrack").value = element.getAttribute('data-trackId');
-    document.querySelector("#selectedTrackDisplay").innerHTML = element.innerHTML;
+    document.querySelector("#selectedTrack").value = element.getAttribute('data-id');
+    document.querySelector("#selectedTrackDisplay").innerHTML = element.childNodes[0].innerHTML;
 }
 
 function searchThroughYouTubeBis(e) {
@@ -47,6 +47,7 @@ function searchThroughYouTube() {
                 trackWrapper.classList.add("flex-col");
                 // trackWrapper.classList.add("blurred");
                 trackWrapper.style.backgroundImage = "url(" + jsonResponse[i].thumbnailUrl + ")";
+                trackWrapper.setAttribute('data-id', jsonResponse[i].id);
 
                 // TODO href
                 
@@ -64,9 +65,10 @@ function searchThroughYouTube() {
 
                 // ********** ADD CLICK EVENT ********** //
                 trackWrapper.onclick = function() {
-                    toggleElement('difficulty','open');
+                    console.log(this)
                     // console.log(titleSpan.innerHTML);
-                    selectTrack(titleSpan);
+                    selectTrack(this);
+                    toggleElement('difficulty','open');
                 };
 
                 // ********** ADD WRAPPER TO PAGE ********** //
