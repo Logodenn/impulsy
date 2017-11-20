@@ -33,7 +33,6 @@ exports = module.exports = class RoomManager {
     let self = this
 
     clientSocket.on('joinRoom', (data) => {
-      logger.info("YEEEAAAAHHHHHH");
       // Check if room exists
       if (self.rooms.hasOwnProperty(data.roomId)) {
         self.rooms[data.roomId].addPlayer(clientSocket)
