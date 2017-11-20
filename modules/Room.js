@@ -1,21 +1,21 @@
 const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
 const Player = require('./Player')
+const Spectrum = require('./Spectrum')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor () {
+  constructor (_difficulty) {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
 
     this.players = {}
     this.loopTimer = null
-    this.artefacts = [0, 2, 3, 2, 1, 2, 1, 2, 1]
-    this.spectrum = [1, 0, 1, 0, 1, 1, 0, 0, 0]
-    this.difficulty = 'lazy'
+    this.spectrum = new Spectrum()
+    this.difficulty = _difficulty
     this.currentBar = 0
     this.energy = 100
   }
@@ -44,7 +44,7 @@ module.exports = class Room {
           } else if (player.energy === 0) {
             this.lose(player)
           } else {
-            const data = this.checkRightPosition(player)
+            const data = this.check(player)
 
             player.socket.emit('updateGame', {
               data
@@ -112,7 +112,7 @@ module.exports = class Room {
       'max': this.artefacts.length
     })
   }
-
+/*
   checkRightPosition (player) {
     logger.info(`Room ${this.id} - check position for player ${player.id}`)
 
@@ -159,6 +159,53 @@ module.exports = class Room {
       bar: this.currentBar
     }
   }
+*/
+  check(player){
+    artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
+    if(artefactTaken !== null){
+      if (artefactTaken){
+        switch(this.difficulty) {
+          case "crazy":
+              this.energy = this.energy - 1;
+              break;
+          case "easy":
+              // Energy doesn't change
+              this.energy = this.energy;
+              break;
+          case "lazy":
+              // Do stuff
+              break;
+          default:
+              logger.error("Check the difficulty or the current bar something is going wrong")
+        }
+        this.takenArtefactsCount = this.takenArtefactsCount + 1 
+      }
+      else{
+        switch(this.difficulty) {
+          case "crazy":
+              this.energy = this.energy - 2;
+              break;
+          case "easy":
+              this.energy = this.energy - 1;
+              break;
+          case "lazy":
+              // Do stuff
+              break;
+          default:
+              logger.error("Check the difficulty or the current bar something is going wrong")
+        } 
+      }
+    }
+    return {
+      position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      energy: this.energy,
+      isArtefactTaken: isArtefactTaken,
+      barsCount: player.takenArtefactsCount,
+      bar: this.currentBar
+    }
+  }
+
+
 
   getMetaData (player) {
     // console.log(this);
