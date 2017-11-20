@@ -25,6 +25,7 @@ module.exports = class Room {
   }
 
   startGame () {
+
     if (!this.energy || this.players.length === 0 || this.artefacts.length === 0) {
       logger.info('Everything is not setup correctly', this)
       return
@@ -66,10 +67,9 @@ module.exports = class Room {
     this.bindPlayerEvents(this.players[clientSocket.id])
 
     clientSocket.emit('roomJoined', {
-      roomId: this.id
+      roomId      : this.id,
+      gameMetadata: this.getMetaData(this.players[clientSocket.id])
     })
-
-    clientSocket.emit('gameMetadata', this.getMetaData(this.players[clientSocket.id]))
 
     for (var playerId in this.players) {
       if (playerId !== clientSocket.id) {
@@ -143,6 +143,13 @@ module.exports = class Room {
       logger.error('Check the difficulty or the current bar something is going wrong')
     }
 
+    if(!isArtefactTaken) {
+      player.socket.emit('missedArtefact', {
+        'failingPlayer': player,
+        'barId': null, // TODO
+      })
+    }
+
     return {
       position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       energy: this.energy,
@@ -154,6 +161,7 @@ module.exports = class Room {
   }
 
   getMetaData (player) {
+    // console.log(this);
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -162,7 +170,7 @@ module.exports = class Room {
       spectrum: this.spectrum,
       artefacts: this.artefacts,
       energy: this.energy, // duration of the music
-      track: 'ziizahi'
+      track: 'ziizahi' // TODO... :(
     }
   }
 }
