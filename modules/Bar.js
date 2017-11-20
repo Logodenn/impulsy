@@ -5,45 +5,21 @@ module.exports = class Bar {
 		this.amplitude = null
 		this.artefacts = [] // artefact position 
 		this.positionPlayers = []
-		this.isCurrentBar = false;
-		//this.rand = null
 	}
 
-	// *
-	// * READ THIS
-	// * there is a masterInterval and a currentBarId global va
-	// * every n sec of the masterInterval, the currentBarId++
-	// * That way, everytime onMove AND onCurrentBar++ (those two events embrace the checking)
-	// * we call spectrum.bars[currentBarId].checkArtefact();
-	// *
-	// * END READ THIS
-	// *
 
-	currentBar(Player) {
-
-		if(this.isCurrentBar) {
-
-			currentBarInterval = setInterval(function () {
-				
-				// TODO enable checking
-	
-			}, FREQUENCY_CHECKING); // TODO check for a perfect refresh value
-		} else {
-			if(currentBarInterval) {
-				clearInterval(currentBarInterval);
-			}
-		}
-		
-	}
-
-	// TODO : what is player.id ? 
 	checkArtefact(player)
 	{
-		if(artefacts[player.id] == player.position) {
-			return true;
-	}
+		if (this.artefacts[player.number] !== null) {
+			if(artefacts[player.number] == player.position) {
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
 		else{
-			return false;
+			return null
 		}
 	}
 
@@ -66,10 +42,9 @@ module.exports = class Bar {
 			Check if the amplitude is bigger than the limit 
 			if it's bigger the bar will have more postion 
 		*/
-		/*
+		
 		if (this.amplitude < MINIMUM_AMPLITUDE)
 		{
-		*/
 			do {
 				if(this.amplitude>limit){
 					limit+=limit;
@@ -91,13 +66,10 @@ module.exports = class Bar {
 			}while (this.artefacts[0] == artefactPlayer2);
 			// Add second artefact for player 2
 			this.artefacts.append(artefactPlayer2);
-		/*
 		}
 		else {
 			this.artefacts.append(null);
 			this.artefacts.append(null);
 		}
-		*/
 	}
-
 }

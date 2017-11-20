@@ -112,7 +112,7 @@ module.exports = class Room {
       'max': this.artefacts.length
     })
   }
-
+/*
   checkRightPosition (player) {
     logger.info(`Room ${this.id} - check position for player ${player.id}`)
 
@@ -152,41 +152,43 @@ module.exports = class Room {
       bar: this.currentBar
     }
   }
-
+*/
   check(){
     artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
-    if (artefactTaken){
-      switch(this.difficulty) {
-        case "crazy":
-            this.energy = this.energy - 1;
-            break;
-        case "easy":
-            // Energy doesn't change
-            this.energy = this.energy;
-            break;
-        case "lazy":
-            // Do stuff
-            break;
-        default:
-            logger.error("Check the difficulty or the current bar something is going wrong")
+    if(artefactTaken !== null){
+      if (artefactTaken){
+        switch(this.difficulty) {
+          case "crazy":
+              this.energy = this.energy - 1;
+              break;
+          case "easy":
+              // Energy doesn't change
+              this.energy = this.energy;
+              break;
+          case "lazy":
+              // Do stuff
+              break;
+          default:
+              logger.error("Check the difficulty or the current bar something is going wrong")
+        }
+        this.nbArtefacts = this.nbArtefacts + 1 
       }
-      this.nbArtefacts = this.nbArtefacts + 1 
-    }
-    else{
-      switch(this.difficulty) {
-        case "crazy":
-            this.energy = this.energy - 2;
-            break;
-        case "easy":
-            this.energy = this.energy - 1;
-            break;
-        case "lazy":
-            // Do stuff
-            break;
-        default:
-            logger.error("Check the difficulty or the current bar something is going wrong")
-      } 
-    }
+      else{
+        switch(this.difficulty) {
+          case "crazy":
+              this.energy = this.energy - 2;
+              break;
+          case "easy":
+              this.energy = this.energy - 1;
+              break;
+          case "lazy":
+              // Do stuff
+              break;
+          default:
+              logger.error("Check the difficulty or the current bar something is going wrong")
+        } 
+      }
+  }
 
   }
 
