@@ -38,7 +38,10 @@ var IO = {
         console.log("onConnected");
     },
 
+    // ****************************************************** //
     // ******************** ROOM EVENTS ******************** //
+    // **************************************************** //
+
     joinRoom : function() {
         // TODO: we might want to add the sessionId (fro the cookie) to be able to authenticate the user in the back
         var data = {
@@ -47,63 +50,89 @@ var IO = {
         console.log("joinRoom: room " + data.roomId);
         IO.socket.emit('joinRoom', data);
     },
+
     onRoomJoined: function (data) {
         // This is where we have to setup game events listeners
         console.log('Successfully joined room ' + data.roomId);
 
         // TODO recieve gameMetada
+        // console.log('Game metadata is: ', data);
+        App.Host.gameInit(data);
 
-        IO.socket.on('gameMetadata', IO.onGameMetadata);
         IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('playerMove', IO.onPlayerMove);
+        IO.socket.on('coopMove', IO.onCoopMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
+        IO.socket.on('missedArtefact', IO.onMissedArtefact);
         IO.socket.on('gameOver', IO.onGameOver);
 		IO.socket.on('audioChunk', IO.onAudioChunk);
         IO.socket.on('audioEnd', IO.onAudioEnd);
     },
+
+    // ******************************************************* //
     // ******************** START EVENTS ******************** //
-    startGame : function() {
-        console.log("game starting");
+    // ***************************************************** //
+
+    startGame: function() {
+        console.log("Game starting");
         IO.socket.emit('startGame', null);
     },
-    onGameMetadata : function(data) {
-        console.log('onMetadata: ', data)
 
-        App.Host.gameInit(data);
-    },
-    onGameStarted : function(data) {
+    onGameStarted: function(data) {
+        // TODO start countdown
+        // startCountdown()
         startGame();
         // TODO: Change chunkPLayer and create a new chunkPlayer
         if (!chunkPlayer._startTime) {
             setTimeout(chunkPlayer._start, 4270);
         }
     },
-    // ******************** GAME EVENTS ******************** //
-    playerMove : function(data) {
+
+    // ******************************************************** //
+    // ******************** PLAYER EVENTS ******************** //
+    // ****************************************************** //
+
+    playerMove: function(data) {
         console.log("player " + data.number + " moved to: " + data.position);
         IO.socket.emit('playerMove', data);
 		player.update();		
     },
-    onCoopMove : function(data) {
+
+    onCoopMove: function(data) {
         // TODO notify self that the other player has moved
         // if(data.number != yourself) {
             player.update();		
         // }
-    },    
-    onUpdateGame : function(data) {
+    },
+
+    // ****************************************************** //
+    // ******************** GAME EVENTS ******************** //
+    // **************************************************** //
+
+    onUpdateGame: function(data) {
         // TODO
         updateGameScene(data);
-	},
-	onGameOver : function (data) {
+    },
+
+    onMissedArtefact: function(data) {
+        // TODO
+        // do something I DUNNO
+    },
+    
+	onGameOver: function (data) {
 		endGame(data);
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
     },
+
+    // ******************************************************* //
     // ******************** AUDIO EVENTS ******************** //
+    // ***************************************************** //
+
 	onAudioChunk: function(data) {
         chunkPlayer._onAudioChunk(data.chunk);
     },
+
     onAudioEnd: function () {
         // This is when the audio data is fully sent
     }
