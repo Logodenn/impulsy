@@ -51,7 +51,12 @@ exports = module.exports = class RoomManager {
 
         return _callback(err)
       }
-
+      var energy = 0
+      this.rooms[room.id].spectrum.bars.array.forEach(bar => {
+        if(bar.artefacts[0] !== null & bar.artefacts[1] !== null) energy++;
+      });
+      this.rooms[room.id].energy = energy;
+      
       logger.info(`Room ${room.id} is created with parameters: { trackId: ${_trackId}, difficulty: ${_difficulty}}`)
       _callback(null, room.id)
     })
