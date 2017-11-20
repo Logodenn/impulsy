@@ -57,6 +57,7 @@ function hostCreateNewGame(data) {
   //createGame(data.youtubeVideoId, data.difficulty, thisGameId, this.id, function (err, gameCreate)
   createGame(youtubeVideoId, true, difficulty, gameId, this.id, function (err, gameCreate) {
     game = gameCreate
+    let local = false
     if (err) logger.error(err);
     else {
       gameSocket.emit('newGameCreated', {
@@ -64,7 +65,10 @@ function hostCreateNewGame(data) {
         latency: arthefactCheckingLatency
       })
 
-      youtube.getAudioStream(youtubeVideoId, false, 'highest', (err, command) => {
+      if (youtubeVideoId.indexOf("./") != -1)
+        local = true
+
+      youtube.getAudioStream(youtubeVideoId, local, 'highest', (err, command) => {
         game.audioStreamPipe = command.pipe(new SlowStream({
           maxWriteInterval: 50
         }))

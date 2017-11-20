@@ -6,48 +6,48 @@ const getArrayArthefacts = require("../utils/artefacts");
 const moment = require('moment')
 const barsPerSeconds = 2;
 router.post("/db", (req, res, next) => {
-    models(function (err, db) {
+    models(function(err, db) {
         if (err) return next(err);
-        db.drop(function (err) {
+        db.drop(function(err) {
             if (err) return next(err);
-            db.sync(function (err) {
+            db.sync(function(err) {
                 if (err) return next(err);
                 db.models.user.create({
                     pseudo: "user_test1",
                     password: "azerty",
                     rank: "29"
-                }, function (err, user) {
+                }, function(err, user) {
                     if (err) return next(err);
                     db.models.user.create({
                         pseudo: "user_test2",
                         password: "qsdfg",
                         rank: "2"
-                    }, function (err, user) {
+                    }, function(err, user) {
                         if (err) return next(err);
-                        youtube.getAudioStream("cKfOycpc0t0", false, "lowest", function (err, stream) {
+                        youtube.getAudioStream("cKfOycpc0t0", false, "lowest", function(err, stream) {
                             if (err) console.log(err);
                             else {
-                                youtube.getBars(stream, barsPerSeconds, function (err, bars) {
+                                youtube.getBars(stream, barsPerSeconds, function(err, bars) {
                                     if (err) console.log(err);
                                     else {
                                         var arraySpectrum = bars;
                                         var arrayArtefacts = getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
                                         track_information = {
-                                            arraySpectrum: arraySpectrum,
-                                            arrayArtefacts: arrayArtefacts
+                                        arraySpectrum: arraySpectrum,
+                                        arrayArtefacts: arrayArtefacts
                                         };
                                         var track = {
-                                            name: "30 Second Sounds #1",
-                                            link: "cKfOycpc0t0",
-                                            information: track_information
+                                        name: "30 Second Sounds #1",
+                                        link: "cKfOycpc0t0",
+                                        information: track_information
                                         };
                                         // add track to database 
-                                        db.models.track.create(track, function (err, result) {
+                                        db.models.track.create(track, function(err, result) {
                                             if (err) console.log(err);
-                                            youtube.getAudioStream("HsrBhiLwz_I", false, "lowest", function (err, stream2) {
+                                            youtube.getAudioStream("HsrBhiLwz_I", false, "lowest", function(err, stream2) {
                                                 if (err) console.log(err);
                                                 else {
-                                                    youtube.getBars(stream2, barsPerSeconds, function (err, bars2) {
+                                                    youtube.getBars(stream2, barsPerSeconds, function(err, bars2) {
                                                         if (err) console.log(err);
                                                         else {
                                                             var arraySpectrum2 = bars2;
@@ -63,25 +63,61 @@ router.post("/db", (req, res, next) => {
                                                                 information: track_information2
                                                             };
                                                             // add track to database 
-                                                            db.models.track.create(track2, function (err, result) {
+                                                            db.models.track.create(track2, function(err, result) {
                                                                 if (err) console.log(err);
-                                                                db.models.score.create({
-                                                                    date: moment().format('YYYY-MM-DD HH:mm:ss'),
-                                                                    duration: 24,
-                                                                    user_id: 1,
-                                                                    track_id: 1
-                                                                }, function (err, user) {
-                                                                    if (err) return next(err);
-                                                                    db.models.score.create({
-                                                                        date: moment().format('YYYY-MM-DD HH:mm:ss'),
-                                                                        duration: 24,
-                                                                        user_id: 1,
-                                                                        track_id: 2
-                                                                    }, function (err, user) {
-                                                                        if (err) return next(err);
-                                                                        return res.status(200).send("Done!");
+                                                                else {
+                                                                    youtube.getAudioStream("./sounds/001_Test_Impulsy_.mp3", true, "lowest", function(err, stream3) {
+                                                                        if (err) console.log(err);
+                                                                        else {
+                                                                            youtube.getBars(stream3, barsPerSeconds, function(err, bars3) {
+                                                                                if (err) console.log(err);
+                                                                                else {
+                                                                                    var arraySpectrum3 = bars3;
+                                                                                    var arrayArtefacts3 = getArrayArthefacts(arraySpectrum3); // array of 0, 1, 3, 3 --- 0 upper and 3 lowest 
+                                                                                    track_information3 = {
+                                                                                        arraySpectrum: arraySpectrum3,
+                                                                                        arrayArtefacts: arrayArtefacts3
+                                                                                    };
+                                                                                    console.log(track_information3);
+                                                                                    var track3 = {
+                                                                                        name: "001_Test_Impulsy_",
+                                                                                        link: "./sounds/001_Test_Impulsy_.mp3",
+                                                                                        information: track_information3
+                                                                                    };
+                                                                                    // add track to database 
+                                                                                    db.models.track.create(track3, function(err, result) {
+                                                                                        if (err) console.log(err);
+                                                                                        db.models.score.create({
+                                                                                            date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                                                                                            duration: 24,
+                                                                                            user_id: 1,
+                                                                                            track_id: 1
+                                                                                        }, function(err, user) {
+                                                                                            if (err) return next(err);
+                                                                                            db.models.score.create({
+                                                                                                date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                                                                                                duration: 24,
+                                                                                                user_id: 1,
+                                                                                                track_id: 2
+                                                                                            }, function(err, user) {
+                                                                                                if (err) return next(err);
+                                                                                                db.models.score.create({
+                                                                                                    date: moment().format('YYYY-MM-DD HH:mm:ss'),
+                                                                                                    duration: 24,
+                                                                                                    user_id: 1,
+                                                                                                    track_id: 3
+                                                                                                }, function(err, user) {
+                                                                                                    if (err) return next(err);
+                                                                                                    return res.status(200).send("Done!");
+                                                                                                });
+                                                                                            });
+                                                                                        });
+                                                                                    });
+                                                                                }
+                                                                            });
+                                                                        }
                                                                     });
-                                                                });
+                                                                }
                                                             });
                                                         }
                                                     });
@@ -98,6 +134,5 @@ router.post("/db", (req, res, next) => {
         });
     });
 });
-
 
 module.exports = router;
