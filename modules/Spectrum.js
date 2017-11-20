@@ -97,4 +97,10 @@ module.exports = class Spectrum {
       }
     })
   }
+  
+  checkArtefacts(barNumber, player)
+	{
+		return this.bars[barNumber].checkArtefact(player)
+  }
+  
 }
