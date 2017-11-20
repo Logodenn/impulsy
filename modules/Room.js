@@ -43,7 +43,7 @@ module.exports = class Room {
           } else if (player.energy === 0) {
             this.lose(player)
           } else {
-            const data = this.checkRightPosition(player)
+            const data = this.check(player)
 
             player.socket.emit('updateGame', {
               data
@@ -153,7 +153,7 @@ module.exports = class Room {
     }
   }
 */
-  check(){
+  check(player){
     artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
     if(artefactTaken !== null){
       if (artefactTaken){
@@ -171,7 +171,7 @@ module.exports = class Room {
           default:
               logger.error("Check the difficulty or the current bar something is going wrong")
         }
-        this.nbArtefacts = this.nbArtefacts + 1 
+        this.takenArtefactsCount = this.takenArtefactsCount + 1 
       }
       else{
         switch(this.difficulty) {
@@ -188,8 +188,14 @@ module.exports = class Room {
               logger.error("Check the difficulty or the current bar something is going wrong")
         } 
       }
-  }
-
+    }
+    return {
+      position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      energy: this.energy,
+      isArtefactTaken: isArtefactTaken,
+      barsCount: player.takenArtefactsCount,
+      bar: this.currentBar
+    }
   }
 
 
