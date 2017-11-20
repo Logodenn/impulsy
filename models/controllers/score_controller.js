@@ -214,6 +214,52 @@ module.exports = {
                     });
             }
         });
+    },
+
+    // requete sql degueux mais qui marche !!!!!
+    rank: function (min, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select * from "
+                +"(select @r := @r+1 as rank, z.* from(select pseudo,sum(duration)"
+                +" as score_total from score join user on user_id=user.id"
+                +" group by pseudo order by score_total desc) z,"
+                +" (select @r:=0) y) as u where rank<? and rank>?;", [min+50,min],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    },
+    rankUser: function (pseudo, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select * from "
+                +"(select @r := @r+1 as rank, z.* from(select pseudo,sum(duration)"
+                +" as score_total from score join user on user_id=user.id"
+                +" group by pseudo order by score_total desc) z, "
+                +"(select @r:=0) y) as u where pseudo=?;", [pseudo],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
     }
 }
 ;
