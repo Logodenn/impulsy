@@ -10,8 +10,8 @@
     </head>
     <body>
 
-        {{> menu index="true" }}
-            
+        {{> menu index="true"}}
+
         <section class="content">
 
             <h1 class="title">Impulsy - Ride the music</h1>
@@ -49,7 +49,7 @@
                 <h2 class="title">Search through YouTube</h2>
 
                 <div id="ytBrowser" class="inputWrapper flex-row">
-                    <input id="ytInput" type="search" class="input" placeholder="type a song..." onkeypress="searchThroughYouTubeBis(event)">
+                    <input id="ytInput" type="search" class="input" placeholder="type a song..." onkeypress="searchThroughYouTubeBis(event)" autofocus>
                     <button class="button button-small" onclick="searchThroughYouTube()"><img src="/img/searcher.svg" alt="Magnifying Glass" width="30px" height="30px"></button>
                 </div>
 
@@ -64,7 +64,7 @@
                 <div class="track-list flex-row">
                     {{#each trend}}
                         <div class="track">
-                            <button class="button button-track" onclick="toggleElement('difficulty','open');selectTrack(this)">{{name}}</button>
+                            <button class="button button-track" data-id="{{track_id}}"onclick="toggleElement('difficulty','open');selectTrack(this)">{{name}}</button>
                         </div>
                     {{/each}}
                 </div>
