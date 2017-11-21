@@ -298,12 +298,12 @@ function addAmplitudeAndArtefact() {
 	var amplitude  = new Amplitude(App.Player.audioSpectrum[time]);
 	listeBarres.push(amplitude);
 
-	var artefact = new Artefact(bigBar.position + App.Player.artefactsToTake[time] * blocUnit);
+	var artefact = new Artefact(bigBar.position + App.Player.audioSpectrum[time] * blocUnit);
 	listeArtefacts.push(artefact);
 
 	time++;
 
-	if(time > App.Player.artefactsToTake.length) {
+	if(time > App.Player.audioSpectrum) {
 		myGameArea.stopAddition();
 	}
 }
@@ -315,7 +315,8 @@ function addAmplitudeAndArtefact() {
 function startGame() {
 	
 	// Set score view
-	document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
+	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
+	document.querySelector("#artefactsToTake").innerHTML = App.Player.energy;
 
 	myGameArea.start();
 
@@ -403,11 +404,12 @@ function updateGameScene(data) {
 	// if(gameState.isArtefactTaken) {
 	if(gameState.isArtefactTaken) {
 		
-		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
+		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
 		// Write score in view
-		document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+		// document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+		document.querySelector("#artefactsTaken").innerHTML = App.Player.energy;
 
 		// Update artefact visual
 		listeArtefacts[gameState.bar].isTaken()
@@ -449,7 +451,8 @@ function endGame (data) {
 	// TODO pop un filter du endGame
 	if(data.result == "victory") {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
-		document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
+		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
+		document.querySelector("#gameState").innerHTML = App.Player.energy
 	} else {
 		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.artefacts.length + " artefacts!";
 	}
