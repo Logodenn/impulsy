@@ -8,6 +8,8 @@ const numberOfTrend = 10
 const numberOfUserMostPlayed = 10
 const numberOfUserFavorite = 10
 const barsPerSeconds = 2
+const lineNumberHOF = 50
+const logger = require('../utils/logger')(module)
 
 router.get('/', (req, res) => {
   // Most played tracks
@@ -36,21 +38,30 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/hallOfFame', function (req, res) {
-
+router.get('/hallOfFame/:pageNumber?', function (req, res) {
+  var pageNumber
+  if (typeof req.params.pageNumber == 'undefined') {
+    pageNumber = 0;
+  } else {
+    pageNumber = req.params.pageNumber;
+  }
   db.score.bestScores((err, bestScores) => {
-    if (err) console.log(err);
-
-    var data = {}
-    data.userConnected = false
-    data.bestScores = bestScores
-
-    if(req.user) {
-      data.userConnected = true
-      data.userName = req.user.pseudo
-    }
-
-    res.render('hallOfFame', data);
+    if (err) logger.error(err)
+    db.score.rank(pageNumber * lineNumberHOF, (err, ranks) => {
+      if (typeof req.user !== 'undefined') {
+        db.score.rankUser(req.user.pseudo, (err, userRank) => {
+          if (err) logger.error(err)
+          res.render('hallOfFame', {
+            ranks: ranks,
+            userRank: userRank[0]
+          });
+        })
+      } else {
+        res.render('hallOfFame', {
+          ranks: ranks
+        });
+      }
+    });
   })
 });
 
@@ -91,93 +102,99 @@ router.get('/trackSelection', function (req, res) {
 })
 
 router.get('/difficulty/:id', function (req, res) {
-    var track;
-    var trackId = parseInt(req.params.id);
-    var gameId = (Math.random() * 100000) | 0;
-    if (Number.isInteger(trackId)) {
-      // It's from our database
-      db.track.get(trackId, (err, result) => {
-        if (err) console.log(err);
-        else {
+  var track;
+  var trackId = parseInt(req.params.id);
+  var gameId = (Math.random() * 100000) | 0;
+  if (Number.isInteger(trackId)) {
+    // It's from our database
+    db.track.get(trackId, (err, result) => {
+      if (err) console.log(err);
+      else {
+        track = result;
+        // stocker track dans un cookies
+        if (track) {
+          console.log(track);
+          res.cookie('track', track);
+          res.cookie('gameId', gameId);
+          res.cookie('position', 1); // This is used by the front
+          res.render('difficulty', {
+            'gameId': gameId
+          }); //Sets name = express
+        } else {
+          console.log(track)
+        }
+      }
+    });
+  } else {
+    db.track.getTrackLink(req.params.id, (err, result) => {
+      if (err) console.log(err);
+      else {
+        if (result) {
           track = result;
-            // stocker track dans un cookies
-            if (track) {
-                console.log(track);
-                res.cookie('track', track);
-                res.cookie('gameId', gameId);
-                res.cookie('position', 1); // This is used by the front
-                res.render('difficulty', {'gameId': gameId}); //Sets name = express
-            } else {
-                console.log(track)
-            }
-        }
-      });
-    } else { 
-      db.track.getTrackLink(req.params.id, (err,result) => {
-        if (err) console.log(err);
-        else {
-          if (result) {
-            track = result;
-              // stocker track dans un cookies
-              if (track) {
-                  console.log(track);
-                  res.cookie('track', track);
-                  res.cookie('gameId', gameId);
-                  res.render('difficulty', {'gameId': gameId}); //Sets name = express
-              } else {
-                  console.log(track)
-              }
+          // stocker track dans un cookies
+          if (track) {
+            console.log(track);
+            res.cookie('track', track);
+            res.cookie('gameId', gameId);
+            res.render('difficulty', {
+              'gameId': gameId
+            }); //Sets name = express
           } else {
-            local = false;
-            audio.getInfo(req.params.id, (err, result) => {
-              if (err) console.log(err);
-              else {
-                audio.getYoutubeStream({
-                  videoId: req.params.id,
-                  quality: 'lowest'
-                }, function (err, stream) {
-                  if (err) console.log(err);
-                  else {
-                    audio.getAmplitudes(stream, barsPerSeconds, function (err, bars) {
-                      if (err) console.log(err);
-                      else {
-                        var arraySpectrum = bars;
-                        var arrayArtefacts = getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
-                        track_information = {
-                          arraySpectrum: arraySpectrum,
-                          arrayArtefacts: arrayArtefacts
-                        };
-                        var track = {
-                          name: result.title,
-                          link: req.params.id,
-                          information: track_information
-                        };
-                        // add track to database 
-                        db.track.create(track, function (err, result) {
-                          if (err) console.log(err);
-                          else {
-                              track.id = result.id;
-                              // stocker track dans un cookies
-                              if (track) {
-                                  console.log(track);
-                                  res.cookie('track', track);
-                                  res.cookie('gameId', gameId);
-                                  res.render('difficulty', {'gameId': gameId}); //Sets name = express
-                              } else {
-                                  console.log(track)
-                              }
-                          }
-                        });
-                      }
-                    });
-                  }
-                });
-              }
-            });
+            console.log(track)
           }
+        } else {
+          local = false;
+          audio.getInfo(req.params.id, (err, result) => {
+            if (err) console.log(err);
+            else {
+              audio.getYoutubeStream({
+                videoId: req.params.id,
+                quality: 'lowest'
+              }, function (err, stream) {
+                if (err) console.log(err);
+                else {
+                  audio.getAmplitudes(stream, barsPerSeconds, function (err, bars) {
+                    if (err) console.log(err);
+                    else {
+                      var arraySpectrum = bars;
+                      var arrayArtefacts = getArrayArthefacts(arraySpectrum); // array of 0, 1, 2, 3 --- 0 upper and 3 lowest 
+                      track_information = {
+                        arraySpectrum: arraySpectrum,
+                        arrayArtefacts: arrayArtefacts
+                      };
+                      var track = {
+                        name: result.title,
+                        link: req.params.id,
+                        information: track_information
+                      };
+                      // add track to database 
+                      db.track.create(track, function (err, result) {
+                        if (err) console.log(err);
+                        else {
+                          track.id = result.id;
+                          // stocker track dans un cookies
+                          if (track) {
+                            console.log(track);
+                            res.cookie('track', track);
+                            res.cookie('gameId', gameId);
+                            res.render('difficulty', {
+                              'gameId': gameId
+                            }); //Sets name = express
+                          } else {
+                            console.log(track)
+                          }
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
         }
-      });
-    }
-  });
+      }
+    });
+  }
+});
 
 module.exports = router
