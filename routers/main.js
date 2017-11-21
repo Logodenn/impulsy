@@ -40,35 +40,36 @@ router.get('/', (req, res) => {
 
 router.get('/hallOfFame/:pageNumber?', function (req, res) {
   var pageNumber
+  var data ={}
+  data.userConnected=false
+  if (req.user) {
+    data.userConnected = true
+    data.userName = req.user.pseudo
+  }
   if (typeof req.params.pageNumber == 'undefined') {
     pageNumber = 0;
   } else {
     pageNumber = req.params.pageNumber;
   }
-  db.score.bestScores((err, bestScores) => {
-    if (err) logger.error(err)
-    db.score.rank(pageNumber * lineNumberHOF, (err, ranks) => {
-      if (typeof req.user !== 'undefined') {
-        db.score.rankUser(req.user.pseudo, (err, userRank) => {
-          if (err) logger.error(err)
-          res.render('hallOfFame', {
-            ranks: ranks,
-            userRank: userRank[0]
-          });
-        })
-      } else {
-        res.render('hallOfFame', {
-          ranks: ranks
-        });
-      }
-    });
-  })
+  db.score.rank(pageNumber * lineNumberHOF, (err, ranks) => {
+    data.ranks=ranks
+    if (typeof req.user !== 'undefined') {
+      db.score.rankUser(req.user.pseudo, (err, userRank) => {
+        if (err) logger.error(err)
+        data.userTotalScore=userRank[0].score_total
+        data.userRank=userRank[0].rank
+        res.render('hallOfFame',data);
+      })
+    } else {
+      res.render('hallOfFame', data);
+    }
+  });
 });
 
 router.get('/howItWorks', function (req, res) {
   var data = {}
   data.userConnected = false
-  if(req.user) {
+  if (req.user) {
     data.userConnected = true
     data.userName = req.user.pseudo
   }
