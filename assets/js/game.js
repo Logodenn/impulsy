@@ -58,11 +58,12 @@ var App = {
             // Settings
 			App.myRole 				= 'Host';
             App.latency 	        = latency;
-
+            
             // Logic
+            App.Host.difficulty         = game.difficulty;
+            App.Host.audioSpectrum 	    = game.spectrum.bars.slice(0);
             App.Player.energy           = game.energy;
             App.Player.position 	    = game.position;
-            App.Player.audioSpectrum 	= game.spectrum.bars.slice(0);
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
         }
