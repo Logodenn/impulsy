@@ -30,33 +30,37 @@ module.exports = class Spectrum {
   createSpectrum(sound, local, cb) {
     let getStream = audio.getYoutubeStream;
     let self = this;
-
     if (local) {
       getStream = audio.getLocalStream
+      self.link = null;
+      self.name = sound;
     }
-    audio.getInfo(sound, (err, res) => {
-      self.link = res.id;
-      self.name = res.title;
-      getStream({
-        videoId: sound,
-        fileName: sound,
-        quality: 'lowest'
-      }, function (err, stream) {
-        if (err) {
-          console.log(err);
-          return cb(err)
-        } else {
-          audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
-            if (err) {
-              console.log(err);
-              return cb(err)
-            } else {
-              for (let i in barsAmplitude) {
-                let bar = new Bar();
-                bar.create(barsAmplitude[i]);
-                self.bars.push(bar);
+    getStream({
+      videoId: sound,
+      fileName: sound,
+      quality: 'lowest'
+    }, function (err, stream) {
+      if (err) {
+        console.log(err);
+        return cb(err)
+      } else {
+        audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
+          if (err) {
+            console.log(err);
+            return cb(err)
+          } else {
+            for (let i in barsAmplitude) {
+              let bar = new Bar();
+              bar.create(barsAmplitude[i]);
+              self.bars.push(bar);
+            }
+            audio.getInfo(sound, (err, res) => {
+              if (err) {
+                logger.error(err)
+              } else {
+                self.link = res.id;
+                self.name = res.title;
               }
-
               // add track to database
               const track = {
                 name: self.name,
@@ -72,12 +76,11 @@ module.exports = class Spectrum {
                   cb(null, self)
                 }
               })
-            }
-          })
-        }
-      })
+            })
+          }
+        })
+      }
     })
-
   }
 
   /**
