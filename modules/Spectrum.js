@@ -90,16 +90,20 @@ module.exports = class Spectrum {
     db.track.get(id, (err, result) => {
       if (err) console.log(err)
       else {
-        this.name = result.name;
-        this.link = result.link;
-        this.bars = result.information;
+        this.name = result.name
+        this.link = result.link
+        this.bars= result.information.map(function(barJSON) {
+          let bar = new Bar()
+          bar.loadBar(barJSON.amplitude, barJSON.artefacts)
+          return bar
+        })
         cb(null, this)
       }
     })
   }
   
-  checkArtefacts(barNumber, player)
-	{
+  checkArtefacts(barNumber, player)	{
+    console.log(this.bars[barNumber]);
 		return this.bars[barNumber].checkArtefact(player)
   }
   

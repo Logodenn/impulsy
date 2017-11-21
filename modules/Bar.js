@@ -20,7 +20,7 @@ module.exports = class Bar {
 	checkArtefact(player)
 	{
 		if (this.artefacts[player.number] !== null) {
-			if(artefacts[player.number] == player.position) {
+			if(this.artefacts[player.number] == player.position) {
 				return true;
 			}
 			else{
@@ -40,7 +40,7 @@ module.exports = class Bar {
 	 * @param {int} number position of the bar in this spectrum
 	 */
 	create(barAmplitude, number) {
-		console.log("Generation of the bar"+number+" with amplitude = "+barAmplitude);
+		console.log("Generation of the bar "+number+" with amplitude = "+barAmplitude);
 		this.id = number;
 		this.amplitude = barAmplitude;
 		var lowerBound = BASE_LOWER_BOUND;
@@ -80,5 +80,10 @@ module.exports = class Bar {
 			this.artefacts.push(null);
 			this.artefacts.push(null);
 		}
+	}
+
+	loadBar(amplitude, artefacts){
+		this.amplitude = amplitude
+		this.artefacts = artefacts
 	}
 }
