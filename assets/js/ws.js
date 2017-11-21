@@ -74,7 +74,8 @@ var IO = {
 
     startGame: function() {
         console.log("Game starting");
-        IO.socket.emit('startGame', null);
+        // IO.socket.emit('startGame', null);
+        IO.socket.emit('startGame');
     },
 
     onGameStarted: function(data) {
@@ -92,9 +93,9 @@ var IO = {
     // ****************************************************** //
 
     playerMove: function(data) {
-        console.log("player " + data.number + " moved to: " + data.position);
-        IO.socket.emit('playerMove', data);
-		player.update();		
+        // console.log("player " + data.number + " moved to: " + data.position);
+        console.log("player moved to: " + data);
+        IO.socket.emit('playerMove', data);		
     },
 
     onCoopMove: function(data) {
