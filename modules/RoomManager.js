@@ -40,12 +40,30 @@ exports = module.exports = class RoomManager {
     })
   }
 
-  createRoom () {
-    const room = new Room(this.io)
+  createRoom (_trackId, _difficulty, _callback) {
+    const room = new Room(_difficulty)
 
     this.rooms[room.id] = room
 
-    return room.id
+    room.spectrum.loadSpectrum(_trackId, (err, res) => {
+      if (err) {
+        logger.error(err)
+
+        return _callback(err)
+      }
+
+      let energy = 0
+      this.rooms[room.id].spectrum.bars.forEach(bar => {
+        if (bar.artefacts[0] !== null && bar.artefacts[1] !== null) {
+          energy++
+        }
+      })
+
+      this.rooms[room.id].energy = energy
+
+      logger.info(`Room ${room.id} is created with parameters: { trackId: ${_trackId}, difficulty: ${_difficulty}}`)
+      _callback(null, room.id)
+    })
   }
 
   deleteRoom (room) {

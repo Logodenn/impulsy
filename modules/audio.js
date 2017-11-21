@@ -140,6 +140,10 @@ const getAmplitudes = (_stream, _frequency, _callback) => {
       amplitudes = amplitudes.map(v => Number((v / ratio).toFixed(2)))
 
       _callback(null, amplitudes)
+    }, (err) => {
+      logger.error(`Failed to get amplitudes from stream`)
+
+      _callback(err)
     })
   })
 }
