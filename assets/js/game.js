@@ -32,19 +32,6 @@ var App = {
         trackId: "ttEI35HVpqI",
         difficulty: "lazy",
 
-        onDifficultyClick: function (difficulty) {
-
-            // // Reset state
-            // document.querySelector("#lazy").attributes.state.value = "passive";
-            // document.querySelector("#easy").attributes.state.value = "passive";
-            // document.querySelector("#crazy").attributes.state.value = "passive";
-            // console.log(difficulty);
-            // // Active state
-            // document.querySelector("#"+difficulty).attributes.state.value = "active";
-
-            this.difficulty = difficulty;
-		},
-
         onCreateClick: function () {
 			if(document.querySelector("#createGameButton").attributes.state.value != "disabled") {
                 /*
@@ -86,9 +73,13 @@ var App = {
 
         gameInit: function (data) {
 
-            var game    = Cookies.get();
+            var game    = data.gameMetadata;
+
+            console.log(game);
+
             var latency = data.latency;
-            var track =JSON.parse(game.track.replace('j:',''));
+            // var track =JSON.parse(game.track.replace('j:',''));
+            var track = game.track;
 
             // Settings
             App.gameId 				= game.gameId;
