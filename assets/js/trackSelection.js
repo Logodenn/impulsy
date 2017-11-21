@@ -1,8 +1,7 @@
 
 function selectTrack(element) {
-    document.querySelector("#selectedTrack").value = element.innerHTML;
-    // dirty way, we should use values, not innerHTML text...
-    // console.log(element.innerHTML);
+    document.querySelector("#selectedTrack").value = element.getAttribute('data-id');
+    document.querySelector("#selectedTrackDisplay").innerHTML = element.childNodes[0].innerHTML;
 }
 
 function searchThroughYouTubeBis(e) {
@@ -17,6 +16,12 @@ function searchThroughYouTube() {
     // Flush the previous result for animation
     var ytResult = document.querySelector("#ytResult");
     ytResult.innerHTML = "";
+    
+    // Animate the search
+    var imgLoading = new Image();
+    imgLoading.src = "../img/loading.svg";
+    imgLoading.classList.add("loading");
+    ytResult.appendChild(imgLoading);
 
     var keywords = document.querySelector("#ytInput").value;
     var action = "/youtube/search/" + keywords;
@@ -42,6 +47,7 @@ function searchThroughYouTube() {
                 trackWrapper.classList.add("flex-col");
                 // trackWrapper.classList.add("blurred");
                 trackWrapper.style.backgroundImage = "url(" + jsonResponse[i].thumbnailUrl + ")";
+                trackWrapper.setAttribute('data-id', jsonResponse[i].id);
 
                 // TODO href
                 
@@ -59,9 +65,10 @@ function searchThroughYouTube() {
 
                 // ********** ADD CLICK EVENT ********** //
                 trackWrapper.onclick = function() {
-                    toggleElement('difficulty','open');
+                    console.log(this)
                     // console.log(titleSpan.innerHTML);
-                    selectTrack(titleSpan);
+                    selectTrack(this);
+                    toggleElement('difficulty','open');
                 };
 
                 // ********** ADD WRAPPER TO PAGE ********** //
