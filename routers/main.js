@@ -27,6 +27,7 @@ router.get('/', (req, res) => {
           if (err) console.log(err)
           data.userFavorite = userFavorite.slice(0, numberOfUserFavorite)
           data.userConnected = true
+          data.userName = req.user.pseudo;
           res.render('index', data)
         })
       })
@@ -65,9 +66,13 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
 });
 
 router.get('/howItWorks', function (req, res) {
-  res.render('howItWorks', {
-    message: 'Hello World!'
-  })
+  var data = {}
+  data.userConnected = false
+  if(req.user) {
+    data.userConnected = true
+    data.userName = req.user.pseudo
+  }
+  res.render('howItWorks', data);
 })
 
 router.get('/trackSelection', function (req, res) {
