@@ -92,7 +92,7 @@ module.exports = class Spectrum {
       else {
         this.name = result.name
         this.link = result.link
-        this.bars= result.information.map(function(barJSON) {
+        this.bars = result.information.map(function(barJSON) {
           let bar = new Bar()
           bar.loadBar(barJSON.amplitude, barJSON.artefacts)
           return bar
