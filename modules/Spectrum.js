@@ -18,6 +18,7 @@ module.exports = class Spectrum {
     this.name = null // name of the sound
     this.link = null
     this.bars = [] // This is track information
+    this.deathFlags = []
     //this.barsPerSeconds = 2 // Number of bars per seconds for youtube modules
   }
 
@@ -93,6 +94,9 @@ module.exports = class Spectrum {
         this.name = result.name;
         this.link = result.link;
         this.bars = result.information;
+        // let mean = 0;
+        // let best = 0;
+        // this.deathFlags 
         cb(null, this)
       }
     })
