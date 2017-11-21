@@ -26,33 +26,38 @@ module.exports = class Room {
 
   startGame () {
 
-    if (!this.energy || this.players.length === 0 || this.artefacts.length === 0) {
+    if (!this.energy || this.players.length === 0 || this.spectrum.bars.length === 0) {
       logger.info('Everything is not setup correctly', this)
       return
     }
 
     logger.info(`Starting game on room ${this.id}`)
-    this.io.emit('gameStarted')
+
+    // Notify all players that the game has started
+    for (var playerId in this.players) {
+      this.players[playerId].socket.emit('gameStarted');
+    }
+    
 
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar}`)
 
-        for (const player in this.players) {
-          if (this.currentBar > this.artefacts.length) {
+        for (let player in this.players) {
+          if (this.currentBar > this.spectrum.bars.length) {
             this.win(player)
           } else if (player.energy === 0) {
             this.lose(player)
           } else {
             const data = this.check(player)
 
-            player.socket.emit('updateGame', {
+            this.players[player].socket.emit('updateGame', {
               data
             })
           }
         }
 
-        this.currentBar += 1
+        this.currentBar++
       }, gameSpeed)
     }, positionCheckDelay)
   }
@@ -80,6 +85,13 @@ module.exports = class Room {
 
   bindPlayerEvents (player) {
     const self = this
+
+    player.socket.on('startGame', () => {
+      // triggerCountdown
+      player.socket.emit('countDown', {duration: 3});
+      // startGame
+      self.startGame();
+    })
 
     player.socket.on('disconnect', () => {
       self.onPlayerDisconnect(player.socket)
@@ -161,7 +173,7 @@ module.exports = class Room {
   }
 */
   check(player){
-    artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
+    const artefactTaken = this.spectrum.checkArtefacts(this.currentBar, player)
     if(artefactTaken !== null){
       if (artefactTaken){
         switch(this.difficulty) {
@@ -199,7 +211,7 @@ module.exports = class Room {
     return {
       position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       energy: this.energy,
-      isArtefactTaken: isArtefactTaken,
+      isArtefactTaken: artefactTaken,
       barsCount: player.takenArtefactsCount,
       bar: this.currentBar
     }
@@ -217,7 +229,6 @@ module.exports = class Room {
       spectrum: this.spectrum,
       artefacts: this.artefacts,
       energy: this.energy, // duration of the music
-      track: 'ziizahi' // TODO... :(
     }
   }
 }
