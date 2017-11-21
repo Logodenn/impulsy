@@ -48,7 +48,7 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
   db.score.bestScores((err, bestScores) => {
     if (err) logger.error(err)
     db.score.rank(pageNumber * lineNumberHOF, (err, ranks) => {
-      if (typeof req.user != 'undefined') {
+      if (typeof req.user !== 'undefined') {
         db.score.rankUser(req.user.pseudo, (err, userRank) => {
           if (err) logger.error(err)
           res.render('hallOfFame', {
