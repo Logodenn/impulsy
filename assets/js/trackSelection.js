@@ -1,7 +1,12 @@
 
 function selectTrack(element) {
     document.querySelector("#selectedTrack").value = element.getAttribute('data-id');
-    document.querySelector("#selectedTrackDisplay").innerHTML = element.childNodes[0].innerHTML;
+
+    if (element.childNodes.length >= 1) {
+        document.querySelector("#selectedTrackDisplay").innerHTML = element.childNodes[0].innerHTML;
+    } else {
+        document.querySelector("#selectedTrackDisplay").innerHTML = element.innerHTML;
+    }
 }
 
 function searchThroughYouTubeBis(e) {
