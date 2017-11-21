@@ -1,6 +1,7 @@
 const audio = require('./audio')
 const db = require('../models/controllers')
 const Bar = require('./Bar')
+const logger = require('../utils/logger')(module)
 
 const FREQUENCY_CHECKING = 10
 const BAR_PER_SECONDS = 2
@@ -14,7 +15,7 @@ const BAR_PER_SECONDS = 2
  * @attribute {int} barsPerSeconds int number of bar per second (speed of the song)
  */
 module.exports = class Spectrum {
-  constructor () {
+  constructor() {
     this.name = null // name of the sound
     this.link = null
     this.bars = [] // This is track information
@@ -26,14 +27,14 @@ module.exports = class Spectrum {
    * @attribute {string} sound link or name of the sound
    * @attribute {bool} local False if is from Youtube, True if is from local storage
    */
-  createSpectrum (sound, local, cb) {
+  createSpectrum(sound, local, cb) {
     let getStream = audio.getYoutubeStream;
     let self = this;
 
     if (local) {
       getStream = audio.getLocalStream
     }
-    audio.getInfo(sound, (err, res) =>{
+    audio.getInfo(sound, (err, res) => {
       self.link = res.id;
       self.name = res.title;
       getStream({
@@ -44,20 +45,18 @@ module.exports = class Spectrum {
         if (err) {
           console.log(err);
           return cb(err)
-        }
-        else {
+        } else {
           audio.getAmplitudes(stream, BAR_PER_SECONDS, function (err, barsAmplitude) {
             if (err) {
               console.log(err);
               return cb(err)
-            }
-            else {
-              barsAmplitude.forEach(function (barAmplitude, i) {
+            } else {
+              for (let i in barsAmplitude) {
                 let bar = new Bar();
-                bar.create(barAmplitude, i);
+                bar.create(barsAmplitude[i]);
                 self.bars.push(bar);
-              });
-  
+              }
+
               // add track to database
               const track = {
                 name: self.name,
@@ -68,8 +67,7 @@ module.exports = class Spectrum {
                 if (err) {
                   console.log(err);
                   return cb(err)
-                }
-                else {
+                } else {
                   self.id = result.id
                   cb(null, self)
                 }
@@ -86,7 +84,7 @@ module.exports = class Spectrum {
    * Function loadSpectrum load a spectrum from an id of a track
    * @attribute {int} id id of a track
    */
-  loadSpectrum (id, cb) {
+  loadSpectrum(id, cb) {
     db.track.get(id, (err, result) => {
       if (err) console.log(err)
       else {
@@ -97,10 +95,9 @@ module.exports = class Spectrum {
       }
     })
   }
-  
-  checkArtefacts(barNumber, player)
-	{
-		return this.bars[barNumber].checkArtefact(player)
+
+  checkArtefacts(barNumber, player) {
+    return this.bars[barNumber].checkArtefact(player)
   }
-  
+
 }
