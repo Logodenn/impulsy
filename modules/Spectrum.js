@@ -1,3 +1,5 @@
+const logger = require('../utils/logger')(module)
+
 const audio = require('./audio')
 const db = require('../models/controllers')
 const Bar = require('./Bar')
@@ -94,10 +96,19 @@ module.exports = class Spectrum {
         this.name = result.name;
         this.link = result.link;
         this.bars = result.information;
-        // let mean = 0;
-        // let best = 0;
-        // this.deathFlags 
-        cb(null, this)
+        db.score.meanScore(id, (err, mean) =>{
+          if(err) logger.error(err);
+          else {
+            this.deathFlags.push(mean[0])
+            db.score.bestScoresTrack(id, (err, best) =>{
+              if(err) logger.error(err);
+              else{
+                this.deathFlags.push(best[0])
+                cb(null, this)
+              }
+            })
+          }
+        })
       }
     })
   }
