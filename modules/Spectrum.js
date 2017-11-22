@@ -1,9 +1,7 @@
 const logger = require('../utils/logger')(module)
-
 const audio = require('./audio')
 const db = require('../models/controllers')
 const Bar = require('./Bar')
-const logger = require('../utils/logger')(module)
 
 const FREQUENCY_CHECKING = 10
 const BAR_PER_SECONDS = 2
