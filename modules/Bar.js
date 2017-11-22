@@ -1,3 +1,4 @@
+const logger = require('../utils/logger')(module)
 /**
  * Const for the artefact 
  */
@@ -10,24 +11,18 @@ const MINIMUM_AMPLITUDE = 0.05
 
 module.exports = class Bar {
 	constructor() {
-		this.id = null // number of the bar in this spectrum 
 		this.amplitude = null
 		this.artefacts = [] // artefact position 
-		this.positionPlayers = []
 	}
 
-
-	checkArtefact(player)
-	{
+	checkArtefact(player) {
 		if (this.artefacts[player.number] !== null) {
-			if(artefacts[player.number] == player.position) {
+			if (artefacts[player.number] == player.position) {
 				return true;
-			}
-			else{
+			} else {
 				return false;
 			}
-		}
-		else{
+		} else {
 			return null
 		}
 	}
@@ -40,27 +35,25 @@ module.exports = class Bar {
 	 * @param {int} number position of the bar in this spectrum
 	 */
 	create(barAmplitude, number) {
-		console.log("Generation of the bar"+number+" with amplitude = "+barAmplitude);
+		logger.debug("Generation of the bar" + number + " with amplitude = " + barAmplitude);
 		this.id = number;
 		this.amplitude = barAmplitude;
 		var lowerBound = BASE_LOWER_BOUND;
 		var upperBound = BASE_UPPPER_BOUND;
-		var limit = AMPLITUDE_MAX / (NUMBER_OF_POSITIONS/2);
+		var limit = AMPLITUDE_MAX / (NUMBER_OF_POSITIONS / 2);
 		/*
 			Settings for bound
 			Check if the amplitude is bigger than the limit 
 			if it's bigger the bar will have more postion 
 		*/
-		
-		if (this.amplitude < MINIMUM_AMPLITUDE)
-		{
+
+		if (this.amplitude < MINIMUM_AMPLITUDE) {
 			do {
-				if(this.amplitude>limit){
-					limit+=limit;
+				if (this.amplitude > limit) {
+					limit += limit;
 					lowerBound--;
 					upperBound++;
-				}
-				else{
+				} else {
 					break;
 				}
 			} while (limit <= AMPLITUDE_MAX);
@@ -69,14 +62,13 @@ module.exports = class Bar {
 			this.artefacts.push(Math.round(Math.random() * (upperBound - lowerBound) + lowerBound));
 			// Check if the two player haven't got the same artefact position
 			var artefactPlayer2 = 0
-			do{
+			do {
 				artefactPlayer2 = Math.round(Math.random() * (upperBound - lowerBound) + lowerBound)
-				
-			}while (this.artefacts[0] == artefactPlayer2);
+
+			} while (this.artefacts[0] == artefactPlayer2);
 			// Add second artefact for player 2
 			this.artefacts.push(artefactPlayer2);
-		}
-		else {
+		} else {
 			this.artefacts.push(null);
 			this.artefacts.push(null);
 		}
