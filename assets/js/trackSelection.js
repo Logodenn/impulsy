@@ -2,7 +2,7 @@
 function selectTrack(element) {
     document.querySelector("#selectedTrack").value = element.getAttribute('data-id');
 
-    if (element.childNodes.length >= 1) {
+    if (element.childNodes.length >= 2) {
         document.querySelector("#selectedTrackDisplay").innerHTML = element.childNodes[0].innerHTML;
     } else {
         document.querySelector("#selectedTrackDisplay").innerHTML = element.innerHTML;
