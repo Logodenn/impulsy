@@ -205,10 +205,7 @@ module.exports = class Room {
     }
   }
 
-
-
   getMetaData (player) {
-    // console.log(this);
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -218,6 +215,15 @@ module.exports = class Room {
       artefacts: this.artefacts,
       energy: this.energy, // duration of the music
       track: 'ziizahi' // TODO... :(
+    }
+  }
+
+  get metadata () {
+    return {
+      id: this.id,
+      difficulty: this.difficulty, // difficulty of the level
+      spectrum: this.spectrum,
+      energy: this.energy // duration of the music
     }
   }
 }
