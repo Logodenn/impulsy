@@ -197,7 +197,7 @@ module.exports = {
     meanScore: function (track_id, cb) {
         models(function (err, db) {
             if (err) {
-                logger.error(err);
+                loggers.error(err);
                 cb(err);
             } else {
                 db.driver.execQuery("select AVG(duration) from" +
