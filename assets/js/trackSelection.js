@@ -94,4 +94,6 @@ function setDifficulty(difficulty) {
     console.log(difficulty);
     // Active state
     document.querySelector("#"+difficulty).attributes.state.value = "active";
+    // Set the value
+    document.querySelector("#difficulty").value = difficulty;
 }
