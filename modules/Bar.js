@@ -46,7 +46,7 @@ module.exports = class Bar {
     if it's bigger the bar will have more postion
     */
 
-    if (this.amplitude < MINIMUM_AMPLITUDE) {
+    if (this.amplitude > MINIMUM_AMPLITUDE) {
       do {
         if (this.amplitude > limit) {
           limit += limit
