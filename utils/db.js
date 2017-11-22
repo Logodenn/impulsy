@@ -44,8 +44,8 @@ models((err, _db) => {
           }, callback)
         },
         (user, callback) => {
-          let spectrum = new Spectrum();
-          spectrum.createSpectrum('cKfOycpc0t0', false, callback);
+          let spectrum = new Spectrum()
+          spectrum.createSpectrum('cKfOycpc0t0', false, callback)
         },
         (track, callback) => {
           createScore({
@@ -56,8 +56,20 @@ models((err, _db) => {
           }, callback)
         },
         (score, callback) => {
-          let spectrum = new Spectrum();
-          spectrum.createSpectrum('HsrBhiLwz_I', false, callback);
+          let spectrum = new Spectrum()
+          spectrum.createSpectrum('HsrBhiLwz_I', false, callback)
+        },
+        (track, callback) => {
+          createScore({
+            track_id: track.id,
+            date: moment().format('YYYY-MM-DD HH:mm:ss'),
+            duration: 12,
+            user_id: 2
+          }, callback)
+        },
+        (score, callback) => {
+          let spectrum = new Spectrum()
+          spectrum.createSpectrum('001_Test_Impulsy_.mp3', true, callback)
         },
         (track, callback) => {
           createScore({
