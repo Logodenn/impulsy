@@ -225,14 +225,7 @@ module.exports = class Room {
     }
   }
 
-<<<<<<< HEAD
-
-
-  getMetaData(player) {
-    // console.log(this);
-=======
   getMetaData (player) {
->>>>>>> dev
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -244,9 +237,6 @@ module.exports = class Room {
       track: 'ziizahi' // TODO... :(
     }
   }
-<<<<<<< HEAD
-}
-=======
 
   get metadata () {
     return {
@@ -257,4 +247,3 @@ module.exports = class Room {
     }
   }
 }
->>>>>>> dev
