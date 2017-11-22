@@ -116,13 +116,14 @@ module.exports = class Room {
     })
 
     if (typeof player.user !== 'undefinied') {
-
-      db.user.bestScores(player.user.id, this.spectrum.id, (err, bestScores)=>{
+      //TODO : variable en dure 
+      db.user.bestScores(5, this.spectrum.id, (err, bestScores)=>{
         if (err) logger.error(err)
         if (bestScores.length !==0 ){
           if (bestScores[0].duration<player.takenArtefactsCount){
+            //score.duration = player.takenArtefactsCount
             score.duration = player.takenArtefactsCount
-            score.user_id = player.user.id
+            score.user_id = 5
             score.track_id = this.spectrum.id
             db.score.create(score, (err, res) => {
               if (err) logger.error(err)
