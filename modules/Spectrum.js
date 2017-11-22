@@ -30,11 +30,13 @@ module.exports = class Spectrum {
   createSpectrum (sound, local, cb) {
     let getStream = audio.getYoutubeStream
     let self = this
+
     if (local) {
       getStream = audio.getLocalStream
       self.link = null
       self.name = sound
     }
+
     getStream({
       videoId: sound,
       fileName: sound,
@@ -67,6 +69,7 @@ module.exports = class Spectrum {
                 link: self.link,
                 information: self.bars
               }
+
               db.track.create(track, function (err, result) {
                 if (err) {
                   console.log(err)
@@ -93,6 +96,7 @@ module.exports = class Spectrum {
       else {
         this.name = result.name
         this.link = result.link
+
         this.bars = result.information.map(function (barJSON) {
           let bar = new Bar()
           bar.loadBar(barJSON.amplitude, barJSON.artefacts)
