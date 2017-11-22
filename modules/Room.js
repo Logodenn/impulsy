@@ -1,7 +1,9 @@
-const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
+const uuid = require('uuid/v4')
+const SlowStream = require('slow-stream')
 const Player = require('./Player')
 const Spectrum = require('./Spectrum')
+const audio = require('./audio')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
@@ -18,6 +20,7 @@ module.exports = class Room {
     this.difficulty = _difficulty
     this.currentBar = 0
     this.energy = 100
+    this.audioStream = null
   }
 
   destroy () {
@@ -25,11 +28,50 @@ module.exports = class Room {
   }
 
   startGame () {
-
     if (!this.energy || this.players.length === 0 || this.artefacts.length === 0) {
       logger.info('Everything is not setup correctly', this)
       return
     }
+
+    let sound = this.spectrum.link
+    let getStream = audio.getYoutubeStream;
+
+    // May not be the best way to check if the track is local or not
+    if (sound === null) {
+      getStream = audio.getLocalStream
+      sound = this.spectrum.name
+    }
+
+    let self = this
+
+    getStream({
+      videoId: sound,
+      fileName: sound
+    }, (err, command) => {
+      if (err) {
+        logger.error(`Could not retreive stream for sound: ${sound}`)
+
+        return
+      }
+
+      self.audioStream = command.pipe(new SlowStream({
+        maxWriteInterval: 50
+      }))
+
+      self.audioStream.on('end', () => {
+        for (let player in self.players) {
+          self.players[player].socket.emit('audioEnd')
+        }
+      })
+
+      self.audioStream.on('data', (chunk) => {
+        for (let player in self.players) {
+          self.players[player].socket.emit('audioChunk', {
+            chunk: chunk
+          })
+        }
+      })
+    })
 
     logger.info(`Starting game on room ${this.id}`)
     this.io.emit('gameStarted')
