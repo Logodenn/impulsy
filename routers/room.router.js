@@ -63,9 +63,13 @@ router.post('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  // TODO: Get the room data and send it to the view
+  const roomId = req.params.id
 
-  res.render('game', RoomManager.rooms[req.params.id].metadata)
+  if (RoomManager.rooms.hasOwnProperty(roomId)) {
+    res.render('game', RoomManager.rooms[roomId].metadata)
+  } else {
+    res.status(404).redirect('/')
+  }
 })
 
 module.exports = router
