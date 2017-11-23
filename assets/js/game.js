@@ -76,7 +76,6 @@ var App = {
         // This Player object is used to transit data through the WS
 
 		onMove : function(data) {
-            console.log('Player moved at position : ' + App.Player.position);
             // Notify WS
             IO.playerMove(App.Player.position);
             // IO.socket.emit('playerMove', {playerPosition: App.Player.position});
@@ -85,10 +84,9 @@ var App = {
         
         // In case the player does not move but the position is right
         onEnergy : function(data) {
-			console.log('Player moved at position : ' + App.Player.position);
-            IO.socket.emit('playerMove', {playerPosition: App.Player.position});
-            // TODO
-            // Don't emit here, use ws.js to emit, just like for the onMove function just above this one
+            // Notify WS
+            IO.playerMove(App.Player.position);
+            // IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
 	}
 };
