@@ -1,9 +1,10 @@
-const uuid = require('uuid/v4')
 const logger = require('../utils/logger')(module)
+const uuid = require('uuid/v4')
+const SlowStream = require('slow-stream')
 const Player = require('./Player')
 const Spectrum = require('./Spectrum')
 const db = require('../models/controllers')
-
+const audio = require('./audio')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
@@ -20,28 +21,82 @@ module.exports = class Room {
     this.difficulty = _difficulty
     this.currentBar = 0
     this.energy = 100
+    this.audioStream = null
   }
 
   destroy() {
     this.roomManager.deleteRoom(this)
   }
 
-  startGame() {
-
-    if (!this.energy || this.players.length === 0 || this.artefacts.length === 0) {
+  startGame () {
+    if (!this.energy || this.players.length === 0 || this.spectrum.bars.length === 0) {
       logger.info('Everything is not setup correctly', this)
       return
     }
 
+    let sound = this.spectrum.link
+    let getStream = audio.getYoutubeStream
+
+    // May not be the best way to check if the track is local or not
+    if (sound === null) {
+      getStream = audio.getLocalStream
+      sound = this.spectrum.name
+    }
+
+    let self = this
+
+    getStream({
+      videoId: sound,
+      fileName: sound
+    }, (err, command) => {
+      if (err) {
+        logger.error(`Could not retreive stream for sound: ${sound}`)
+
+        return
+      }
+
+      /* .pipe(new SlowStream({
+        maxWriteInterval: 50
+      })) */
+
+      command.on('end', () => {
+        for (let player in self.players) {
+          self.players[player].socket.emit('audioEnd')
+        }
+      })
+
+      command.on('data', (chunk) => {
+        for (let player in self.players) {
+          self.players[player].socket.emit('audioChunk', {
+            chunk: chunk
+          })
+        }
+      })
+
+      command.on('error', (message) => {
+        logger.error('The audio stream was stopped unexpectedly')
+      })
+
+      self.audioStream = command.pipe()
+    })
+
     logger.info(`Starting game on room ${this.id}`)
-    this.io.emit('gameStarted')
+
+    // Notify all players that the game has started
+    for (var playerId in this.players) {
+      this.players[playerId].socket.emit('gameStarted')
+    }
+
+    this.currentBar = 0
 
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
-        logger.debug(`Loop - currentBar ${this.currentBar}`)
+        logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length}`)
 
-        for (const player in this.players) {
-          if (this.currentBar > this.artefacts.length) {
+        for (let key in this.players) {
+          let player = this.players[key]
+
+          if (this.currentBar >= this.spectrum.bars.length) {
             this.win(player)
           } else if (player.energy === 0) {
             this.lose(player)
@@ -54,7 +109,7 @@ module.exports = class Room {
           }
         }
 
-        this.currentBar += 1
+        this.currentBar++
       }, gameSpeed)
     }, positionCheckDelay)
   }
@@ -83,15 +138,35 @@ module.exports = class Room {
   bindPlayerEvents(player) {
     const self = this
 
+    player.socket.on('startGame', () => {
+      // triggerCountdown
+      player.socket.emit('countDown', {duration: 3})
+      // startGame
+      self.startGame()
+    })
+
     player.socket.on('disconnect', () => {
       self.onPlayerDisconnect(player.socket)
     })
   }
 
-  onPlayerDisconnect(socket) {
+  stop () {
+    if (this.audioStream) {
+      this.audioStream.pause()
+      this.audioStream.unpipe()
+    }
+
+    if (this.loopTimer) {
+      clearInterval(this.loopTimer)
+    }
+  }
+
+  onPlayerDisconnect (socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
 
     delete this.players[socket.id]
+
+    this.stop()
 
     if (this.players.length === 0) {
       this.destroy()
@@ -107,12 +182,12 @@ module.exports = class Room {
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
-    clearInterval(this.loopTimer)
+    this.stop()
 
     player.socket.emit('endOfGame', {
       'win': true,
       'score': player.takenArtefactsCount,
-      'max': this.artefacts.length
+      'max': this.energy
     })
 
     if (typeof player.user !== 'undefinied') {
@@ -181,45 +256,46 @@ module.exports = class Room {
       }
     }
   */
-  check(player) {
-    artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
+
+  check (player) {
+    const artefactTaken = this.spectrum.checkArtefacts(this.currentBar, player)
     if (artefactTaken !== null) {
       if (artefactTaken) {
         switch (this.difficulty) {
-          case "crazy":
-            this.energy = this.energy - 1;
-            break;
-          case "easy":
-            // Energy doesn't change
-            this.energy = this.energy;
-            break;
-          case "lazy":
-            // Do stuff
-            break;
+          case 'crazy':
+            this.energy = this.energy - 1
+            break
+          case 'easy':
+              // Energy doesn't change
+            this.energy = this.energy
+            break
+          case 'lazy':
+              // Do stuff
+            break
           default:
-            logger.error("Check the difficulty or the current bar something is going wrong")
+            logger.error('Check the difficulty or the current bar something is going wrong')
         }
         this.takenArtefactsCount = this.takenArtefactsCount + 1
       } else {
         switch (this.difficulty) {
-          case "crazy":
-            this.energy = this.energy - 2;
-            break;
-          case "easy":
-            this.energy = this.energy - 1;
-            break;
-          case "lazy":
-            // Do stuff
-            break;
+          case 'crazy':
+            this.energy = this.energy - 2
+            break
+          case 'easy':
+            this.energy = this.energy - 1
+            break
+          case 'lazy':
+              // Do stuff
+            break
           default:
-            logger.error("Check the difficulty or the current bar something is going wrong")
+            logger.error('Check the difficulty or the current bar something is going wrong')
         }
       }
     }
     return {
       position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       energy: this.energy,
-      isArtefactTaken: isArtefactTaken,
+      isArtefactTaken: artefactTaken,
       barsCount: player.takenArtefactsCount,
       bar: this.currentBar
     }
@@ -233,8 +309,7 @@ module.exports = class Room {
       difficulty: this.difficulty, // difficulty of the level
       spectrum: this.spectrum,
       artefacts: this.artefacts,
-      energy: this.energy, // duration of the music
-      track: 'ziizahi' // TODO... :(
+      energy: this.energy // duration of the music
     }
   }
 
