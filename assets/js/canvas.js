@@ -1,47 +1,40 @@
-// *********************************************************************************************** //
-// **************************************** CANVAS SETUP **************************************** //
-// ********************************************************************************************* //
+// ******************** Canvas setup ******************** //
+
+const blocUnit = 100;
+const visualCoefficient = 4;
+const pulserWidth = 165;
+
+// How to read blocUnit
+// 0 * blocUnit energyBar and deathFlags
+// 1 * blocUnit deathFlags
+// 2 * blocUnit topSlot
+// 3 * blocUnit middleTopSlot
+// 4 * blocUnit middleBotSlot
+// 5 * blocUnit botSlot
+// 6 blocUnits are used to draw the height of the Canvas
+
+var Canvas = {    
+	width			: 10 * blocUnit,
+	height  		: 6 * blocUnit,
+	spectrumAxis	: 4 * blocUnit,
+	topSlot			: 2 * blocUnit,
+	middleTopSlot	: 3 * blocUnit,
+	middleBotSlot	: 4 * blocUnit,
+	botSlot			: 5 * blocUnit,
+}
+
+var energyBar = {
+    height  : blocUnit * 0.5,
+    width   : null,
+    y		: blocUnit * 0
+}
+
+// ******************** Colors ******************** //
 
 var COLOR = {
 	energyBar		: "#FAC32C",
 	energyBarSlot	: "#716383"
 }
-
-var blocUnit = 100;
-var visualCoefficient = 4;
-
-var smallBar = {
-    height  : blocUnit * 2,
-    width   : blocUnit / 4,
-    position: null
-}
-
-var bigBar = {
-    height  : smallBar.height * 2,
-    width   : blocUnit / 4,
-    position: null
-}
-
-var energyBar = {
-    height  : blocUnit / 4,
-    width   : null,
-    position: blocUnit,
-    // color   : "#FFD51D",
-}
-
-var Canvas = {    
-    width	: 10 * blocUnit,
-    height	: bigBar.height + energyBar.height + 3 * blocUnit, // Height = biggest bar + energy bar + margins
-    // height  : 8 * blocUnit
-}
-
-// To make it full dynamic, set the following parameters here
-bigBar.position     = energyBar.position + energyBar.height + blocUnit;
-smallBar.position   = bigBar.position + bigBar.height / 4
-// energyBar.width     = 8 * blocUnit;
-
-// ******************** Colors ******************** //
-
 var r = 50;
 var g = 200;
 var b = 255;
@@ -49,10 +42,6 @@ var colorToChange = "g-";
 var counterForAmplitudeColor = 0;
 var counterForColorTab = 0;
 var tabColorToChange = ["g-", "r+", "r-", "g+"];
-
-// *********************************************************************************************** //
-// **************************************** CONSTRUCTORS **************************************** //
-// ********************************************************************************************* //
 
 // ******************** Game variables ******************** //
 
@@ -62,8 +51,8 @@ var time = 0;
 
 var player;
 var pulsers 		= [];
-var listeBarres 	= [];
-var listeArtefacts 	= [];
+var canvasBars 		= [];
+var canvasArtefacts = [];
 
 // ******************** Images ******************** //
 
@@ -71,21 +60,20 @@ var imgArtefact = new Image();
 imgArtefact.src = "../img/artefact.png";
 
 var imgArtefactTaken = new Image();
-imgArtefactTaken.src= "../img/artefactTaken.png";
+imgArtefactTaken.src = "../img/artefactTaken.png";
 
 // ******************** Player ******************** //
 
 function Player() {
 	var self = this;
 	self.x 			= 400;
-	self.y 			= smallBar.position;
+	self.y 			= Canvas.middleTopSlot;
 	self.img 		= new Image();
 	self.img.src 	= "../img/unicorn.png";
 	self.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
-
 	self.ctx = myGameArea.context;
 	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 }
@@ -102,17 +90,29 @@ function Pulsers(posY) {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
-
 	self.ctx = myGameArea.context;
 	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 }
 
 // ******************** Artefact ******************** //
 
-function Artefact(posY) {
+function Artefact(slot) {
 	var self 		= this;
-	self.x 			= myGameArea.canvas.width - 165;
-	self.y 			= posY;
+	self.x 			= myGameArea.canvas.width - pulserWidth;
+	switch(slot) {
+		case 0:
+			self.y = Canvas.topSlot;
+			break;
+		case 1:
+			self.y = Canvas.middleTopSlot;
+			break;
+		case 2:
+			self.y = Canvas.middleBotSlot;
+			break;
+		case 3:
+			self.y = Canvas.botSlot;
+			break;
+	}
 	self.img 		= new Image();
 	self.img.src 	= "../img/artefact.png";
 	self.update 	= function() {
@@ -120,18 +120,16 @@ function Artefact(posY) {
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
-
 	self.isTaken = function() {
 		self.img = imgArtefactTaken;
 	}
-
 	self.ctx = myGameArea.context;
 	ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 }
 
 // ******************** Amplitude ******************** //
 
-function Amplitude(height) {
+function Amplitude(barDefinition) {
 	switch (tabColorToChange[counterForColorTab]) {
 		case "r+":
             r += 15;
@@ -168,16 +166,15 @@ function Amplitude(height) {
 
 	this.color 		= "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
 	this.width 		= 25;
-	this.height 	= height ? bigBar.height : smallBar.height;
+	this.height		= barDefinition.amplitude * blocUnit * 4;
 	this.x 			= myGameArea.canvas.width - 130;
-	this.y 			= height ? bigBar.position : smallBar.position;
+	this.y			= Canvas.spectrumAxis - this.height * 0.5;
 	this.update 	= function() {
 		this.x -= 1;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
-
 	this.ctx = myGameArea.context;
 	this.ctx.fillStyle = this.color;
 	this.ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -187,14 +184,14 @@ function Amplitude(height) {
 
 function EnergyBarSlot() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
 	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.Player.artefacts.length * visualCoefficient;
+	this.width 		= App.Player.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
-	this.y 			= energyBar.position;
+	this.y 			= blocUnit * 0;
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -203,7 +200,6 @@ function EnergyBarSlot() {
 		// console.log("Slot posX: " + this.x + " width " + this.width);
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
-
 	this.ctx 			= myGameArea.context;
 	this.ctx.fillStyle 	= this.color;
 	this.ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -213,14 +209,14 @@ function EnergyBarSlot() {
 
 function EnergyBar() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Player.artefacts.length * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
 
 	this.color 		= COLOR.energyBar;
 	this.width 		= App.Player.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
-	this.y 			= energyBar.position;
+	this.y 			= blocUnit * 0;
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -229,7 +225,6 @@ function EnergyBar() {
 		// this.width = App.Player.energy * visualCoefficient; TODO this line should be used but App.Player.energy is not refreshed
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
-
 	this.ctx 			= myGameArea.context;
 	this.ctx.fillStyle 	= this.color;
 	this.ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -278,9 +273,9 @@ var myGameArea = {
 function updateGameArea() {
 	myGameArea.clear();
 
-	for (i = 0; i < listeBarres.length; i++) {
-		listeBarres[i].update();
-		listeArtefacts[i].update();
+	for (i = 0; i < canvasBars.length; i++) {
+		canvasBars[i].update();
+		canvasArtefacts[i].update();
 	}
 
 	for (i = 0; i < pulsers.length; i++) {
@@ -295,15 +290,18 @@ function updateGameArea() {
 }
 
 function addAmplitudeAndArtefact() {
-	var amplitude  = new Amplitude(App.Player.audioSpectrum[time]);
-	listeBarres.push(amplitude);
+	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
+	canvasBars.push(amplitude);
 
-	var artefact = new Artefact(bigBar.position + App.Player.artefactsToTake[time] * blocUnit);
-	listeArtefacts.push(artefact);
+	var playerNumber = 0; // TODO dynamize
+	// playerNumber = 1;
+
+	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
+	canvasArtefacts.push(artefact);
 
 	time++;
 
-	if(time > App.Player.artefactsToTake.length) {
+	if(time > App.Host.audioSpectrum) {
 		myGameArea.stopAddition();
 	}
 }
@@ -315,12 +313,13 @@ function addAmplitudeAndArtefact() {
 function startGame() {
 	
 	// Set score view
-	document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
+	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
+	document.querySelector("#artefactsToTake").innerHTML = App.Player.energy;
 
 	myGameArea.start();
 
 	player = new Player();
-
+	console.log(App.Host.difficulty);
 	if(App.Host.difficulty != "lazy") {
 		// Handle energyBar only if ht edifficulty is easy or crazy
 		energyBarSlot 	= new EnergyBarSlot();
@@ -328,7 +327,7 @@ function startGame() {
 	}
 
 	for (var i = 0; i < 4; i++) {
-		var pulser = new Pulsers(bigBar.position + i * blocUnit);
+		var pulser = new Pulsers(Canvas.topSlot + i * blocUnit);
 		pulsers.push(pulser);
 	} 
 
@@ -347,29 +346,29 @@ function startGame() {
 			case 65:
 				// Top
 				App.Player.position = 0;
-				player.y = bigBar.position;
+				player.y = Canvas.topSlot;
 				break;
 			case 90:
 				// Midtop
 				App.Player.position = 1;
-				player.y = bigBar.position + 1 * blocUnit;
+				player.y = Canvas.middleTopSlot;
 				break;
 			case 69:
 				// Midbot
 				App.Player.position = 2;
-				player.y = bigBar.position + 2 * blocUnit;
+				player.y = Canvas.middleBotSlot;
 				break;
 			case 82:
 				// Bot
 				App.Player.position = 3;
-				player.y = bigBar.position + 3 * blocUnit;
+				player.y = Canvas.botSlot;
 				break;
 			case 38:
 				// Up arrow
 				if(App.Player.position != 0) {
 		
 					App.Player.position--;
-					player.y -= smallBar.height / 2;
+					player.y -= blocUnit;
 				}
 				break;
 			case 40:
@@ -377,7 +376,7 @@ function startGame() {
 				if(App.Player.position != 3) {
 		
 					App.Player.position++;
-					player.y += smallBar.height / 2;
+					player.y += blocUnit;
 				}
 				break;
 		}
@@ -403,14 +402,15 @@ function updateGameScene(data) {
 	// if(gameState.isArtefactTaken) {
 	if(gameState.isArtefactTaken) {
 		
-		App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
+		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
 		// Write score in view
-		document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+		// document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+		document.querySelector("#artefactsTaken").innerHTML = App.Player.energy;
 
 		// Update artefact visual
-		listeArtefacts[gameState.bar].isTaken()
+		canvasArtefacts[gameState.bar].isTaken()
 	}
 }
 
@@ -449,9 +449,10 @@ function endGame (data) {
 	// TODO pop un filter du endGame
 	if(data.result == "victory") {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
-		document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
+		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
+		document.querySelector("#gameState").innerHTML = App.Player.energy
 	} else {
-		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.artefacts.length + " artefacts!";
+		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.energy + " artefacts!";
 	}
 	// Show pop up
 	document.querySelector("#endGameLayer").classList.remove("hidden");
