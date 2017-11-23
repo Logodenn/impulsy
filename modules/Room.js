@@ -34,7 +34,7 @@ module.exports = class Room {
     }
 
     let sound = this.spectrum.link
-    let getStream = audio.getYoutubeStream;
+    let getStream = audio.getYoutubeStream
 
     // May not be the best way to check if the track is local or not
     if (sound === null) {
@@ -54,23 +54,29 @@ module.exports = class Room {
         return
       }
 
-      self.audioStream = command.pipe(new SlowStream({
+      /* .pipe(new SlowStream({
         maxWriteInterval: 50
-      }))
+      })) */
 
-      self.audioStream.on('end', () => {
+      command.on('end', () => {
         for (let player in self.players) {
           self.players[player].socket.emit('audioEnd')
         }
       })
 
-      self.audioStream.on('data', (chunk) => {
+      command.on('data', (chunk) => {
         for (let player in self.players) {
           self.players[player].socket.emit('audioChunk', {
             chunk: chunk
           })
         }
       })
+
+      command.on('error', (message) => {
+        logger.error('The audio stream was stopped unexpectedly')
+      })
+
+      self.audioStream = command.pipe()
     })
 
     logger.info(`Starting game on room ${this.id}`)
@@ -79,6 +85,8 @@ module.exports = class Room {
     for (var playerId in this.players) {
       this.players[playerId].socket.emit('gameStarted')
     }
+
+    this.currentBar = 0
 
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
@@ -141,10 +149,23 @@ module.exports = class Room {
     })
   }
 
+  stop () {
+    if (this.audioStream) {
+      this.audioStream.pause()
+      this.audioStream.unpipe()
+    }
+
+    if (this.loopTimer) {
+      clearInterval(this.loopTimer)
+    }
+  }
+
   onPlayerDisconnect (socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
 
     delete this.players[socket.id]
+
+    this.stop()
 
     if (this.players.length === 0) {
       this.destroy()
@@ -159,7 +180,7 @@ module.exports = class Room {
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
-    clearInterval(this.loopTimer)
+    this.stop()
 
     player.socket.emit('endOfGame', {
       'win': true,
@@ -167,54 +188,7 @@ module.exports = class Room {
       'max': this.energy
     })
   }
-/*
-  checkRightPosition (player) {
-    logger.info(`Room ${this.id} - check position for player ${player.id}`)
 
-    let isArtefactTaken = false
-
-    if (player.position !== this.artefacts[this.currentBar] && this.difficulty === 'easy') {
-      this.energy = this.energy - 1
-      isArtefactTaken = false
-    } else if (this.position === this.arrayArtefacts[this.currentBar] && this.difficulty === 'crazy') {
-      this.energy = this.energy - 1
-      this.nbArtefacts = this.nbArtefacts + 1
-      isArtefactTaken = true
-    } else if (this.position !== this.arrayArtefacts[this.currentBar] && this.difficulty === 'crazy') {
-      this.energy = this.energy - 2
-      isArtefactTaken = false
-    } else if (this.position === this.arrayArtefacts[this.currentBar] && this.difficulty === 'easy') {
-      this.energy = this.energy
-      this.nbArtefacts = this.nbArtefacts + 1
-      isArtefactTaken = true
-    } else if (this.difficulty === 'lazy' && this.position === this.arrayArtefacts[this.currentBar]) {
-      logger.debug('Level lazy no energy')
-      this.nbArtefacts = this.nbArtefacts + 1
-      isArtefactTaken = true
-    } else if (this.difficulty === 'lazy' && this.position !== this.arrayArtefacts[this.currentBar]) {
-      logger.debug('Level lazy no energy')
-      isArtefactTaken = false
-    } else {
-      logger.error('Check the difficulty or the current bar something is going wrong')
-    }
-
-    if(!isArtefactTaken) {
-      player.socket.emit('missedArtefact', {
-        'failingPlayer': player,
-        'barId': null, // TODO
-      })
-    }
-
-    return {
-      position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
-      energy: this.energy,
-      isArtefactTaken: isArtefactTaken,
-      // TODO: Change this name: 'nbArtefacts'
-      barsCount: player.takenArtefactsCount,
-      bar: this.currentBar
-    }
-  }
-*/
   check (player) {
     const artefactTaken = this.spectrum.checkArtefacts(this.currentBar, player)
     if (artefactTaken !== null) {
