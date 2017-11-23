@@ -3,13 +3,14 @@ const uuid = require('uuid/v4')
 const SlowStream = require('slow-stream')
 const Player = require('./Player')
 const Spectrum = require('./Spectrum')
+const db = require('../models/controllers')
 const audio = require('./audio')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor (_difficulty) {
+  constructor(_difficulty) {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
@@ -23,7 +24,7 @@ module.exports = class Room {
     this.audioStream = null
   }
 
-  destroy () {
+  destroy() {
     this.roomManager.deleteRoom(this)
   }
 
@@ -113,7 +114,7 @@ module.exports = class Room {
     }, positionCheckDelay)
   }
 
-  addPlayer (clientSocket) {
+  addPlayer(clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
     const currentNumberOfPlayers = Object.keys(this.players).length
@@ -134,7 +135,7 @@ module.exports = class Room {
     }
   }
 
-  bindPlayerEvents (player) {
+  bindPlayerEvents(player) {
     const self = this
 
     player.socket.on('startGame', () => {
@@ -176,7 +177,8 @@ module.exports = class Room {
     }
   }
 
-  win (player) {
+  win(player) {
+    var score = {}
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
@@ -187,7 +189,73 @@ module.exports = class Room {
       'score': player.takenArtefactsCount,
       'max': this.energy
     })
+
+    if (typeof player.user !== 'undefinied') {
+      //TODO : variable en dure 
+      db.user.bestScores(5, this.spectrum.id, (err, bestScores)=>{
+        if (err) logger.error(err)
+        if (bestScores.length !==0 ){
+          if (bestScores[0].duration<player.takenArtefactsCount){
+            //score.duration = player.takenArtefactsCount
+            score.duration = player.takenArtefactsCount
+            score.user_id = 5
+            score.track_id = this.spectrum.id
+            db.score.create(score, (err, res) => {
+              if (err) logger.error(err)
+            })
+          }
+        }
+      })
+    }
   }
+  /*
+    checkRightPosition (player) {
+      logger.info(`Room ${this.id} - check position for player ${player.id}`)
+
+      let isArtefactTaken = false
+
+      if (player.position !== this.artefacts[this.currentBar] && this.difficulty === 'easy') {
+        this.energy = this.energy - 1
+        isArtefactTaken = false
+      } else if (this.position === this.arrayArtefacts[this.currentBar] && this.difficulty === 'crazy') {
+        this.energy = this.energy - 1
+        this.nbArtefacts = this.nbArtefacts + 1
+        isArtefactTaken = true
+      } else if (this.position !== this.arrayArtefacts[this.currentBar] && this.difficulty === 'crazy') {
+        this.energy = this.energy - 2
+        isArtefactTaken = false
+      } else if (this.position === this.arrayArtefacts[this.currentBar] && this.difficulty === 'easy') {
+        this.energy = this.energy
+        this.nbArtefacts = this.nbArtefacts + 1
+        isArtefactTaken = true
+      } else if (this.difficulty === 'lazy' && this.position === this.arrayArtefacts[this.currentBar]) {
+        logger.debug('Level lazy no energy')
+        this.nbArtefacts = this.nbArtefacts + 1
+        isArtefactTaken = true
+      } else if (this.difficulty === 'lazy' && this.position !== this.arrayArtefacts[this.currentBar]) {
+        logger.debug('Level lazy no energy')
+        isArtefactTaken = false
+      } else {
+        logger.error('Check the difficulty or the current bar something is going wrong')
+      }
+
+      if(!isArtefactTaken) {
+        player.socket.emit('missedArtefact', {
+          'failingPlayer': player,
+          'barId': null, // TODO
+        })
+      }
+
+      return {
+        position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+        energy: this.energy,
+        isArtefactTaken: isArtefactTaken,
+        // TODO: Change this name: 'nbArtefacts'
+        barsCount: player.takenArtefactsCount,
+        bar: this.currentBar
+      }
+    }
+  */
 
   check (player) {
     const artefactTaken = this.spectrum.checkArtefacts(this.currentBar, player)
