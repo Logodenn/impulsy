@@ -1,7 +1,8 @@
 // ******************** Canvas setup ******************** //
 
-var blocUnit = 100;
-var visualCoefficient = 4;
+const blocUnit = 100;
+const visualCoefficient = 4;
+const pulserWidth = 165;
 
 // How to read blocUnit
 // 0 * blocUnit energyBar and deathFlags
@@ -95,10 +96,23 @@ function Pulsers(posY) {
 
 // ******************** Artefact ******************** //
 
-function Artefact(posY) {
+function Artefact(slot) {
 	var self 		= this;
-	self.x 			= myGameArea.canvas.width - 165;
-	self.y 			= posY;
+	self.x 			= myGameArea.canvas.width - pulserWidth;
+	switch(slot) {
+		case 0:
+			self.y = Canvas.topSlot;
+			break;
+		case 1:
+			self.y = Canvas.middleTopSlot;
+			break;
+		case 2:
+			self.y = Canvas.middleBotSlot;
+			break;
+		case 3:
+			self.y = Canvas.botSlot;
+			break;
+	}
 	self.img 		= new Image();
 	self.img.src 	= "../img/artefact.png";
 	self.update 	= function() {
@@ -178,7 +192,6 @@ function EnergyBarSlot() {
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
-	console.log("draw energyBar at " + this.y + " with height " + this.height);
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -280,7 +293,10 @@ function addAmplitudeAndArtefact() {
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
 	canvasBars.push(amplitude);
 
-	var artefact = new Artefact(App.Host.audioSpectrum[time]);
+	var playerNumber = 0; // TODO dynamize
+	// playerNumber = 1;
+
+	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
 	canvasArtefacts.push(artefact);
 
 	time++;
