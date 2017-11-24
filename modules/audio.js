@@ -134,10 +134,18 @@ const getAmplitudes = (_stream, _frequency, _callback) => {
         amplitudes.push(Math.abs(sum / step))
       }
 
-      // Normalize amplitudes
-      const ratio = Math.max(...amplitudes)
+      // Compute high and low boundaries
+      let percentage = 0.85
+      let sorted = amplitudes.slice(0).sort((a, b) => a - b)
+      let lowValueIndex = Math.floor(sorted.length * (1 - percentage))
+      let highValueIndex = Math.floor(sorted.length * percentage)
 
-      amplitudes = amplitudes.map(v => Number((v / ratio).toFixed(2)))
+      amplitudes = amplitudes.map(v => Math.min(Math.max(sorted[lowValueIndex], v), sorted[highValueIndex]))
+
+      // Normalize amplitudes
+      const ratio = 0.95 / (sorted[highValueIndex] - sorted[lowValueIndex])
+
+      amplitudes = amplitudes.map(v => Number((((v - sorted[lowValueIndex]) * ratio) + 0.05).toFixed(2)))
 
       _callback(null, amplitudes)
     }, (err) => {
