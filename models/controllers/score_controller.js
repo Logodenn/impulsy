@@ -1,6 +1,6 @@
 var orm = require('orm');
 var models = require('../models');
-const logger = require('winston');
+const logger = require('../../utils/logger')(module)
 
 
 module.exports = {
@@ -9,8 +9,7 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
+            } else {
                 db.models.score.find().all(function (err, scores) {
                     if (err) {
                         logger.error(err);
@@ -18,7 +17,6 @@ module.exports = {
                     } else {
                         cb(null, scores);
                     }
-                    logger.info("Done!");
                 });
             }
         });
@@ -29,16 +27,16 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.score.find({id: id}, function (err, score) {
+            } else {
+                db.models.score.find({
+                    id: id
+                }, function (err, score) {
                     if (err) {
                         logger.error(err);
                         cb(err);
                     } else {
                         cb(null, score[0]);
                     }
-                    logger.info("Done!");
                 });
             }
         });
@@ -49,8 +47,7 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
+            } else {
                 score.date = new Date();
                 //new Date().toISOString();
                 db.models.score.create(score, function (err, message) {
@@ -58,7 +55,7 @@ module.exports = {
                         logger.error(err);
                         cb(err);
                     } else {
-                        logger.info("score created!");
+                        logger.info("score created");
                         cb(null, message);
                     }
                 });
@@ -72,9 +69,10 @@ module.exports = {
             if (err) {
                 logger.error(err);
                 cb(err);
-            }
-            else {
-                db.models.score.find({id: id}, function (err, score) {
+            } else {
+                db.models.score.find({
+                    id: id
+                }, function (err, score) {
                     if (err) {
                         logger.error(err);
                         cb(err);
@@ -121,7 +119,7 @@ module.exports = {
                                 logger.debug(err);
                                 cb(err);
                             } else {
-                                logger.info("score " + score.id + " updated !");
+                                //logger.info("score " + score.id + " updated !");
                                 cb(null, scoreUpdate)
                             }
                         });
@@ -183,7 +181,73 @@ module.exports = {
                 db.driver.execQuery("select pseudo,sum(duration) as score_total" +
                     " from score join user on user_id=user.id" +
                     " group by pseudo " +
-                    "order by score_total desc;",[],
+                    "order by score_total desc;", [],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    },
+
+    meanScore: function (track_id, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select AVG(duration) from" +
+                    " score where track_id = ?;", [track_id],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    },
+
+    // requete sql degueux mais qui marche !!!!!
+    rank: function (min, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select * from "
+                +"(select @r := @r+1 as rank, z.* from(select pseudo,sum(duration)"
+                +" as score_total from score join user on user_id=user.id"
+                +" group by pseudo order by score_total desc) z,"
+                +" (select @r:=0) y) as u where rank<? and rank>?;", [min+50,min],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    });
+            }
+        });
+    },
+    rankUser: function (pseudo, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select * from "
+                +"(select @r := @r+1 as rank, z.* from(select pseudo,sum(duration)"
+                +" as score_total from score join user on user_id=user.id"
+                +" group by pseudo order by score_total desc) z, "
+                +"(select @r:=0) y) as u where pseudo=?;", [pseudo],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
@@ -195,84 +259,4 @@ module.exports = {
             }
         });
     }
-}
-;
-
-/*
-module.exports = {
-    create: function (score, user, track) {
-        models(function (err, db) {
-            if (err) throw err;
-            console.log('create score');
-
-
-            db.sync(function (err) {
-                if (err) throw err;
-
-
-                db.models.score.create(score, function (err, message) {
-                    if (err) {
-                        console.error(err);
-                    } else {
-                        console.log(message);
-                    }
-                    db.close();
-                    console.log("Done!");
-                });
-            });
-        });
-        return score;
-    },
-
-    delete: function (score) {
-        models(function (err, db) {
-            if (err) throw err;
-
-            db.sync(function (err) {
-                if (err) throw err;
-
-                db.models.score.findAsync({date: score.date, user_pseudo: score.user_pseudo})
-                    .then(function (results) {
-                        results[0].removeAsync();
-                    }).then(function (results) {
-                    console.log(score);
-                    console.log("Deleted !");
-                }).catch(function (err) {
-                    console.error(err);
-                    db.close();
-                    console.log("Done!");
-                });
-            });
-        });
-    },
-
-    update: function (scoreBefore, scoreAfter) {
-        models(function (err, db) {
-            if (err) throw err;
-
-            db.sync(function (err) {
-                if (err) throw err;
-
-                db.models.score.findAsync({date: scoreBefore.date, user_pseudo: scoreBefore.user_pseudo})
-                    .then(function (results) {
-                        results[0].user_pseudo = scoreAfter.user_pseudo;
-                        results[0].date = scoreAfter.date;
-                        results[0].track_name = scoreAfter.track_name;
-                        results[0].duration = scoreAfter.duration;
-                        results[0].saveAsync();
-                    }).then(function () {
-                        console.log(scoreAfter);
-                        console.log("updated");
-
-                        db.close();
-                        console.log("Done!");
-                    }
-                ).catch(function (err) {
-                    console.error(err);
-                    db.close();
-                    console.log("Done!");
-                });
-            });
-        });
-    }
-*/
+};

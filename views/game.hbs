@@ -20,8 +20,8 @@
         <section class="content">
 
             <div id="startButtons" class="buttonWrapper">
-                <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button>
-                <button id="startGameButton" class="button" state="disabled" onclick="App.Host.onStartClick()">Ready: start game</button>
+                {{!-- <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button> --}}
+                <button id="startGameButton" class="button" state="disabled" onclick="App.Host.clickStart()">Start game</button>
             </div>
 
             <div id="score" class="hidden">
@@ -38,31 +38,26 @@
             {{!-- ENDGAME LAYER --}}
 
             <div id="endGameLayer" class="flex-col hidden">
-                Your score is <span id="gameState"></span>
-                {{!-- <span>Your score is : $$$</span>  --}}
-
-                {{!-- SAVE SCORE --}} 
-
-                {{!-- if the user hasn't logged in --}}
-                {{!-- <span>Wanna save your score?</span> --}}
-                <a class="hidden" href="#">
-                    <button class="button" state="disabled">Sign up</button>
-                </a>
-
-                {{!-- FAVORITE --}}
-
-                <a class="hidden" href="#">
-                    <button class="button" state="disabled">Favorite this track</button>
-                </a>
+                <span>Your score is <span id="gameState"></span></span>
+                
+                {{#if userConnected}}
+                    {{!-- FAVORITE --}}
+                    <a href="#">
+                        <button class="button" state="passive">Favorite this track</button>
+                    </a>
+                {{else}}
+                    {{!-- SUGGEST SIGNING UP  --}} 
+                    <span>Wanna save your score?</span>
+                    <a href="#">
+                        <button class="button" state="disabled">Sign up</button>
+                    </a>
+                {{/if}}
 
                 {{!-- PLAY --}}
-
-                <a class="hidden" href="/">
+                <a href="/">
                     <button class="button">Play again</button>
                 </a>                
             </div>
-
-            <div id="caca" onclick="getAmplitudesFromBack();" style="background: red;height:200px;width:500px"></div>
 
         </section>
     </body>
