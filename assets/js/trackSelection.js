@@ -97,3 +97,14 @@ function setDifficulty(difficulty) {
     // Set the value
     document.querySelector("#selectedDifficulty").value = difficulty;
 }
+
+function setMode(mode) {
+    // Reset state
+    document.querySelector("#solo").attributes.state.value = "passive";
+    document.querySelector("#coop").attributes.state.value = "passive";
+    console.log(mode);
+    // Active state
+    document.querySelector("#"+mode).attributes.state.value = "active";
+    // Set the value
+    document.querySelector("#selectedMode").value = mode;
+}
