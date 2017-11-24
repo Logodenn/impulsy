@@ -96,16 +96,20 @@ function setDifficulty(difficulty) {
     document.querySelector("#"+difficulty).attributes.state.value = "active";
     // Set the value
     document.querySelector("#selectedDifficulty").value = difficulty;
+
     // Handle mode
-    console.log(document.querySelector("#mode").classList.contains("hidden"));
     if(difficulty == "crazy") {
         if(document.querySelector("#mode").classList.contains("hidden")) {
             // Display mode
             document.querySelector("#mode").classList.remove("hidden");
         }
-    } else if(!document.querySelector("#mode").classList.contains("hidden")) {
-        // Hide mode
-        document.querySelector("#mode").classList.add("hidden");
+    } else {
+        if(!document.querySelector("#mode").classList.contains("hidden")) {
+            // Hide mode
+            document.querySelector("#mode").classList.add("hidden");
+        }
+        // Reset mode to solo
+        setMode("solo");
     }
 }
 
