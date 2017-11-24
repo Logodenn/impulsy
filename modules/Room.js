@@ -1,6 +1,5 @@
 const logger = require('../utils/logger')(module)
 const uuid = require('uuid/v4')
-const SlowStream = require('slow-stream')
 const Player = require('./Player')
 const Spectrum = require('./Spectrum')
 const db = require('../models/controllers')
@@ -55,17 +54,15 @@ module.exports = class Room {
         return
       }
 
-      /* .pipe(new SlowStream({
-        maxWriteInterval: 50
-      })) */
+      self.audioStream = command.pipe()
 
-      command.on('end', () => {
+      self.audioStream.on('end', () => {
         for (let player in self.players) {
           self.players[player].socket.emit('audioEnd')
         }
       })
 
-      command.on('data', (chunk) => {
+      self.audioStream.on('data', (chunk) => {
         for (let player in self.players) {
           self.players[player].socket.emit('audioChunk', {
             chunk: chunk
@@ -73,11 +70,9 @@ module.exports = class Room {
         }
       })
 
-      command.on('error', (message) => {
+      self.audioStream.on('error', (message) => {
         logger.error('The audio stream was stopped unexpectedly')
       })
-
-      self.audioStream = command.pipe()
     })
 
     logger.info(`Starting game on room ${this.id}`)
@@ -92,6 +87,10 @@ module.exports = class Room {
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length}`)
+
+        if (this.players.length === 0) {
+          this.stop()
+        }
 
         for (let key in this.players) {
           let player = this.players[key]
