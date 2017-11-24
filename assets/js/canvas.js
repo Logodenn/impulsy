@@ -1,7 +1,7 @@
 // ******************** Canvas setup ******************** //
 
 const blocUnit = 100;
-const visualCoefficient = 4;
+const visualCoefficient = 100;
 const pulserWidth = 165;
 
 // How to read blocUnit
@@ -195,9 +195,6 @@ function EnergyBarSlot() {
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
-		// this.x = (Canvas.width * 0.5) - (this.width * 0.5); // TODO
-		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
-		// console.log("Slot posX: " + this.x + " width " + this.width);
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	this.ctx 			= myGameArea.context;
@@ -220,9 +217,6 @@ function EnergyBar() {
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
-		// this.x = (Canvas.width * 0.5) - (this.width * 0.5);
-		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
-		// this.width = App.Player.energy * visualCoefficient; TODO this line should be used but App.Player.energy is not refreshed
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	this.ctx 			= myGameArea.context;
@@ -382,7 +376,6 @@ function startGame() {
 		}
 
 		// ******************** Notify websocket ******************** //
-		// console.log(player.y);
 		App.Player.onMove(App.Player.position);
 	}
 }
@@ -399,7 +392,6 @@ function updateGameScene(data) {
 	}
 
 	// Handle artefact checking
-	// if(gameState.isArtefactTaken) {
 	if(gameState.isArtefactTaken) {
 		
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
@@ -441,12 +433,10 @@ function onTabletMove(direction) {
 	}
 
 	// ******************** Notify websocket ******************** //
-	console.log(player.y);
 	App.Player.onMove(App.Player.position);
 }
 
 function endGame (data) {
-	// TODO pop un filter du endGame
 	if(data.result == "victory") {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
