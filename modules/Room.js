@@ -9,7 +9,7 @@ const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor(_difficulty) {
+  constructor (_difficulty) {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
@@ -23,7 +23,7 @@ module.exports = class Room {
     this.audioStream = null
   }
 
-  destroy() {
+  destroy () {
     this.roomManager.deleteRoom(this)
   }
 
@@ -49,7 +49,7 @@ module.exports = class Room {
       fileName: sound
     }, (err, command) => {
       if (err) {
-        logger.error(`Could not retreive stream for sound: ${sound}`)
+        logger.error(`Could not retrieve stream for sound: ${sound}`)
 
         return
       }
@@ -113,7 +113,7 @@ module.exports = class Room {
     }, positionCheckDelay)
   }
 
-  addPlayer(clientSocket) {
+  addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
     const currentNumberOfPlayers = Object.keys(this.players).length
@@ -134,12 +134,14 @@ module.exports = class Room {
     }
   }
 
-  bindPlayerEvents(player) {
+  bindPlayerEvents (player) {
     const self = this
 
     player.socket.on('startGame', () => {
       // triggerCountdown
-      player.socket.emit('countDown', {duration: 3})
+      player.socket.emit('countDown', {
+        duration: 3
+      })
       // startGame
       self.startGame()
     })
@@ -163,6 +165,8 @@ module.exports = class Room {
   onPlayerDisconnect (socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
 
+    const playerName = this.players[socket.id].name
+
     delete this.players[socket.id]
 
     this.stop()
@@ -171,12 +175,12 @@ module.exports = class Room {
       this.destroy()
     } else {
       for (var playerId in this.players) {
-        this.players[playerId].socket.emit('playerDisconnected', this.players[socket.id].name)
+        this.players[playerId].socket.emit('playerDisconnected', playerName)
       }
     }
   }
 
-  win(player) {
+  win (player) {
     var score = {}
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
@@ -189,13 +193,12 @@ module.exports = class Room {
       'max': this.energy
     })
 
-    if (typeof player.user !== 'undefinied') {
-      //TODO : variable en dure 
-      db.user.bestScores(5, this.spectrum.id, (err, bestScores)=>{
+    if (player.user !== undefined) {
+      // TODO : variable en dure
+      db.user.bestScores(5, this.spectrum.id, (err, bestScores) => {
         if (err) logger.error(err)
-        if (bestScores.length !==0 ){
-          if (bestScores[0].duration<player.takenArtefactsCount){
-            //score.duration = player.takenArtefactsCount
+        if (bestScores.length !== 0) {
+          if (bestScores[0].duration < player.takenArtefactsCount) {
             score.duration = player.takenArtefactsCount
             score.user_id = 5
             score.track_id = this.spectrum.id
@@ -265,11 +268,11 @@ module.exports = class Room {
             this.energy = this.energy - 1
             break
           case 'easy':
-              // Energy doesn't change
+            // Energy doesn't change
             this.energy = this.energy
             break
           case 'lazy':
-              // Do stuff
+            // Do stuff
             break
           default:
             logger.error('Check the difficulty or the current bar something is going wrong')
@@ -284,7 +287,7 @@ module.exports = class Room {
             this.energy = this.energy - 1
             break
           case 'lazy':
-              // Do stuff
+            // Do stuff
             break
           default:
             logger.error('Check the difficulty or the current bar something is going wrong')
