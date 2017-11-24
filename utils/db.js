@@ -7,6 +7,7 @@ const logger = require('./logger')(module)
 const models = require('../models/models')
 const audio = require('../modules/audio')
 const getArrayArthefacts = require('../utils/artefacts')
+const Spectrum = require('../modules/Spectrum')
 
 let db = null
 
@@ -43,7 +44,8 @@ models((err, _db) => {
           }, callback)
         },
         (user, callback) => {
-          createYoutubeTrack('cKfOycpc0t0', callback)
+          let spectrum = new Spectrum()
+          spectrum.createSpectrum('cKfOycpc0t0', false, callback)
         },
         (track, callback) => {
           createScore({
@@ -54,7 +56,20 @@ models((err, _db) => {
           }, callback)
         },
         (score, callback) => {
-          createYoutubeTrack('HsrBhiLwz_I', callback)
+          let spectrum = new Spectrum()
+          spectrum.createSpectrum('HsrBhiLwz_I', false, callback)
+        },
+        (track, callback) => {
+          createScore({
+            track_id: track.id,
+            date: moment().format('YYYY-MM-DD HH:mm:ss'),
+            duration: 12,
+            user_id: 2
+          }, callback)
+        },
+        (score, callback) => {
+          let spectrum = new Spectrum()
+          spectrum.createSpectrum('001_Test_Impulsy_.mp3', true, callback)
         },
         (track, callback) => {
           createScore({
@@ -80,71 +95,6 @@ const createUser = (_user, _callback) => {
   logger.info(`Creating user '${_user.pseudo}'`)
 
   db.models.user.create(_user, _callback)
-}
-
-const createYoutubeTrack = (_videoId, _callback) => {
-  const amplitudesFrequency = 2
-
-  async.waterfall([
-    (callback) => {
-      audio.getYoutubeStream({
-        videoId: 'cKfOycpc0t0',
-        quality: 'lowest'
-      }, (err, stream) => {
-        if (err) {
-          return callback(err)
-        }
-
-        callback(null, stream)
-      })
-    },
-    (stream, callback) => {
-      audio.getAmplitudes(stream, amplitudesFrequency, (err, bars) => {
-        if (err) {
-          return callback(err)
-        }
-
-        callback(null, bars)
-      })
-    },
-    (bars, callback) => {
-      const arrayArtefacts = getArrayArthefacts(bars)
-
-      audio.getInfo(_videoId, (err, info) => {
-        if (err) {
-          return callback(err)
-        }
-
-        let track = {
-          name: info.title,
-          link: _videoId,
-          information: {
-            arraySpectrum: bars,
-            arrayArtefacts: arrayArtefacts
-          }
-        }
-
-        callback(null, track)
-      })
-    },
-    (track, callback) => {
-      db.models.track.create(track, (err, result) => {
-        if (err) {
-          return callback(err)
-        }
-
-        callback(null, result)
-      })
-    }
-  ], (err, result) => {
-    if (err) {
-      logger.error(`Failed to create Youtube track ${_videoId}`)
-    }
-
-    logger.info(`Created Youtube track ${_videoId}`)
-
-    _callback(null, result)
-  })
 }
 
 const createScore = (_score, _callback) => {

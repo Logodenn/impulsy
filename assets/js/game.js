@@ -32,48 +32,11 @@ var App = {
         trackId: "ttEI35HVpqI",
         difficulty: "lazy",
 
-        onDifficultyClick: function (difficulty) {
-
-            // // Reset state
-            // document.querySelector("#lazy").attributes.state.value = "passive";
-            // document.querySelector("#easy").attributes.state.value = "passive";
-            // document.querySelector("#crazy").attributes.state.value = "passive";
-            // console.log(difficulty);
-            // // Active state
-            // document.querySelector("#"+difficulty).attributes.state.value = "active";
-
-            this.difficulty = difficulty;
-		},
-
-        onCreateClick: function () {
-			if(document.querySelector("#createGameButton").attributes.state.value != "disabled") {
-                /*
-                // Reset state
-                document.querySelector("#lazy").attributes.state.value = "disabled";
-                document.querySelector("#easy").attributes.state.value = "disabled";
-                document.querySelector("#crazy").attributes.state.value = "disabled";
-                
-                // Active state
-                document.querySelector("#"+this.difficulty).attributes.state.value = "active";
-                */
-                console.log('Clicked "Create A Game" ' + this.trackId + ' - ' + this.difficulty);
-                
-                var link = (JSON.parse(Cookies.get().track.replace('j:',''))).link;
-				IO.socket.emit('hostCreateNewGame', {
-					youtubeVideoId	: link,
-					difficulty		: this.difficulty,
-                    gameId          : Cookies.get('gameId')
-				});
-                
-				document.querySelector("#createGameButton").attributes.state.value = "disabled";
-			}
-		},
-
-		onStartClick: function () {
+		clickStart: function () {
 			if(document.querySelector("#startGameButton").attributes.state.value != "disabled") {
 				
-				console.log('Clicked "Start A Game"');
-				IO.socket.emit('hostStartGame');
+                console.log('Clicked "Start A Game"');
+                IO.startGame();
 
                 // Hide buttons
                 //document.querySelector("#difficultyButtons").classList.add("hidden");
@@ -86,31 +49,23 @@ var App = {
 
         gameInit: function (data) {
 
-            var game    = Cookies.get();
+            var game    = data.gameMetadata;
             var latency = data.latency;
-            var track =JSON.parse(game.track.replace('j:',''));
-
-            // Settings
-            App.gameId 				= game.gameId;
-			App.mySocketId 			= game.mySocketId;
-			App.myRole 				= 'Host';
-            App.latency 	        = latency;
-
-            // Logic
-            App.Player.energy           = game.energy;
-            App.Player.position 	    = game.position;
-            
-            App.Player.artefacts 	    = track.information.arrayArtefacts.slice(0);
-            App.Player.artefactsToTake 	= track.information.arrayArtefacts.slice(0);            
-            App.Player.artefactsTaken   = [];
-
-            App.Player.audioSpectrum 	= track.information.arraySpectrum.slice(0);
-
-			document.querySelector("#startGameButton").attributes.state.value = "passive";
 
             console.log(game);
+            // var track =JSON.parse(game.track.replace('j:',''));
 
-            console.log("Game initialized with ID: " + App.gameId + ' by host: ' + App.mySocketId);
+            // Settings
+			App.myRole 				= 'Host';
+            App.latency 	        = latency;
+            
+            // Logic
+            App.Host.difficulty         = game.difficulty;
+            App.Host.audioSpectrum 	    = game.spectrum.bars.slice(0);
+            App.Player.energy           = game.energy;
+            App.Player.position 	    = game.position;
+
+			document.querySelector("#startGameButton").attributes.state.value = "passive";
         }
 	},
 
@@ -121,14 +76,17 @@ var App = {
         // This Player object is used to transit data through the WS
 
 		onMove : function(data) {
-			console.log('Player moved at position : ' + App.Player.position);
-			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
+            // Notify WS
+            IO.playerMove(App.Player.position);
+            // IO.socket.emit('playerMove', {playerPosition: App.Player.position});
+            player.update();
         },
         
         // In case the player does not move but the position is right
         onEnergy : function(data) {
-			console.log('Player moved at position : ' + App.Player.position);
-			IO.socket.emit('playerMove', {playerPosition: App.Player.position});
+            // Notify WS
+            IO.playerMove(App.Player.position);
+            // IO.socket.emit('playerMove', {playerPosition: App.Player.position});
 		}
 	}
 };
