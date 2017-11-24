@@ -199,6 +199,10 @@ module.exports = class Room {
         if (err) logger.error(err)
         if (bestScores.length !== 0) {
           if (bestScores[0].duration < player.takenArtefactsCount) {
+<<<<<<< HEAD
+=======
+            // score.duration = player.takenArtefactsCount
+>>>>>>> 2247a23414f6e81bcac678dcddf1d33e2512750f
             score.duration = player.takenArtefactsCount
             score.user_id = 5
             score.track_id = this.spectrum.id
