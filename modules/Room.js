@@ -181,7 +181,8 @@ module.exports = class Room {
   }
 
   win (player) {
-    var score = {}
+    let score = {}
+
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
@@ -193,19 +194,24 @@ module.exports = class Room {
       'max': this.energy
     })
 
-    if (player.user !== undefined) {
-      // TODO : variable en dure
-      db.user.bestScores(5, this.spectrum.id, (err, bestScores) => {
+    console.log(player.user)
+    if (player.user) {
+      score.duration = player.takenArtefactsCount
+      score.user_id = player.user.id
+      score.track_id = this.spectrum.id
+
+      db.user.bestScores(player.user.id, this.spectrum.id, (err, bestScores) => {
         if (err) logger.error(err)
         if (bestScores.length !== 0) {
           if (bestScores[0].duration < player.takenArtefactsCount) {
-            score.duration = player.takenArtefactsCount
-            score.user_id = 5
-            score.track_id = this.spectrum.id
             db.score.create(score, (err, res) => {
               if (err) logger.error(err)
             })
           }
+        } else {
+          db.score.create(score, (err, res) => {
+            if (err) logger.error(err)
+          })
         }
       })
     }
@@ -277,7 +283,7 @@ module.exports = class Room {
           default:
             logger.error('Check the difficulty or the current bar something is going wrong')
         }
-        this.takenArtefactsCount = this.takenArtefactsCount + 1
+        player.takenArtefactsCount += 1
       } else {
         switch (this.difficulty) {
           case 'crazy':
