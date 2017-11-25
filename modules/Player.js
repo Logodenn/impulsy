@@ -5,12 +5,12 @@ module.exports = class Player {
     this.socket = socket
     this.number = number
     this.id = socket.id
+    this.takenArtefactsCount = 0
 
     this._position = 0
 
-    this.user = {}
-
-    if (user) {
+    if (user.logged_in) {
+      this.user = {}
       this.user.id = user.id
       this.user.pseudo = user.pseudo
     }
