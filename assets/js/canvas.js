@@ -1,7 +1,7 @@
 // ******************** Canvas setup ******************** //
 
 const blocUnit = 100;
-const visualCoefficient = 100;
+const visualCoefficient = 50;
 const pulserWidth = 165;
 
 // How to read blocUnit
