@@ -17,7 +17,11 @@ module.exports = class Player {
   }
 
   get name () {
-    return this.user.pseudo || `Guest ${this.number + 1}`
+    if (this.user) {
+      return this.user.pseudo
+    }
+
+    return `Guest ${this.number + 1}`
   }
 
   set position (position) {
@@ -25,5 +29,9 @@ module.exports = class Player {
     if ([0, 1, 2, 3].includes(position)) {
       this._position = position
     }
+  }
+
+  get position () {
+    return this._position
   }
 }
