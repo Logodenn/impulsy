@@ -381,7 +381,7 @@ function startGame() {
 }
 
 function updateGameScene(data) {
-	var gameState = data.data; // Dirty, back should send data, not data.data
+	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 
 	if(App.Host.difficulty != "lazy") {
@@ -393,7 +393,7 @@ function updateGameScene(data) {
 
 	// Handle artefact checking
 	if(gameState.isArtefactTaken) {
-		
+
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
