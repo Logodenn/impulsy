@@ -1,3 +1,8 @@
+//import { concat } from 'orm/node_modules/async';
+
+//import { loggers } from 'winston/lib/winston';
+//const loggers = require("./utils/logger")
+
 /* UTILS */
 
 require('dotenv').config()
@@ -41,57 +46,69 @@ environment(app)
 
 /* PASSPORT SETUP */
 
-function validateEmail (email) {
+function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return re.test(email)
 }
 
 passport.use('local-login', new Strategy({
     // by default, local strategy uses username and password, we will override with email
-  usernameField: 'username',
-  passwordField: 'password',
-  passReqToCallback: true // allows us to pass back the entire request to the callback
-},
-function (req, login, password, cb) {
-  // try if it's an email or a username
-  const email = validateEmail(login)
-  db.user.getUser(login, email, function (err, result) {
-    if (err) {
-      console.log(err)
-      return cb(err)
-    }
-    if (!result) {
-      return cb(null, false)
-    }
-    if (result.password !== password) { // TODO salt password with username/email   ?
-      return cb(null, false)
-    }
-    return cb(null, result)
-  })
-}))
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true // allows us to pass back the entire request to the callback
+  },
+  function (req, login, password, cb) {
+    // try if it's an email or a username
+    const email = validateEmail(login)
+    db.user.getUser(login, email, function (err, result) {
+      if (err) {
+        console.log(err)
+        return cb(err)
+      }
+      if (!result) {
+        return cb(null, false)
+      }
+      if (result.password !== password) { // TODO salt password with username/email   ?
+        return cb(null, false)
+      }
+      return cb(null, result)
+    })
+  }))
 
 passport.use('local-signup', new Strategy({
     // by default, local strategy uses username and password, we will override with email
-  usernameField: 'mail',
-  passwordField: 'password',
-  passReqToCallback: true // allows us to pass back the entire request to the callback
-},
-function (req, email, password, cb) {
-  var user = {
-    pseudo: req.body.username,
-    mail: req.body.mail,
-    password: req.body.password, // TODO : salt password
-    rank: -1
-  }
-
-  db.user.create(user, function (err, result) {
-    // TODO : check if email / pseudo already use
-    if (err) {
-      throw err
+    usernameField: 'mail',
+    passwordField: 'password',
+    passReqToCallback: true // allows us to pass back the entire request to the callback
+  },
+  function (req, email, password, cb) {
+    var user = {
+      pseudo: req.body.username,
+      mail: req.body.mail,
+      password: req.body.password, // TODO : salt password
+      rank: -1
     }
-    return cb(null, user)
-  })
-}))
+    db.user.getUser(user.mail, true, function (err, result) {
+      if (err) {
+        db.user.getUser(user.pseudo, false, function (err, result) {
+            if (err) {
+              db.user.create(user, function (err, result) {
+                  if (err) {
+                    throw err
+                  }
+                  return cb(null, user)
+              })
+          }
+          else{
+            return cb("Pseudo already use", null)  
+          }
+        })
+      }
+      else{
+      return cb("Email already use", null)
+    }
+    })
+  }))
 
 /* MIDDLEWARES */
 
