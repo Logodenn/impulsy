@@ -40,8 +40,8 @@ exports = module.exports = class RoomManager {
     })
   }
 
-  createRoom (_trackId, _difficulty, _callback) {
-    const room = new Room(_difficulty)
+  createRoom (_trackId, _difficulty, _mode, _callback) {
+    const room = new Room(_difficulty, _mode)
 
     this.rooms[room.id] = room
 
@@ -61,7 +61,11 @@ exports = module.exports = class RoomManager {
 
       this.rooms[room.id].energy = energy
 
-      logger.info(`Room ${room.id} is created with parameters: { trackId: ${_trackId}, difficulty: ${_difficulty}}`)
+      logger.info(`Room ${room.id} is created with parameters: {
+        trackId: ${_trackId},
+        difficulty: ${_difficulty},
+        mode: ${_mode}
+      }`)
       _callback(null, room.id)
     })
   }
