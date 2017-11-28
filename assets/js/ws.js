@@ -23,7 +23,6 @@ var IO = {
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
         IO.socket.on('roomJoined', IO.onRoomJoined);
-        IO.socket.on('endOfGame', IO.onEndOfGame);
         //When a new player join the room all players of this room receive the data of this new player.
         //Event : newPlayer
         //IO.socket.on('newPlayer', IO.onRoomJoined);
@@ -65,8 +64,8 @@ var IO = {
         IO.socket.on('coopMove', IO.onCoopMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
         IO.socket.on('missedArtefact', IO.onMissedArtefact);
-        IO.socket.on('gameOver', IO.onGameOver);
-		    IO.socket.on('audioChunk', IO.onAudioChunk);
+        IO.socket.on('endOfGame', IO.onEndOfGame);
+        IO.socket.on('audioChunk', IO.onAudioChunk);
         IO.socket.on('audioEnd', IO.onAudioEnd);
     },
 
@@ -127,8 +126,6 @@ var IO = {
     },
     
 	onEndOfGame: function (data) {
-        console.log("game over");
-        console.log(data);
         endGame(data);
 		// TODO
 		// Notify players that game has ended
