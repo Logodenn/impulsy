@@ -5,19 +5,23 @@ module.exports = class Player {
     this.socket = socket
     this.number = number
     this.id = socket.id
+    this.takenArtefactsCount = 0
 
     this._position = 0
 
-    this.user = {}
-
-    if (user) {
+    if (user.logged_in) {
+      this.user = {}
       this.user.id = user.id
       this.user.pseudo = user.pseudo
     }
   }
 
   get name () {
-    return this.user.pseudo || `Guest ${this.number + 1}`
+    if (this.user) {
+      return this.user.pseudo
+    }
+
+    return `Guest ${this.number + 1}`
   }
 
   set position (position) {
@@ -25,5 +29,9 @@ module.exports = class Player {
     if ([0, 1, 2, 3].includes(position)) {
       this._position = position
     }
+  }
+
+  get position () {
+    return this._position
   }
 }

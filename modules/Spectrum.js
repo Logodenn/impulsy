@@ -94,6 +94,7 @@ module.exports = class Spectrum {
     db.track.get(id, (err, result) => {
       if (err) logger.error(err)
       else {
+        this.id = result.id
         this.name = result.name
         this.link = result.link
 
