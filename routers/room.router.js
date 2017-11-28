@@ -8,6 +8,7 @@ const db = require('../models/controllers')
 router.post('/', (req, res) => {
   const difficulty = req.body.difficulty
   const id = req.body.track
+  const mode = req.body.mode
 
   if (!difficulty || !id) {
     logger.error(`Wrong value for id or difficulty --> id: ${id} - difficulty: ${difficulty}`)
