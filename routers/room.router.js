@@ -66,7 +66,14 @@ router.get('/:id', (req, res) => {
   const roomId = req.params.id
 
   if (RoomManager.rooms.hasOwnProperty(roomId)) {
-    res.render('game', RoomManager.rooms[roomId].metadata)
+    var data = {}
+    data.userConnected = false
+    if (req.user) {
+      data.userConnected = true
+      data.userName = req.user.pseudo
+    }
+    data.metadata = RoomManager.rooms[roomId].metadata
+    res.render('game', data)
   } else {
     res.status(404).redirect('/')
   }
