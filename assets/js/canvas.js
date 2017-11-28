@@ -335,16 +335,19 @@ function addAmplitudeAndArtefact() {
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
 	canvasArtefacts.push(artefact);
 
-    if(time == App.Host.deathFlags[0]["AVG(duration)"]){
+    if(App.Host.deathFlags.length > 0 && time == App.Host.deathFlags[0]["AVG(duration)"]){
         var deathFlag = new DeathFlag(0);
 		canvasDeathFlags.push(deathFlag);
-    }
-    if(time == App.Host.deathFlags[1]["duration"]) {
+	}
+	
+    if(App.Host.deathFlags.length > 0 && time == App.Host.deathFlags[1]["duration"]) {
         var deathFlag = new DeathFlag(1);
 		canvasDeathFlags.push(deathFlag);
     }
 
 	time++;
+
+	console.log(time + "   " + App.Host.audioSpectrum.length);
 
 	if(time >= App.Host.audioSpectrum.length) {
 		myGameArea.stopAddition();		
@@ -513,10 +516,11 @@ function onTabletMove(direction) {
 }
 
 function endGame (data) {
-	if(data.result == "victory") {
+	console.log(data);
+	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
-		document.querySelector("#gameState").innerHTML = App.Player.energy
+		document.querySelector("#gameState").innerHTML = data.score;
 	} else {
 		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.energy + " artefacts!";
 	}
