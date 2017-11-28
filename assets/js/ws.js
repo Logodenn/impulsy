@@ -23,6 +23,7 @@ var IO = {
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
         IO.socket.on('roomJoined', IO.onRoomJoined);
+        IO.socket.on('endOfGame', IO.onEndOfGame);
         //When a new player join the room all players of this room receive the data of this new player.
         //Event : newPlayer
         //IO.socket.on('newPlayer', IO.onRoomJoined);
@@ -125,8 +126,10 @@ var IO = {
         // do something I DUNNO
     },
     
-	onGameOver: function (data) {
-		endGame(data);
+	onEndOfGame: function (data) {
+        console.log("game over");
+        console.log(data);
+        endGame(data);
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
