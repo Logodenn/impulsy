@@ -291,6 +291,7 @@ module.exports = class Room {
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      playerNumber: player.number,
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
       mode: this.mode, // mode of the game (solo or coop)
