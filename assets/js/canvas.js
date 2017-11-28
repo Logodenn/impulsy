@@ -50,9 +50,11 @@ var time = 0;
 // ******************** Components ******************** //
 
 var player;
-var pulsers 		= [];
-var canvasBars 		= [];
-var canvasArtefacts = [];
+var pulsers 			= [];
+var canvasBars 			= [];
+var canvasArtefacts 	= [];
+var canvasDeathFlags  	= [];
+var buttons				= [];
 
 // ******************** Images ******************** //
 
@@ -92,6 +94,42 @@ function Pulsers(posY) {
 	}
 	self.ctx = myGameArea.context;
 	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+// ******************** Death flags ******************** //
+function DeathFlag(type) {
+	var self 		= this;
+	self.x 			= myGameArea.canvas.width - 165;
+	self.y 			= Canvas.botSlot;
+	self.img 		= new Image();
+	self.img.src 	= type == 0 ? "../img/deadFlagsAverage.png" : "../img/deadFlagBest.png";
+	self.update 	= function() {
+        self.x -= 1;
+		ctx = myGameArea.context;
+		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	}
+
+	self.ctx = myGameArea.context;
+	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+
+// ********************* Button ********************* //
+function Button(y) {
+	var self      = this;
+	self.width    = myGameArea.canvas.width;
+	self.height   = blocUnit;
+	self.x        = 0;
+	self.y        = y;
+	this.clicked  = function(y) {
+	  var mytop     = self.y;
+	  var mybottom  = self.y + (self.height);
+	  var clicked   = false;
+	  if (y > mytop && y < mybottom) {
+		  clicked   = true;
+	  }
+	  return clicked;
+	}
 }
 
 // ******************** Artefact ******************** //
@@ -276,6 +314,10 @@ function updateGameArea() {
 		pulsers[i].update();
 	}
 
+	for (i = 0; i < canvasDeathFlags.length; i++) {
+		canvasDeathFlags[i].update();
+	}
+
 	if(App.Host.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
@@ -292,6 +334,15 @@ function addAmplitudeAndArtefact() {
 
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
 	canvasArtefacts.push(artefact);
+
+    if(time == App.Host.deathFlags[0]["AVG(duration)"]){
+        var deathFlag = new DeathFlag(0);
+		canvasDeathFlags.push(deathFlag);
+    }
+    if(time == App.Host.deathFlags[1]["duration"]) {
+        var deathFlag = new DeathFlag(1);
+		canvasDeathFlags.push(deathFlag);
+    }
 
 	time++;
 
@@ -323,6 +374,11 @@ function startGame() {
 	for (var i = 0; i < 4; i++) {
 		var pulser = new Pulsers(Canvas.topSlot + i * blocUnit);
 		pulsers.push(pulser);
+	} 
+
+	for (var i = 0; i < 4; i++) {
+		var button = new Button(Canvas.topSlot + i * blocUnit);
+		buttons.push(button);
 	} 
 
 	// ******************** Player movement ******************** //
@@ -378,6 +434,26 @@ function startGame() {
 		// ******************** Notify websocket ******************** //
 		App.Player.onMove(App.Player.position);
 	}
+}
+
+
+window.onclick = function(e) {
+	// Get the canvas's positions
+	var rect = myGameArea.canvas.getBoundingClientRect();
+
+	//  Adapt the click coordinates to the canvas
+	x = e.pageX - rect.left;
+	y = e.pageY - rect.top;
+	console.log(x, y)
+	if (x > 0 && x < myGameArea.canvas.width && y > 0 && y < myGameArea.canvas.height) {
+		for (var i = 0; i < 4; i++) {
+			if(buttons[i].clicked(y)) {
+				App.Player.position = i;
+				player.y = Canvas.topSlot + i * blocUnit;
+			}
+		}
+	}
+	App.Player.onMove(App.Player.position);
 }
 
 function updateGameScene(data) {
