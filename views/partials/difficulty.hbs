@@ -9,14 +9,27 @@
 
     <form id="difficultyForm" action="/room" method="post" class="form flex-col buttonWrapper">
         <span id="selectedTrackDisplay"></span>
+
+        {{!-- Actual inputs --}}
+
         <input id="selectedTrack" class="input" type="hidden" name="track" value="" />
         <input id="selectedDifficulty" class="input" type="hidden" name="difficulty" value="lazy" />
+        <input id="selectedMode" class="input" type="hidden" name="mode" value="solo" />
 
+        {{!-- UI buttons --}}
 
         <div class="flex-row">
+            {{!-- Difficulty --}}
             <div id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</div>
             <div id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</div>
             <div id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</div>
+        </div>
+        
+        <div id="mode" class="flex-row hidden">
+            {{!-- Mode --}}
+            <div id="solo" class="button" state="active" onclick="setMode('solo')">Solo</div>
+            <div id="coop" class="button" state="passive" onclick="setMode('coop')">Coop</div>
+        </div>
             {{!-- <div id="lazy" class="inputWrapper button flex-row" state="active" onclick="setDifficulty('lazy')">
                 <label for="dlazy">Lazy</label>
                 <input id="dlazy" class="hidden" type="radio" name="difficulty" value="lazy" checked>
@@ -31,7 +44,6 @@
                 <label for="dcrazy">Crazy</label>
                 <input id="dcrazy" class="hidden" type="radio" name="difficulty" value="crazy">
             </div> --}}
-        </div>
 
         <!-- ********** SUBMIT ********** -->
 

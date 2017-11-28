@@ -9,7 +9,7 @@ const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor (_difficulty) {
+  constructor (_difficulty, _mode) {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
@@ -18,6 +18,7 @@ module.exports = class Room {
     this.loopTimer = null
     this.spectrum = new Spectrum()
     this.difficulty = _difficulty
+    this.mode = _mode
     this.currentBar = 0
     this.energy = 100
     this.audioStream = null
@@ -271,6 +272,7 @@ module.exports = class Room {
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
+      mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       artefacts: this.artefacts,
       energy: this.energy // duration of the music
@@ -281,6 +283,7 @@ module.exports = class Room {
     return {
       id: this.id,
       difficulty: this.difficulty, // difficulty of the level
+      mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       energy: this.energy // duration of the music
     }
