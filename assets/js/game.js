@@ -62,6 +62,7 @@ var App = {
             // Logic
             App.Host.difficulty         = game.difficulty;
             App.Host.audioSpectrum 	    = game.spectrum.bars.slice(0);
+            App.Host.deathFlags         = game.spectrum.deathFlags.slice(0);
             App.Player.energy           = game.energy;
             App.Player.position 	    = game.position;
 
