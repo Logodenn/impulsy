@@ -42,7 +42,7 @@ module.exports = {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
-                cb(err);
+                cb(err, null);
             } else {
                 if (isMail) {
                     couple = {
@@ -56,9 +56,14 @@ module.exports = {
                 db.models.user.find(couple, function (err, user) {
                     if (err) {
                         logger.error(err);
-                        cb(err);
+                        cb(err, null);
                     } else {
-                        cb(null, user[0]);
+                        if (user.length != 0){
+                            cb(null, user[0]);
+                        }else{
+                            cb("No User", null);
+                        }
+                        
                     }
                 });
             }
