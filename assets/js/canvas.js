@@ -295,8 +295,8 @@ function addAmplitudeAndArtefact() {
 
 	time++;
 
-	if(time > App.Host.audioSpectrum) {
-		myGameArea.stopAddition();
+	if(time >= App.Host.audioSpectrum.length) {
+		myGameArea.stopAddition();		
 	}
 }
 
