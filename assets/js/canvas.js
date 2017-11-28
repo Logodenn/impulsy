@@ -513,7 +513,7 @@ function onTabletMove(direction) {
 }
 
 function endGame (data) {
-	if(data.result == "victory") {
+	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
 		document.querySelector("#gameState").innerHTML = App.Player.energy
