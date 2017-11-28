@@ -65,6 +65,7 @@ var App = {
             App.Host.deathFlags         = game.spectrum.deathFlags.slice(0);
             App.Player.energy           = game.energy;
             App.Player.position 	    = game.position;
+            App.Player.number           = game.playerNumber;
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
         }
