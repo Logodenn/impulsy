@@ -98,7 +98,7 @@ module.exports = class Room {
 
           if (this.currentBar >= this.spectrum.bars.length) {
             this.win(player)
-          } else if (player.energy === 0) {
+          } else if (this.energy <= 0) {
             this.lose(player)
           } else {
             const data = this.check(player)
@@ -186,23 +186,44 @@ module.exports = class Room {
   }
 
   win (player) {
-    let score = {}
-
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
     this.stop()
 
-    player.socket.emit('endOfGame', {
+    player.socket.emit('gameOver', {
       'win': true,
       'score': player.takenArtefactsCount,
       'max': this.energy
     })
 
+    // This is, for now, done sytematically. It might be better to ask the user before adding the score
+    this.addScore(player)
+  }
+
+  lose (player) {
+    logger.info(`Game in room ${this.id}: Player ${player.socket.id} lost`)
+
+    // Stop the game loop
+    this.stop()
+
+    player.socket.emit('gameOver', {
+      'win': false,
+      'score': player.takenArtefactsCount,
+      'max': this.energy
+    })
+
+    // This is, for now, done sytematically. It might be better to ask the user before adding the score
+    this.addScore(player)
+  }
+
+  addScore (player) {
     if (player.user) {
-      score.duration = player.takenArtefactsCount
-      score.user_id = player.user.id
-      score.track_id = this.spectrum.id
+      const score = {
+        duration: player.takenArtefactsCount,
+        user_id: player.user.id,
+        track_id: this.spectrum.id
+      }
 
       db.user.bestScores(player.user.id, this.spectrum.id, (err, bestScores) => {
         if (err) logger.error(err)
