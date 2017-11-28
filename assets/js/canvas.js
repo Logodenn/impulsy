@@ -17,6 +17,7 @@ var Canvas = {
 	width			: 10 * blocUnit,
 	height  		: 6 * blocUnit,
 	spectrumAxis	: 4 * blocUnit,
+	deathFlags		: 1 * blocUnit,
 	topSlot			: 2 * blocUnit,
 	middleTopSlot	: 3 * blocUnit,
 	middleBotSlot	: 4 * blocUnit,
@@ -100,7 +101,8 @@ function Pulsers(posY) {
 function DeathFlag(type) {
 	var self 		= this;
 	self.x 			= myGameArea.canvas.width - 165;
-	self.y 			= Canvas.botSlot;
+	// self.y 			= Canvas.botSlot;
+	self.y 			= Canvas.deathFlags;
 	self.img 		= new Image();
 	self.img.src 	= type == 0 ? "../img/deadFlagsAverage.png" : "../img/deadFlagBest.png";
 	self.update 	= function() {
