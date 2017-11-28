@@ -1,7 +1,7 @@
 // ******************** Canvas setup ******************** //
 
 const blocUnit = 100;
-const visualCoefficient = 4;
+const visualCoefficient = 50;
 const pulserWidth = 165;
 
 // How to read blocUnit
@@ -17,6 +17,7 @@ var Canvas = {
 	width			: 10 * blocUnit,
 	height  		: 6 * blocUnit,
 	spectrumAxis	: 4 * blocUnit,
+	deathFlags		: 1 * blocUnit,
 	topSlot			: 2 * blocUnit,
 	middleTopSlot	: 3 * blocUnit,
 	middleBotSlot	: 4 * blocUnit,
@@ -50,9 +51,11 @@ var time = 0;
 // ******************** Components ******************** //
 
 var player;
-var pulsers 		= [];
-var canvasBars 		= [];
-var canvasArtefacts = [];
+var pulsers 			= [];
+var canvasBars 			= [];
+var canvasArtefacts 	= [];
+var canvasDeathFlags  	= [];
+var buttons				= [];
 
 // ******************** Images ******************** //
 
@@ -92,6 +95,43 @@ function Pulsers(posY) {
 	}
 	self.ctx = myGameArea.context;
 	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+// ******************** Death flags ******************** //
+function DeathFlag(type) {
+	var self 		= this;
+	self.x 			= myGameArea.canvas.width - 165;
+	// self.y 			= Canvas.botSlot;
+	self.y 			= Canvas.deathFlags;
+	self.img 		= new Image();
+	self.img.src 	= type == 0 ? "../img/deadFlagsAverage.png" : "../img/deadFlagBest.png";
+	self.update 	= function() {
+        self.x -= 1;
+		ctx = myGameArea.context;
+		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	}
+
+	self.ctx = myGameArea.context;
+	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+}
+
+
+// ********************* Button ********************* //
+function Button(y) {
+	var self      = this;
+	self.width    = myGameArea.canvas.width;
+	self.height   = blocUnit;
+	self.x        = 0;
+	self.y        = y;
+	this.clicked  = function(y) {
+	  var mytop     = self.y;
+	  var mybottom  = self.y + (self.height);
+	  var clicked   = false;
+	  if (y > mytop && y < mybottom) {
+		  clicked   = true;
+	  }
+	  return clicked;
+	}
 }
 
 // ******************** Artefact ******************** //
@@ -195,9 +235,6 @@ function EnergyBarSlot() {
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
-		// this.x = (Canvas.width * 0.5) - (this.width * 0.5); // TODO
-		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
-		// console.log("Slot posX: " + this.x + " width " + this.width);
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	this.ctx 			= myGameArea.context;
@@ -220,9 +257,6 @@ function EnergyBar() {
 	this.update 	= function() {
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
-		// this.x = (Canvas.width * 0.5) - (this.width * 0.5);
-		// console.log((Canvas.width * 0.5) - (this.width * 0.5));
-		// this.width = App.Player.energy * visualCoefficient; TODO this line should be used but App.Player.energy is not refreshed
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	this.ctx 			= myGameArea.context;
@@ -282,6 +316,10 @@ function updateGameArea() {
 		pulsers[i].update();
 	}
 
+	for (i = 0; i < canvasDeathFlags.length; i++) {
+		canvasDeathFlags[i].update();
+	}
+
 	if(App.Host.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
@@ -299,10 +337,19 @@ function addAmplitudeAndArtefact() {
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
 	canvasArtefacts.push(artefact);
 
+    if(time == App.Host.deathFlags[0]["AVG(duration)"]){
+        var deathFlag = new DeathFlag(0);
+		canvasDeathFlags.push(deathFlag);
+    }
+    if(time == App.Host.deathFlags[1]["duration"]) {
+        var deathFlag = new DeathFlag(1);
+		canvasDeathFlags.push(deathFlag);
+    }
+
 	time++;
 
-	if(time > App.Host.audioSpectrum) {
-		myGameArea.stopAddition();
+	if(time >= App.Host.audioSpectrum.length) {
+		myGameArea.stopAddition();		
 	}
 }
 
@@ -329,6 +376,11 @@ function startGame() {
 	for (var i = 0; i < 4; i++) {
 		var pulser = new Pulsers(Canvas.topSlot + i * blocUnit);
 		pulsers.push(pulser);
+	} 
+
+	for (var i = 0; i < 4; i++) {
+		var button = new Button(Canvas.topSlot + i * blocUnit);
+		buttons.push(button);
 	} 
 
 	// ******************** Player movement ******************** //
@@ -382,13 +434,32 @@ function startGame() {
 		}
 
 		// ******************** Notify websocket ******************** //
-		// console.log(player.y);
 		App.Player.onMove(App.Player.position);
 	}
 }
 
+
+window.onclick = function(e) {
+	// Get the canvas's positions
+	var rect = myGameArea.canvas.getBoundingClientRect();
+
+	//  Adapt the click coordinates to the canvas
+	x = e.pageX - rect.left;
+	y = e.pageY - rect.top;
+	console.log(x, y)
+	if (x > 0 && x < myGameArea.canvas.width && y > 0 && y < myGameArea.canvas.height) {
+		for (var i = 0; i < 4; i++) {
+			if(buttons[i].clicked(y)) {
+				App.Player.position = i;
+				player.y = Canvas.topSlot + i * blocUnit;
+			}
+		}
+	}
+	App.Player.onMove(App.Player.position);
+}
+
 function updateGameScene(data) {
-	var gameState = data.data; // Dirty, back should send data, not data.data
+	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 
 	if(App.Host.difficulty != "lazy") {
@@ -399,9 +470,8 @@ function updateGameScene(data) {
 	}
 
 	// Handle artefact checking
-	// if(gameState.isArtefactTaken) {
 	if(gameState.isArtefactTaken) {
-		
+
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
 
@@ -441,12 +511,10 @@ function onTabletMove(direction) {
 	}
 
 	// ******************** Notify websocket ******************** //
-	console.log(player.y);
 	App.Player.onMove(App.Player.position);
 }
 
 function endGame (data) {
-	// TODO pop un filter du endGame
 	if(data.result == "victory") {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
