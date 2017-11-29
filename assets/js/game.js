@@ -66,6 +66,7 @@ var App = {
             App.Player.energy           = game.energy;
             App.Player.position 	    = game.position;
             App.Player.number           = game.playerNumber;
+            App.Player.takenArtefactsCount = 0;
 
 			document.querySelector("#startGameButton").attributes.state.value = "passive";
         }

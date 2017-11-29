@@ -515,6 +515,9 @@ function updateGameScene(data) {
 		energyBar.update();
 	}
 
+	// Update score
+	document.querySelector("#artefactsTaken").innerHTML = App.Player.takenArtefactsCount;
+
 	// Handle artefact checking
 	if(gameState.isArtefactTaken) {
 
@@ -523,7 +526,6 @@ function updateGameScene(data) {
 
 		// Write score in view
 		// document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
-		document.querySelector("#artefactsTaken").innerHTML = App.Player.energy;
 
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
