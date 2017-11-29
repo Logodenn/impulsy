@@ -25,6 +25,9 @@ var Canvas = {
 	botSlot			: 5 * blocUnit,
 }
 
+// Used to move the player according to its numerical position, from 0 to 3
+var Positions = [Canvas.topSlot, Canvas.middleTopSlot, Canvas.middleTopSlot, Canvas.botSlot];
+
 var energyBar = {
     height  : blocUnit * 0.5,
     width   : null,
@@ -68,13 +71,13 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 
 // ******************** Player ******************** //
 
-function Player(playerNumber) {
+function Player(definition) {
 	var self = this;
 	self.x 			= 4 * blocUnit;
 	self.slot		= 1;
-	self.y 			= Canvas.middleTopSlot;
+	self.y 			= Positions[definition.position];
 	self.img 		= new Image();
-	self.img.src 	= imgPath + "player" + playerNumber + ".png";
+	self.img.src 	= imgPath + "player" + definition.number + ".png";
 	self.update 	= function() {
 		self.x 			= 4 * blocUnit;
 		self.y 			= Canvas.topSlot + self.slot * blocUnit;
@@ -436,11 +439,10 @@ function startGame() {
 
 	myGameArea.start();
 
-	players = [];
-
-	players.push(new Player(1));
+	var players = [];
+	players.push(new Player(App.Players[0])); // Create a visual player with the definition from the back
 	if(App.mode == "coop") {
-		players.push(new Player(2));
+		players.push(new Player(App.Players[1])); // Same for the second player
 	}
 
 	if(App.Host.difficulty != "lazy") {
