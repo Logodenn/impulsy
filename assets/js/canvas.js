@@ -434,7 +434,7 @@ function startGame() {
 		buttons.push(button);
 	} 
 
-	// ******************** Player movement ******************** //
+	// ******************** Player movement on key events ******************** //
 
 	window.onkeyup = function(e) {
 
@@ -483,31 +483,34 @@ function startGame() {
 				}
 				break;
 		}
-
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove(App.Player.position);
 	}
-}
 
+	// ******************** Player movement on click events ******************** //
 
-window.onclick = function(e) {
-	// Get the canvas's positions
-	var rect = myGameArea.canvas.getBoundingClientRect();
-
-	//  Adapt the click coordinates to the canvas
-	x = e.pageX - rect.left;
-	y = e.pageY - rect.top;
-	console.log(x, y)
-	if (x > 0 && x < myGameArea.canvas.width && y > 0 && y < myGameArea.canvas.height) {
-		for (var i = 0; i < 4; i++) {
-			if(buttons[i].clicked(y)) {
-				App.Player.position = i;
-				player.y = Canvas.topSlot + i * blocUnit;
+	window.onclick = function(e) {
+		// Get the canvas's positions
+		var rect = myGameArea.canvas.getBoundingClientRect();
+		
+		//  Adapt the click coordinates to the canvas
+		x = e.pageX - rect.left;
+		y = e.pageY - rect.top;
+		console.log("CLICKCLICK");
+		console.log(x, y)
+		if (x > 0 && x < myGameArea.canvas.width && y > 0 && y < myGameArea.canvas.height) {
+			for (var i = 0; i < 4; i++) {
+				if(buttons[i].clicked(y)) {
+					App.Player.position = i;
+					player.y = Canvas.topSlot + i * blocUnit;
+				}
 			}
 		}
 	}
+	
+	// ******************** Notify websocket ******************** //
 	App.Player.onMove(App.Player.position);
 }
+
+
 
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
