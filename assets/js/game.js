@@ -56,12 +56,13 @@ var App = {
             // var track =JSON.parse(game.track.replace('j:',''));
 
             // Settings
-			App.myRole  = 'Host';
-            App.latency = latency;
-            App.trackId = game.spectrum.id;
+			App.myRole      = 'Host';
+            App.latency     = latency;
+            App.trackId     = game.spectrum.id;
+            App.mode        = game.mode;
+            App.difficulty  = game.difficulty;
             
             // Logic
-            App.Host.difficulty         = game.difficulty;
             App.Host.audioSpectrum 	    = game.spectrum.bars.slice(0);
             App.Host.deathFlags         = game.spectrum.deathFlags.slice(0);
             App.Player.energy           = game.energy;
@@ -114,4 +115,32 @@ function favoriteTrack(button) {
 
     xhttp.open("POST", action, true);
     xhttp.send();
+}
+
+function playAgain() {
+
+    var action = "/room";
+    /*var data = new FormData();
+    data.append('trackId', App.Host.trackId.toString());
+    data.append('difficulty', App.difficulty.toString());
+    data.append('mode', App.mode.toString);*/
+    var gameData = {
+        trackId     : App.Host.trackId,
+        difficulty  : App.difficulty,
+        mode        : App.mode
+    }
+    
+    // ********** AJAX ********** //
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var jsonResponse = JSON.parse(this.responseText);
+        }
+    };
+
+    xhttp.open("POST", action, true);
+    //Send the proper header information along with the request
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send(JSON.stringify(gameData.toString));
 }
