@@ -268,10 +268,10 @@ function Amplitude(barDefinition) {
 
 function EnergyBarSlot() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.energy * 0.5 * visualCoefficient);
 	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.Host.energy * visualCoefficient;
+	this.width 		= App.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
@@ -295,10 +295,10 @@ function EnergyBarSlot() {
 
 function EnergyBar() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.energy * 0.5 * visualCoefficient);
 
 	this.color 		= COLOR.energyBar;
-	this.width 		= App.Host.energy * visualCoefficient;
+	this.width 		= App.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
@@ -435,7 +435,7 @@ function startGame() {
 	
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
-	document.querySelector("#artefactsToTake").innerHTML = App.Host.energy;
+	document.querySelector("#artefactsToTake").innerHTML = App.energy;
 
 	myGameArea.start();
 
@@ -445,7 +445,7 @@ function startGame() {
 		players.push(new Player(App.Players[1])); // Same for the second player
 	}
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		// Handle energyBar only if the difficulty is easy or crazy
 		energyBarSlot 	= new EnergyBarSlot();
 		energyBar		= new EnergyBar();
@@ -475,37 +475,37 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				App.Player.position = 0;
+				App.Players[App.Player.number].position = 0;
 				player.slot = 0;
 				break;
 			case 90:
 				// Midtop
-				App.Player.position = 1;
+				App.Players[App.Player.number].position = 1;
 				player.slot = 1;
 				break;
 			case 69:
 				// Midbot
-				App.Player.position = 2;
+				App.Players[App.Player.number].position = 2;
 				player.slot = 2;
 				break;
 			case 82:
 				// Bot
-				App.Player.position = 3;
+				App.Players[App.Player.number].position = 3;
 				player.slot = 3;
 				break;
 			case 38:
 				// Up arrow
-				if(App.Player.position != 0) {
+				if(App.Players[App.Player.number].position != 0) {
 		
-					App.Player.position--;
+					App.Players[App.Player.number].position--;
 					player.slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
-				if(App.Player.position != 3) {
+				if(App.Players[App.Player.number].position != 3) {
 		
-					App.Player.position++;
+					App.Players[App.Player.number].position++;
 					player.slot += 1;
 				}
 				break;
@@ -514,21 +514,24 @@ function startGame() {
 
 	// ******************** Player movement on click events ******************** //
 
-	//  Adapt the click coordinates to the canvas
-	x = e.pageX - rect.left;
-	y = e.pageY - rect.top;
+	// window.onclick = function(e) {
 
-	if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
-		for (var i = 0; i < 4; i++) {
-			if(buttons[i].clicked(y) == true) {
-				App.Player.position = i;
-				player.slot = i;
-			}
-		}
-	}
+	// 	//  Adapt the click coordinates to the canvas
+	// 	x = e.pageX - rect.left;
+	// 	y = e.pageY - rect.top;
+
+	// 	if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
+	// 		for (var i = 0; i < 4; i++) {
+	// 			if(buttons[i].clicked(y) == true) {
+	// 				App.Player.position = i;
+	// 				player.slot = i;
+	// 			}
+	// 		}
+	// 	}
+	// }
 	
 	// ******************** Notify websocket ******************** //
-	App.Player.onMove(App.Player.position);
+	App.Player.onMove();
 }
 
 
@@ -581,7 +584,7 @@ function endGame (data) {
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
 		document.querySelector("#gameState").innerHTML = data.score;
 	} else {
-		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Host.energy + " artefacts!";
+		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.energy + " artefacts!";
 	}
 	// Show pop up
 	document.querySelector("#endGameLayer").classList.remove("hidden");
