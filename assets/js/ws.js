@@ -117,6 +117,7 @@ var IO = {
 
     onUpdateGame: function(data) {
         // TODO
+        App.Player.takenArtefactsCount = data.takenArtefactsCount
         updateGameScene(data);
     },
 
