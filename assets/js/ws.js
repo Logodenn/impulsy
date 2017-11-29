@@ -64,8 +64,8 @@ var IO = {
         IO.socket.on('coopMove', IO.onCoopMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
         IO.socket.on('missedArtefact', IO.onMissedArtefact);
-        IO.socket.on('gameOver', IO.onGameOver);
-		    IO.socket.on('audioChunk', IO.onAudioChunk);
+        IO.socket.on('endOfGame', IO.onEndOfGame);
+        IO.socket.on('audioChunk', IO.onAudioChunk);
         IO.socket.on('audioEnd', IO.onAudioEnd);
     },
 
@@ -125,8 +125,8 @@ var IO = {
         // do something I DUNNO
     },
     
-	onGameOver: function (data) {
-		endGame(data);
+	onEndOfGame: function (data) {
+        endGame(data);
 		// TODO
 		// Notify players that game has ended
 		// remove listeners
