@@ -172,13 +172,15 @@ router.get('/difficulty/:id', function (req, res) {
   }
 });
 
-router.post("/favorite/:id", function (req, res){
-  if(req.user){
+router.post('/favorite/:id', (req, res) => {
+  if (req.user) {
     console.log(req.user)
-   db.user.createFavoriteTrack(req.user.pseudo, req.params.id, (err, fav)=>{
-     if (err) logger.error(err)
-   })
+    db.user.createFavoriteTrack(req.user.pseudo, req.params.id, (err, fav) => {
+      if (err) logger.error(err)
+
+      res.sendStatus(200)
+    })
   }
-});
+})
 
 module.exports = router
