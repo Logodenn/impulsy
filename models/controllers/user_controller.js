@@ -306,7 +306,7 @@ module.exports = {
         });
     },
 
-    createFavoriteTrack: function (pseudo, name, cb) {
+    createFavoriteTrack: function (pseudo, id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -320,7 +320,7 @@ module.exports = {
                         cb(err);
                     } else {
                         db.models.track.find({
-                            name: name
+                            id: id
                         }, function (err, track) {
                             if (err) {
                                 logger.error(err);
@@ -357,7 +357,7 @@ module.exports = {
         });
     },
 
-    removeFavoriteTrack: function (pseudo, name, cb) {
+    removeFavoriteTrack: function (pseudo, id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -371,7 +371,7 @@ module.exports = {
                         cb(err);
                     } else {
                         db.models.track.find({
-                            name: name
+                            id: id
                         }, function (err, track) {
                             if (err) {
                                 logger.error(err);
