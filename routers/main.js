@@ -51,10 +51,10 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
   } else {
     pageNumber = req.params.pageNumber;
   }
-  db.score.rank(pageNumber * lineNumberHOF, (err, ranks) => {
+  db.score.rank(pageNumber * lineNumberHOF,0, (err, ranks) => {
     data.ranks=ranks
     if (typeof req.user !== 'undefined') {
-      db.score.rankUser(req.user.pseudo, (err, userRank) => {
+      db.score.rankUser(req.user.pseudo,0, (err, userRank) => {
         if (err) logger.error(err)
         data.userTotalScore=userRank[0].score_total
         data.userRank=userRank[0].rank

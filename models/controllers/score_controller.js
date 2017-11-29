@@ -174,7 +174,7 @@ module.exports = {
         });
     },
 
-    bestScores: function (cb) {
+    bestScores: function (coop,cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -182,8 +182,8 @@ module.exports = {
             } else {
                 db.driver.execQuery("select pseudo,sum(duration) as score_total" +
                     " from score join user on user_id=user.id" +
-                    " group by pseudo " +
-                    "order by score_total desc;", [],
+                    " where coop=? group by pseudo " +
+                    "order by score_total desc;", [coop],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
@@ -196,14 +196,14 @@ module.exports = {
         });
     },
 
-    meanScore: function (track_id, cb) {
+    meanScore: function (track_id,coop, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
                 cb(err);
             } else {
                 db.driver.execQuery("select AVG(duration) from" +
-                    " score where track_id = ?;", [track_id],
+                    " score where coop=? and track_id = ?;", [coop,track_id],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
@@ -217,7 +217,7 @@ module.exports = {
     },
 
     // requete sql degueux mais qui marche !!!!!
-    rank: function (min, cb) {
+    rank: function (min,coop, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -226,8 +226,8 @@ module.exports = {
                 db.driver.execQuery("select * from "
                 +"(select @r := @r+1 as rank, z.* from(select pseudo,sum(duration)"
                 +" as score_total from score join user on user_id=user.id"
-                +" group by pseudo order by score_total desc) z,"
-                +" (select @r:=0) y) as u where rank<? and rank>?;", [min+50,min],
+                +" where coop=? group by pseudo order by score_total desc) z,"
+                +" (select @r:=0) y) as u where rank<? and rank>?;", [coop,min+50,min],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
@@ -239,7 +239,7 @@ module.exports = {
             }
         });
     },
-    rankUser: function (pseudo, cb) {
+    rankUser: function (pseudo, coop,cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -248,8 +248,8 @@ module.exports = {
                 db.driver.execQuery("select * from "
                 +"(select @r := @r+1 as rank, z.* from(select pseudo,sum(duration)"
                 +" as score_total from score join user on user_id=user.id"
-                +" group by pseudo order by score_total desc) z, "
-                +"(select @r:=0) y) as u where pseudo=?;", [pseudo],
+                +" where coop=? group by pseudo order by score_total desc) z, "
+                +"(select @r:=0) y) as u where pseudo=?;", [coop, pseudo],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
