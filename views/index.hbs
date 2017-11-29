@@ -23,7 +23,7 @@
                     <div class="track-list flex-row">
                         {{#each userMostPlayed}}
                             <div class="track">
-                                <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
+                                <button class="button button-track" data-id="{{track_id}}"onclick="toggleElement('difficulty','open');selectTrack(this)">{{name}}</button>
                             </div>
                         {{/each}}
                     </div>
@@ -36,7 +36,7 @@
                     <div class="track-list flex-row">
                         {{#each userFavorite}}
                             <div class="track">
-                                <a href="/difficulty/{{track_id}}"><button class="button button-track">{{name}}</button></a>
+                                <button class="button button-track" data-id="{{track_id}}"onclick="toggleElement('difficulty','open');selectTrack(this)">{{name}}</button>
                             </div>
                         {{/each}}
                     </div>

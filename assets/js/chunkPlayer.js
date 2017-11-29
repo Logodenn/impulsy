@@ -13,6 +13,15 @@ var chunkPlayer = {
     chunkPlayer._audioBuffer.push(chunk)
   },
 
+  _stop: function () {
+    clearInterval(chunkPlayer._timer)
+
+    chunkPlayer._audioBuffer = []
+    chunkPlayer._lastBufferDuration = 0
+    chunkPlayer._playedChunk = 0
+    chunkPlayer._playing = false
+  },
+
   _start: function () {
     chunkPlayer._audioContext = new (window.AudioContext || window.webkitAudioContext)()
     chunkPlayer._startTime = chunkPlayer._audioContext.currentTime

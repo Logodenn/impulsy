@@ -218,8 +218,10 @@ module.exports = {
                 logger.error(err);
                 cb(err);
             } else {
-                db.driver.execQuery("SELECT track_id, COUNT(*) as nb" +
-                    " from score where user_id=? " +
+                db.driver.execQuery("SELECT track_id, track.name, COUNT(*) as nb" +
+                    " from score "+
+                    "INNER JOIN track ON score.track_id = track.id " +
+                    "where user_id=? " +
                     "group by track_id " +
                     "order by nb desc", [user_id],
                     function (err, data) {
