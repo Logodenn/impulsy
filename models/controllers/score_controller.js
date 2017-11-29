@@ -152,7 +152,7 @@ module.exports = {
         });
     },
 
-    bestScoresTrack: function (track_id, cb) {
+    bestScoresTrack: function (track_id, coop, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -160,8 +160,8 @@ module.exports = {
             } else {
                 db.driver.execQuery("select pseudo, duration" +
                     " from score join user on user_id=user.id" +
-                    " where track_id = ? " +
-                    "order by duration desc", [track_id],
+                    " where coop= ? and track_id = ? " +
+                    "order by duration desc", [coop, track_id],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
