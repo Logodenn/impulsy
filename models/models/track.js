@@ -9,7 +9,6 @@ module.exports = function (orm, db) {
         {
 
             validations: {
-                name: orm.validators.unique(),
                 link: orm.validators.unique()
 
             },
