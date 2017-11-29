@@ -87,11 +87,14 @@ var App = {
         // position: 1,
         // This Player object is used to transit data through the WS
 
-		onMove : function(data) {
+		onMove : function() {
             // Notify WS
-            IO.playerMove(App.Player.position);
-            // IO.socket.emit('playerMove', {playerPosition: App.Player.position});
-            player.update();
+            var data = {
+                number: App.Player.number,
+                position: App.Players[App.Player.number].position
+            }
+            IO.playerMove(data);
+            // player.update();
         },
         
         // In case the player does not move but the position is right
