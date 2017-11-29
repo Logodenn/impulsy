@@ -15,22 +15,22 @@ router.get('/', (req, res) => {
   // Most played tracks
   db.track.getTrendTracks((err, trend) => {
     if (err) console.log(err)
-    var data = {}
-    data.trend = trend.slice(0, numberOfTrend)
-    // User Most Played Tracks 
-    if (req.user) {
-      db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
-        if (err) console.log(err)
-        data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed)
-        // Favorite User track
-        req.user.getFavoriteTracks((err, userFavorite) => {
+      var data = {}
+      data.trend = trend.slice(0, numberOfTrend)
+      // User Most Played Tracks 
+      if (req.user) {
+        db.track.getUserMostPlayedTracks(req.user.id, (err, userMostPlayed) => {
           if (err) console.log(err)
-          data.userFavorite = userFavorite.slice(0, numberOfUserFavorite)
-          data.userConnected = true
-          data.userName = req.user.pseudo;
-          res.render('index', data)
+          data.userMostPlayed = userMostPlayed.slice(0, numberOfUserMostPlayed)
+          // Favorite User track
+          req.user.getFavoriteTracks((err, userFavorite) => {
+            if (err) console.log(err)
+            data.userFavorite = userFavorite.slice(0, numberOfUserFavorite)
+            data.userConnected = true
+            data.userName = req.user.pseudo;
+            res.render('index', data)
+          })
         })
-      })
     } else {
       data.userConnected = false
       res.render('index', data)
