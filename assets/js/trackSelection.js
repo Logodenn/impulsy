@@ -42,7 +42,7 @@ function searchThroughYouTube() {
             ytResult.innerHTML = "";
 
             for(var i = 0; i < jsonResponse.length; i++) {
-                console.log(jsonResponse[i]);
+                // console.log(jsonResponse[i]);
 
                 // ********** WRAPPER ********** //
                 var trackWrapper = document.createElement("button");
@@ -70,7 +70,7 @@ function searchThroughYouTube() {
 
                 // ********** ADD CLICK EVENT ********** //
                 trackWrapper.onclick = function() {
-                    console.log(this)
+                    // console.log(this)
                     // console.log(titleSpan.innerHTML);
                     selectTrack(this);
                     toggleElement('difficulty','open');
