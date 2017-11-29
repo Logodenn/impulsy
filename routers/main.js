@@ -51,10 +51,10 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
   } else {
     pageNumber = req.params.pageNumber;
   }
-  db.score.rank(pageNumber * lineNumberHOF, (err, ranks) => {
+  db.score.rank(pageNumber * lineNumberHOF,0, (err, ranks) => {
     data.ranks=ranks
     if (typeof req.user !== 'undefined') {
-      db.score.rankUser(req.user.pseudo, (err, userRank) => {
+      db.score.rankUser(req.user.pseudo,0, (err, userRank) => {
         if (err) logger.error(err)
         data.userTotalScore=userRank[0].score_total
         data.userRank=userRank[0].rank
@@ -171,5 +171,18 @@ router.get('/difficulty/:id', function (req, res) {
     });
   }
 });
+
+router.post('/favorite/:id', (req, res) => {
+  if (req.user) {
+    db.user.createFavoriteTrack(req.user.pseudo, req.params.id, (err, fav) => {
+      if (err) {
+        logger.error(err)
+        res.sendStatus(500)
+      } else {
+        res.sendStatus(200)
+      }
+    })
+  }
+})
 
 module.exports = router
