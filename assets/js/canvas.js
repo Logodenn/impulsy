@@ -1,6 +1,6 @@
 // ******************** Canvas setup ******************** //
 
-const blocUnit = 100;
+var blocUnit = 0;
 const visualCoefficient = 50;
 const pulserWidth = 165;
 
@@ -66,11 +66,14 @@ imgArtefactTaken.src = "../img/artefactTaken.png";
 
 function Player() {
 	var self = this;
-	self.x 			= 400;
+	self.x 			= 4 * blocUnit;
+	self.slot		= 0;
 	self.y 			= Canvas.middleTopSlot;
 	self.img 		= new Image();
 	self.img.src 	= "../img/unicorn.png";
 	self.update 	= function() {
+		self.x 			= 4 * blocUnit;
+		self.y 			= Canvas.topSlot + self.slot * blocUnit;
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
@@ -80,13 +83,16 @@ function Player() {
 
 // ******************** Pulsers ******************** //
 
-function Pulsers(posY) {
+function Pulsers(i) {
 	var self 		= this;
-	self.x 			= 890;
-	self.y 			= posY;
+	self.index		= i;
+	self.x 			= myGameArea.canvas.width - blocUnit;
+	self.y 			= Canvas.topSlot + self.index * blocUnit;
 	self.img 		= new Image();
 	self.img.src 	= "../img/pulser.png";
 	self.update 	= function() {
+		self.x 			= myGameArea.canvas.width - blocUnit;
+		self.y 			= Canvas.topSlot + self.index * blocUnit;
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
@@ -98,8 +104,9 @@ function Pulsers(posY) {
 
 function Artefact(slot) {
 	var self 		= this;
-	self.x 			= myGameArea.canvas.width - pulserWidth;
-	switch(slot) {
+	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
+	self.slot		= slot;
+	switch(self.slot) {
 		case 0:
 			self.y = Canvas.topSlot;
 			break;
@@ -115,8 +122,24 @@ function Artefact(slot) {
 	}
 	self.img 		= new Image();
 	self.img.src 	= "../img/artefact.png";
+	self.cpt		= 0;
 	self.update 	= function() {
-		this.x -= 1;
+		self.cpt		+= 1;
+		self.x 			= myGameArea.canvas.width - 2 * blocUnit - self.cpt * (3.5 * blocUnit / 400)
+		switch(self.slot) {
+			case 0:
+				self.y = Canvas.topSlot;
+				break;
+			case 1:
+				self.y = Canvas.middleTopSlot;
+				break;
+			case 2:
+				self.y = Canvas.middleBotSlot;
+				break;
+			case 3:
+				self.y = Canvas.botSlot;
+				break;
+		}
 		ctx = myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
@@ -130,6 +153,7 @@ function Artefact(slot) {
 // ******************** Amplitude ******************** //
 
 function Amplitude(barDefinition) {
+	var self = this;
 	switch (tabColorToChange[counterForColorTab]) {
 		case "r+":
             r += 15;
@@ -164,20 +188,26 @@ function Amplitude(barDefinition) {
 		counterForAmplitudeColor++;
 	}
 
-	this.color 		= "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
-	this.width 		= 25;
-	this.height		= barDefinition.amplitude * blocUnit * 4;
-	this.x 			= myGameArea.canvas.width - 130;
-	this.y			= Canvas.spectrumAxis - this.height * 0.5;
-	this.update 	= function() {
-		this.x -= 1;
-		ctx = myGameArea.context;
-		ctx.fillStyle = this.color;
-		ctx.fillRect(this.x, this.y, this.width, this.height);
+	self.barDefinition	= barDefinition;
+	self.color 			= "rgb(" + r.toString() + "," + g.toString() + "," + b.toString() + ")";
+	self.width 			= blocUnit / 4;
+	self.height			= self.barDefinition.amplitude * blocUnit * 4;
+	self.x 				= myGameArea.canvas.width - 1.5 * blocUnit;
+	self.y				= Canvas.spectrumAxis - self.height * 0.5;
+	self.cpt			= 0;
+	self.update 		= function() {
+		self.width 		= blocUnit / 4;
+		self.height		= self.barDefinition.amplitude * blocUnit * 4;
+		self.cpt		+= 1;
+		self.x 			= myGameArea.canvas.width - 1.5 * blocUnit - self.cpt * (3.5 * blocUnit / 400);
+		self.y			= Canvas.spectrumAxis - self.height * 0.5;
+		ctx 			= myGameArea.context;
+		ctx.fillStyle 	= self.color;
+		ctx.fillRect(self.x, self.y, self.width, self.height);
 	}
-	this.ctx = myGameArea.context;
-	this.ctx.fillStyle = this.color;
-	this.ctx.fillRect(this.x, this.y, this.width, this.height);
+	self.ctx = myGameArea.context;
+	self.ctx.fillStyle = self.color;
+	self.ctx.fillRect(self.x, self.y, self.width, self.height);
 }
 
 // ******************** EnergyBarSlot ******************** //
@@ -233,10 +263,11 @@ var myGameArea = {
 	start : function() {
 
 		// ******************** Canvas setup ******************** //
-
-		this.canvas.width 	= Canvas.width;
-		this.canvas.height 	= Canvas.height;
+		this.canvas.width 	= window.innerWidth * 0.8;
+		this.canvas.height 	= this.canvas.width * 0.6;
 		this.context 		= this.canvas.getContext("2d");
+
+		updateBlocUnit(this.canvas.width);
 
 		document.querySelector("#canvasWrapper").appendChild(this.canvas);
 
@@ -300,6 +331,18 @@ function addAmplitudeAndArtefact() {
 	}
 }
 
+function updateBlocUnit(canvasWidth) {
+	blocUnit = canvasWidth/ 10;
+	
+	Canvas.width			= 10 * blocUnit;
+	Canvas.height  			= 6 * blocUnit;
+	Canvas.spectrumAxis		= 4 * blocUnit;
+	Canvas.topSlot			= 2 * blocUnit;
+	Canvas.middleTopSlot	= 3 * blocUnit;
+	Canvas.middleBotSlot	= 4 * blocUnit;
+	Canvas.botSlot			= 5 * blocUnit;
+}
+
 // ****************************************************************************************************** //
 // **************************************** GAME INITIALIZATION **************************************** //
 // **************************************************************************************************** //
@@ -321,7 +364,7 @@ function startGame() {
 	}
 
 	for (var i = 0; i < 4; i++) {
-		var pulser = new Pulsers(Canvas.topSlot + i * blocUnit);
+		var pulser = new Pulsers(i);
 		pulsers.push(pulser);
 	} 
 
@@ -340,29 +383,29 @@ function startGame() {
 			case 65:
 				// Top
 				App.Player.position = 0;
-				player.y = Canvas.topSlot;
+				player.slot = 0;
 				break;
 			case 90:
 				// Midtop
 				App.Player.position = 1;
-				player.y = Canvas.middleTopSlot;
+				player.slot = 1;
 				break;
 			case 69:
 				// Midbot
 				App.Player.position = 2;
-				player.y = Canvas.middleBotSlot;
+				player.slot = 2;
 				break;
 			case 82:
 				// Bot
 				App.Player.position = 3;
-				player.y = Canvas.botSlot;
+				player.slot = 3;
 				break;
 			case 38:
 				// Up arrow
 				if(App.Player.position != 0) {
 		
 					App.Player.position--;
-					player.y -= blocUnit;
+					player.slot -= 1;
 				}
 				break;
 			case 40:
@@ -370,7 +413,7 @@ function startGame() {
 				if(App.Player.position != 3) {
 		
 					App.Player.position++;
-					player.y += blocUnit;
+					player.slot += 1;
 				}
 				break;
 		}
@@ -404,6 +447,13 @@ function updateGameScene(data) {
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
 	}
+}
+
+window.onresize = function() {
+	myGameArea.canvas.width 	= window.innerWidth * 0.8;
+	myGameArea.canvas.height 	= myGameArea.canvas.width * 0.6;
+	
+	updateBlocUnit(myGameArea.canvas.width);
 }
 
 function onTabletMove(direction) {
