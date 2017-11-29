@@ -107,7 +107,7 @@ module.exports = class Spectrum {
         db.score.meanScore(id, (err, mean) => {
           if (err) logger.error(err)
           else {
-            if (mean['AVG(duration)']) {
+            if (mean.length > 0) {
               this.deathFlags.push(mean[0])
             }
 
