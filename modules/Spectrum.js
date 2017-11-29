@@ -107,11 +107,17 @@ module.exports = class Spectrum {
         db.score.meanScore(id, (err, mean) => {
           if (err) logger.error(err)
           else {
-            this.deathFlags.push(mean[0])
+            if (mean['AVG(duration)']) {
+              this.deathFlags.push(mean[0])
+            }
+
             db.score.bestScoresTrack(id, (err, best) => {
               if (err) logger.error(err)
               else {
-                this.deathFlags.push(best[0])
+                if (best.length > 0) {
+                  this.deathFlags.push(best[0])
+                }
+
                 cb(null, this)
               }
             })
