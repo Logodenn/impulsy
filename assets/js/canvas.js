@@ -494,7 +494,6 @@ function startGame() {
 		//  Adapt the click coordinates to the canvas
 		x = e.pageX - rect.left;
 		y = e.pageY - rect.top;
-		console.log("CLICKCLICK");
 		console.log(x, y)
 		if (x > 0 && x < myGameArea.canvas.width && y > 0 && y < myGameArea.canvas.height) {
 			for (var i = 0; i < 4; i++) {
