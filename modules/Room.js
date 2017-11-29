@@ -218,15 +218,21 @@ module.exports = class Room {
   }
 
   addScore (player) {
+    var coop
     if (player.user) {
       const score = {
         duration: player.takenArtefactsCount,
         user_id: player.user.id,
         track_id: this.spectrum.id
       }
-
-      db.user.bestScores(player.user.id, this.spectrum.id, (err, bestScores) => {
+      if (this.mode=='solo'){
+        coop=0
+      } else{
+        coop=1
+      }
+      db.user.bestScores(player.user.id, this.spectrum.id, coop, (err, bestScores) => {
         if (err) logger.error(err)
+        score.coop=coop
         if (bestScores.length !== 0) {
           if (bestScores[0].duration < player.takenArtefactsCount) {
             db.score.create(score, (err, res) => {
