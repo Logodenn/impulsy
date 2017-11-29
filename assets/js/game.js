@@ -56,8 +56,9 @@ var App = {
             // var track =JSON.parse(game.track.replace('j:',''));
 
             // Settings
-			App.myRole 				= 'Host';
-            App.latency 	        = latency;
+			App.myRole  = 'Host';
+            App.latency = latency;
+            App.trackId = game.spectrum.id;
             
             // Logic
             App.Host.difficulty         = game.difficulty;
@@ -95,3 +96,22 @@ var App = {
 };
 
 App.init();
+
+function favoriteTrack(button) {
+
+    var action = "/favorite/" + App.trackId;
+
+    // ********** AJAX ********** //
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var jsonResponse = JSON.parse(this.responseText);
+        }
+    };
+
+    button.attributes.state.value = "disabled"
+
+    xhttp.open("POST", action, true);
+    xhttp.send();
+}

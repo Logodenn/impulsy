@@ -368,19 +368,24 @@ function addAmplitudeAndArtefact() {
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
 	canvasArtefacts.push(artefact);
 
-    if(App.Host.deathFlags.length > 0 && time == App.Host.deathFlags[0]["AVG(duration)"]){
-        var deathFlag = new DeathFlag(0);
-		canvasDeathFlags.push(deathFlag);
+	if(App.Host.deathFlags.length > 0) {
+		// At least one person has died, that means that we have the two deathFlags
+		if(App.Host.deathFlags[0]["AVG(duration)"]){
+			// Mean deaths
+			var deathFlag = new DeathFlag(0);
+			canvasDeathFlags.push(deathFlag);
+		}
+		if(time == App.Host.deathFlags[1]["duration"]) {
+			// Furthest death
+			var deathFlag = new DeathFlag(1);
+			canvasDeathFlags.push(deathFlag);
+		}
+
 	}
+
 	
-    if(App.Host.deathFlags.length > 0 && time == App.Host.deathFlags[1]["duration"]) {
-        var deathFlag = new DeathFlag(1);
-		canvasDeathFlags.push(deathFlag);
-    }
 
 	time++;
-
-	console.log(time + "   " + App.Host.audioSpectrum.length);
 
 	if(time >= App.Host.audioSpectrum.length) {
 		myGameArea.stopAddition();		
@@ -507,6 +512,7 @@ window.onclick = function(e) {
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
+	console.log(data);
 
 	if(App.Host.difficulty != "lazy") {
 		// Handle energy
@@ -570,6 +576,7 @@ function onTabletMove(direction) {
 }
 
 function endGame (data) {
+	console.log(data);
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
