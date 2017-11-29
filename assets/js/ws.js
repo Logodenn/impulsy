@@ -105,6 +105,7 @@ var IO = {
     },
 
     onCoopMove: function(data) {
+        console.log("Your teammate moved to:", data)
         // TODO notify self that the other player has moved
         // if(data.number != yourself) {
             player.update();		
