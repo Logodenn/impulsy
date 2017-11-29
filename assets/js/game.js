@@ -1,4 +1,5 @@
 
+
 // ******************** App ******************** //
 
 var App = {
@@ -64,8 +65,9 @@ var App = {
             App.Host.difficulty         = game.difficulty;
             App.Host.audioSpectrum 	    = game.spectrum.bars.slice(0);
             App.Host.deathFlags         = game.spectrum.deathFlags.slice(0);
-            App.Player.energy           = game.energy;
-            App.Player.position 	    = game.position;
+            App.Host.energy             = game.energy;
+            
+            App.Players                 = game.players.slice(0);
             App.Player.number           = game.playerNumber;
             App.Player.takenArtefactsCount = 0;
 
