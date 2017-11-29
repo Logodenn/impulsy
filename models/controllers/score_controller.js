@@ -114,6 +114,8 @@ module.exports = {
 
                         if (score.difficulty) scoreUpdate.difficulty = score.difficulty;
 
+                        if (score.coop) scoreUpdate.coop = score.coop;
+
                         scoreUpdate.save(function (err) {
                             if (err) {
                                 logger.debug(err);
