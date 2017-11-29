@@ -71,7 +71,7 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 function Player(playerNumber) {
 	var self = this;
 	self.x 			= 4 * blocUnit;
-	self.slot		= 0;
+	self.slot		= 1;
 	self.y 			= Canvas.middleTopSlot;
 	self.img 		= new Image();
 	self.img.src 	= imgPath + "player" + playerNumber + ".png";
@@ -107,14 +107,16 @@ function Pulsers(i) {
 // ******************** Death flags ******************** //
 function DeathFlag(type) {
 	var self 		= this;
-	self.x 			= myGameArea.canvas.width - 165;
-	// self.y 			= Canvas.botSlot;
+	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
+	//self.y 			= Canvas.botSlot;
 	self.y 			= Canvas.deathFlags;
 	self.img 		= new Image();
 	self.img.src 	= type == 0 ? imgPath + "deathFlagsAverage.png" : imgPath + "deathFlagBest.png";
 	self.update 	= function() {
-        self.x -= 1;
-		ctx = myGameArea.context;
+		self.cpt 		+= 1;
+		self.y 			= Canvas.deathFlags;
+        self.x 			= myGameArea.canvas.width - 2 * blocUnit - self.cpt * (3.5 * blocUnit / 400);
+		ctx 			= myGameArea.context;
 		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
 	}
 
@@ -125,19 +127,27 @@ function DeathFlag(type) {
 
 // ********************* Button ********************* //
 function Button(y) {
-	var self      = this;
-	self.width    = myGameArea.canvas.width;
-	self.height   = blocUnit;
-	self.x        = 0;
-	self.y        = y;
-	this.clicked  = function(y) {
+	var self      	= this;
+	self.slot		= y;
+	self.width    	= Canvas.width;
+	self.height   	= blocUnit;
+	self.x        	= 0;
+	self.y        	= Canvas.topSlot + self.slot * blocUnit;
+	this.clicked  	= function(y) {
 	  var mytop     = self.y;
 	  var mybottom  = self.y + (self.height);
 	  var clicked   = false;
+	  console.log(mytop, mybottom);
 	  if (y > mytop && y < mybottom) {
 		  clicked   = true;
 	  }
 	  return clicked;
+	}
+	this.update		= function() {
+		self.width    	= Canvas.width;
+		self.height   	= blocUnit;
+		self.x        	= 0;
+		self.y        	= Canvas.topSlot + self.slot * blocUnit;
 	}
 }
 
@@ -166,7 +176,7 @@ function Artefact(slot) {
 	self.cpt		= 0;
 	self.update 	= function() {
 		self.cpt		+= 1;
-		self.x 			= myGameArea.canvas.width - 2 * blocUnit - self.cpt * (3.5 * blocUnit / 400)
+		self.x 			= myGameArea.canvas.width - 2 * blocUnit - self.cpt * (3.5 * blocUnit / 400);
 		switch(self.slot) {
 			case 0:
 				self.y = Canvas.topSlot;
@@ -264,6 +274,11 @@ function EnergyBarSlot() {
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
 	this.update 	= function() {
+		computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
+		this.width 		= App.Player.energy * visualCoefficient;
+		this.height 	= energyBar.height;
+		this.x			= computedX;
+		this.y 			= blocUnit * 0;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -282,10 +297,14 @@ function EnergyBar() {
 	this.color 		= COLOR.energyBar;
 	this.width 		= App.Host.energy * visualCoefficient;
 	this.height 	= energyBar.height;
-	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
 	this.update 	= function() {
+		computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
+		this.width 		= App.Player.energy * visualCoefficient;
+		this.height 	= energyBar.height;
+		this.x			= computedX;
+		this.y 			= blocUnit  * 0;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -304,7 +323,7 @@ var myGameArea = {
 	start : function() {
 
 		// ******************** Canvas setup ******************** //
-		this.canvas.width 	= window.innerWidth * 0.8;
+		this.canvas.width 	= window.innerWidth * 0.7;
 		this.canvas.height 	= this.canvas.width * 0.6;
 		this.context 		= this.canvas.getContext("2d");
 
@@ -349,7 +368,7 @@ function updateGameArea() {
 		canvasDeathFlags[i].update();
 	}
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -393,11 +412,16 @@ function updateBlocUnit(canvasWidth) {
 	
 	Canvas.width			= 10 * blocUnit;
 	Canvas.height  			= 6 * blocUnit;
+	Canvas.deathFlags		= 1 * blocUnit;
 	Canvas.spectrumAxis		= 4 * blocUnit;
 	Canvas.topSlot			= 2 * blocUnit;
 	Canvas.middleTopSlot	= 3 * blocUnit;
 	Canvas.middleBotSlot	= 4 * blocUnit;
 	Canvas.botSlot			= 5 * blocUnit;
+
+	energyBar.height  = blocUnit * 0.5;
+    energyBar.width   = null;
+    energyBar.y		= blocUnit * 0;
 }
 
 // ****************************************************************************************************** //
@@ -431,11 +455,11 @@ function startGame() {
 	} 
 
 	for (var i = 0; i < 4; i++) {
-		var button = new Button(Canvas.topSlot + i * blocUnit);
+		var button = new Button(i);
 		buttons.push(button);
 	} 
 
-	// ******************** Player movement ******************** //
+	// ******************** Player movement on key events ******************** //
 
 	window.onkeyup = function(e) {
 
@@ -484,38 +508,35 @@ function startGame() {
 				}
 				break;
 		}
-
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove(App.Player.position);
 	}
-}
 
-
-window.onclick = function(e) {
-	// Get the canvas's positions
-	var rect = myGameArea.canvas.getBoundingClientRect();
+	// ******************** Player movement on click events ******************** //
 
 	//  Adapt the click coordinates to the canvas
 	x = e.pageX - rect.left;
 	y = e.pageY - rect.top;
-	console.log(x, y)
-	if (x > 0 && x < myGameArea.canvas.width && y > 0 && y < myGameArea.canvas.height) {
+
+	if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 		for (var i = 0; i < 4; i++) {
-			if(buttons[i].clicked(y)) {
+			if(buttons[i].clicked(y) == true) {
 				App.Player.position = i;
-				player.y = Canvas.topSlot + i * blocUnit;
+				player.slot = i;
 			}
 		}
 	}
+	
+	// ******************** Notify websocket ******************** //
 	App.Player.onMove(App.Player.position);
 }
+
+
 
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 	console.log(data);
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		// Handle energy
 		energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
 		energyBarSlot.update();
@@ -544,6 +565,11 @@ window.onresize = function() {
 	myGameArea.canvas.height 	= myGameArea.canvas.width * 0.6;
 	
 	updateBlocUnit(myGameArea.canvas.width);
+
+	for (var i = 0; i < buttons.length; i++) {
+		buttons[i].update();
+		console.log("button updated");
+	} 
 }
 
 function endGame (data) {

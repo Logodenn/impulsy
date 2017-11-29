@@ -306,7 +306,7 @@ module.exports = {
         });
     },
 
-    createFavoriteTrack: function (pseudo, name, cb) {
+    createFavoriteTrack: function (pseudo, id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -320,7 +320,7 @@ module.exports = {
                         cb(err);
                     } else {
                         db.models.track.find({
-                            name: name
+                            id: id
                         }, function (err, track) {
                             if (err) {
                                 logger.error(err);
@@ -357,7 +357,7 @@ module.exports = {
         });
     },
 
-    removeFavoriteTrack: function (pseudo, name, cb) {
+    removeFavoriteTrack: function (pseudo, id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -371,7 +371,7 @@ module.exports = {
                         cb(err);
                     } else {
                         db.models.track.find({
-                            name: name
+                            id: id
                         }, function (err, track) {
                             if (err) {
                                 logger.error(err);
@@ -387,7 +387,7 @@ module.exports = {
             }
         });
     },
-    bestScores: function (userId, trackId, cb) {
+    bestScores: function (userId, trackId, coop, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -395,7 +395,7 @@ module.exports = {
             } else {
                 db.driver.execQuery("select duration from user join score"
                 +" on user_id=user.id"
-                +" where user_id=? and track_id=? order by duration desc;", [userId,trackId],
+                +" where coop=? and user_id=? and track_id=? order by duration desc;", [coop,userId,trackId],
                     function (err, data) {
                         if (err) {
                             logger.error(err);
