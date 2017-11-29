@@ -99,9 +99,15 @@ var IO = {
     // ****************************************************** //
 
     playerMove: function(data) {
-        // console.log("player " + data.number + " moved to: " + data.position);
-        console.log("player moved to: " + data);
+        // Notify back that self moved
+        // console.log("Player " + data.number + " has movedlayer moved to: " + data.position);
         IO.socket.emit('playerMove', data);		
+    },
+
+    onPlayerMove: function(data) {
+        // Update canvas because one player (self or the other) has moved
+        console.log("Player " + data.number + " has moved to: " + data.position);
+        players[data.number].update();		
     },
 
     onCoopMove: function(data) {
