@@ -54,7 +54,7 @@ var time = 0;
 
 // ******************** Components ******************** //
 
-var player;
+var players 			= [];
 var pulsers 			= [];
 var canvasBars 			= [];
 var canvasArtefacts 	= [];
@@ -375,7 +375,7 @@ function updateGameArea() {
 		energyBarSlot.update();
 		energyBar.update();
 	}
-	player.update();
+	players[App.Player.number].update();
 }
 
 function addAmplitudeAndArtefact() {
@@ -439,7 +439,6 @@ function startGame() {
 
 	myGameArea.start();
 
-	var players = [];
 	players.push(new Player(App.Players[0])); // Create a visual player with the definition from the back
 	if(App.mode == "coop") {
 		players.push(new Player(App.Players[1])); // Same for the second player
