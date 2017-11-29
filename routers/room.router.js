@@ -8,6 +8,7 @@ const db = require('../models/controllers')
 router.post('/', (req, res) => {
   const difficulty = req.body.difficulty
   const id = req.body.track
+  const mode = req.body.mode
 
   if (!difficulty || !id) {
     logger.error(`Wrong value for id or difficulty --> id: ${id} - difficulty: ${difficulty}`)
@@ -19,7 +20,7 @@ router.post('/', (req, res) => {
     if (err === null) {
       // 'id' is a trackId and it is in the database
       logger.info(`Track is in our database: ${track.name} with trackId ${id}`)
-      return RoomManager.createRoom(track.id, difficulty, (err, roomId) => {
+      return RoomManager.createRoom(track.id, difficulty, mode, (err, roomId) => {
         if (err) {
           return res.status(500).redirect('/')
         }
@@ -32,7 +33,7 @@ router.post('/', (req, res) => {
       if (err === null && track) {
         // 'id' is a youtubeId and it is in the database
         logger.info(`Track is in our database: ${track.name} with youtubeId ${id}`)
-        return RoomManager.createRoom(track.id, difficulty, (err, roomId) => {
+        return RoomManager.createRoom(track.id, difficulty, mode, (err, roomId) => {
           if (err) {
             return res.status(500).redirect('/')
           }
@@ -50,7 +51,7 @@ router.post('/', (req, res) => {
         }
 
         logger.info('Spectrum created')
-        RoomManager.createRoom(result.id, difficulty, (err, roomId) => {
+        RoomManager.createRoom(result.id, difficulty, mode, (err, roomId) => {
           if (err) {
             return res.status(500).redirect('/')
           }

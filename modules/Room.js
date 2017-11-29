@@ -9,7 +9,7 @@ const gameSpeed = 500
 const positionCheckDelay = 4000
 
 module.exports = class Room {
-  constructor (_difficulty) {
+  constructor (_difficulty, _mode) {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
@@ -18,6 +18,7 @@ module.exports = class Room {
     this.loopTimer = null
     this.spectrum = new Spectrum()
     this.difficulty = _difficulty
+    this.mode = _mode
     this.currentBar = 0
     this.energy = 100
     this.audioStream = null
@@ -97,7 +98,7 @@ module.exports = class Room {
 
           if (this.currentBar >= this.spectrum.bars.length) {
             this.win(player)
-          } else if (player.energy === 0) {
+          } else if (this.energy <= 0) {
             this.lose(player)
           } else {
             const data = this.check(player)
@@ -185,23 +186,44 @@ module.exports = class Room {
   }
 
   win (player) {
-    let score = {}
-
     logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
 
     // Stop the game loop
     this.stop()
 
-    player.socket.emit('endOfGame', {
+    player.socket.emit('gameOver', {
       'win': true,
       'score': player.takenArtefactsCount,
       'max': this.energy
     })
 
+    // This is, for now, done sytematically. It might be better to ask the user before adding the score
+    this.addScore(player)
+  }
+
+  lose (player) {
+    logger.info(`Game in room ${this.id}: Player ${player.socket.id} lost`)
+
+    // Stop the game loop
+    this.stop()
+
+    player.socket.emit('gameOver', {
+      'win': false,
+      'score': player.takenArtefactsCount,
+      'max': this.energy
+    })
+
+    // This is, for now, done sytematically. It might be better to ask the user before adding the score
+    this.addScore(player)
+  }
+
+  addScore (player) {
     if (player.user) {
-      score.duration = player.takenArtefactsCount
-      score.user_id = player.user.id
-      score.track_id = this.spectrum.id
+      const score = {
+        duration: player.takenArtefactsCount,
+        user_id: player.user.id,
+        track_id: this.spectrum.id
+      }
 
       db.user.bestScores(player.user.id, this.spectrum.id, (err, bestScores) => {
         if (err) logger.error(err)
@@ -269,8 +291,10 @@ module.exports = class Room {
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      playerNumber: player.number,
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
+      mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       artefacts: this.artefacts,
       energy: this.energy // duration of the music
@@ -281,6 +305,7 @@ module.exports = class Room {
     return {
       id: this.id,
       difficulty: this.difficulty, // difficulty of the level
+      mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       energy: this.energy // duration of the music
     }
