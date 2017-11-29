@@ -149,6 +149,12 @@ module.exports = class Room {
 
     player.socket.on('playerMove', (data) => {
       player.position = data
+
+      for (let playerId in self.players) {
+        if (playerId !== player.id) {
+          self.players[playerId].socket.emit('coopMove', data)
+        }
+      }
     })
 
     player.socket.on('disconnect', () => {
