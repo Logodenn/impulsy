@@ -351,7 +351,7 @@ function updateGameArea() {
 		canvasDeathFlags[i].update();
 	}
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -417,8 +417,8 @@ function startGame() {
 	myGameArea.start();
 
 	player = new Player();
-	console.log(App.Host.difficulty);
-	if(App.Host.difficulty != "lazy") {
+	console.log(App.difficulty);
+	if(App.difficulty != "lazy") {
 		// Handle energyBar only if ht edifficulty is easy or crazy
 		energyBarSlot 	= new EnergyBarSlot();
 		energyBar		= new EnergyBar();
@@ -514,7 +514,7 @@ function updateGameScene(data) {
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 	console.log(data);
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		// Handle energy
 		energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
 		energyBarSlot.update();
