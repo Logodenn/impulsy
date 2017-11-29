@@ -288,6 +288,14 @@ module.exports = class Room {
   }
 
   getMetaData (player) {
+    let players = Object.keys(this.players).map(idx => {
+      return {
+        number: this.players[idx].number,
+        name: this.players[idx].name,
+        position: this.players[idx].position
+      }
+    })
+
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -297,7 +305,8 @@ module.exports = class Room {
       mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       artefacts: this.artefacts,
-      energy: this.energy // duration of the music
+      energy: this.energy, // duration of the music
+      players: players
     }
   }
 
