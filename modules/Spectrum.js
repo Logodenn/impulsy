@@ -90,7 +90,8 @@ module.exports = class Spectrum {
    * Function loadSpectrum load a spectrum from an id of a track
    * @attribute {int} id id of a track
    */
-  loadSpectrum (id, cb) {
+  loadSpectrum (id, mode, cb) {
+    var coop
     db.track.get(id, (err, result) => {
       if (err) logger.error(err)
       else {
@@ -104,7 +105,13 @@ module.exports = class Spectrum {
           return bar
         })
 
-        db.score.meanScore(id, (err, mean) => {
+        if (mode=='solo'){
+          coop=0
+        }else{
+          coop=1
+        }
+
+        db.score.meanScore(id,coop, (err, mean) => {
           if (err) logger.error(err)
           else {
             this.deathFlags.push(mean[0])
