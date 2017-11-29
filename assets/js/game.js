@@ -68,11 +68,16 @@ var App = {
             App.Host.deathFlags         = game.spectrum.deathFlags.slice(0);
             App.Host.energy             = game.energy;
             
+            // Players
             App.Players                 = game.players.slice(0);
             App.Player.number           = game.playerNumber;
             App.Player.takenArtefactsCount = 0;
 
-			document.querySelector("#startGameButton").attributes.state.value = "passive";
+            if(App.mode == "coop") {
+                document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for a second player...";
+            } else {
+                document.querySelector("#startGameButton").attributes.state.value = "passive";
+            }
         }
 	},
 
