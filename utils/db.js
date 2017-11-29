@@ -69,6 +69,18 @@ models((err, _db) => {
         },
         (score, callback) => {
           let spectrum = new Spectrum()
+          spectrum.createSpectrum('Vs12XIPy1v8', false, callback)
+        },
+        (track, callback) => {
+          createScore({
+            track_id: track.id,
+            date: moment().format('YYYY-MM-DD HH:mm:ss'),
+            duration: 12,
+            user_id: 1
+          }, callback)
+        },
+        (score, callback) => {
+          let spectrum = new Spectrum()
           spectrum.createSpectrum('001_Test_Impulsy_.mp3', true, callback)
         },
         (track, callback) => {

@@ -45,7 +45,7 @@ exports = module.exports = class RoomManager {
 
     this.rooms[room.id] = room
 
-    room.spectrum.loadSpectrum(_trackId, (err, res) => {
+    room.spectrum.loadSpectrum(_trackId, _mode, (err, res) => {
       if (err) {
         logger.error(err)
 
