@@ -4,7 +4,8 @@ module.exports = function (orm, db) {
     var Score = db.define("score", {
             date: { type: 'date', required: true, time: true},
             duration: { type: 'integer', required: true},
-            difficulty: {type: 'text'}
+            difficulty: {type: 'text'},
+            coop: {type: 'boolean'}
         },
         {
             methods: {
@@ -14,7 +15,8 @@ module.exports = function (orm, db) {
                         date: this.date,
                         duration: this.duration,
                         user_id: this.user_id,
-                        track_id: this.track_id
+                        track_id: this.track_id,
+                        coop: this.coop
                     }
                 }
             }
