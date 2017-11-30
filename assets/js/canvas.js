@@ -74,7 +74,7 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 function Player(definition) {
 	var self = this;
 	self.x 			= 4 * blocUnit;
-	self.slot		= 1;
+	self.slot		= definition.position;
 	self.y 			= Positions[definition.position];
 	self.img 		= new Image();
 	self.img.src 	= imgPath + "player" + definition.number + ".png";
@@ -385,23 +385,26 @@ function addAmplitudeAndArtefact() {
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[App.Player.number], App.Player.number);
 	canvasArtefacts.push(artefact);
 
-	if(App.Host.deathFlags.length > 0) {
+	if(App.mode == "solo") {
+		// TODO check for coop mode (it is actually a dirty fix)
 
-		if(time == App.Host.deathFlags[0]["AVG(duration)"]){
-			var deathFlag = new DeathFlag(0);
-			canvasDeathFlags.push(deathFlag);
-		}
-		
-		if(time == App.Host.deathFlags[1]["duration"]) {
-			var deathFlag = new DeathFlag(1);
-			canvasDeathFlags.push(deathFlag);
+		if(App.Host.deathFlags.length > 0) {
+	
+	
+			if(time == App.Host.deathFlags[0]["AVG(duration)"]){
+				var deathFlag = new DeathFlag(0);
+				canvasDeathFlags.push(deathFlag);
+			}
+			
+			if(time == App.Host.deathFlags[1]["duration"]) {
+				var deathFlag = new DeathFlag(1);
+				canvasDeathFlags.push(deathFlag);
+			}
 		}
 	}
 
-
 	time++;
-
-	console.log(time + "   " + App.Host.audioSpectrum.length);
+	// console.log(time + "   " + App.Host.audioSpectrum.length);
 
 	if(time >= App.Host.audioSpectrum.length) {
 		myGameArea.stopAddition();		
@@ -443,13 +446,13 @@ function startGame() {
 
 	myGameArea.start();
 
-	players.push(new Player(App.Players[0])); // Create a visual player with the definition from the back
-	if(App.mode == "coop") {
-		players.push(new Player(App.Players[1])); // Same for the second player
+	// Generate player visuals with the definition from the back
+	for(var i = 0; i < App.Players.length; i++) {
+		players.push(new Player(App.Players[i]));
 	}
 
+	// Handle energyBar only if the difficulty is easy or crazy
 	if(App.difficulty != "lazy") {
-		// Handle energyBar only if the difficulty is easy or crazy
 		energyBarSlot 	= new EnergyBarSlot();
 		energyBar		= new EnergyBar();
 	}
@@ -524,12 +527,11 @@ function startGame() {
 			x = e.pageX - rect.left;
 			y = e.pageY - rect.top;
 			console.log(x, y)
-			console.log("start verification")
 			if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 				for (var i = 0; i < 4; i++) {
 					if(buttons[i].clicked(y) == true) {
-						App.Player.position = i;
-						player.slot = i;
+						App.Players[App.Player.number].position = i;
+						players[App.Player.number].slot = i;
 					}
 				}
 			}
