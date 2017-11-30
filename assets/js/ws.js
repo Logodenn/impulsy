@@ -74,13 +74,16 @@ var IO = {
     // ***************************************************** //
 
     onNewPlayer: function(data) {
-        console.log(data + " has joined the room");
-        // console.log(data);
+        console.log(data.name + " has joined the room");
+        // TODO create a waiting/ready process
+        // But for now start right away the game
+        // Enable startGame button
+        document.querySelector("#startGameButton").attributes.state.value = "passive";
+        document.querySelector("#waitingRoomMessage").innerHTML = data.name + " is waiting for you!";
     },
 
     startGame: function() {
         console.log("Game starting");
-        // IO.socket.emit('startGame', null);
         IO.socket.emit('startGame');
     },
 
