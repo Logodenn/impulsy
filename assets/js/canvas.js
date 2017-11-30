@@ -445,6 +445,10 @@ function startGame() {
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
 	// document.querySelector("#artefactsToTake").innerHTML = App.energy;
+<<<<<<< HEAD
+=======
+	console.log(canvasArtefacts)
+>>>>>>> 557a0fd2921d898b2f27cbf6b4276e86e05b9ffa
 	document.querySelector("#artefactsToTake").innerHTML = App.Host.energy;
 
 	myGameArea.start();
