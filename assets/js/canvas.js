@@ -156,7 +156,7 @@ function Button(y) {
 
 // ******************** Artefact ******************** //
 
-function Artefact(slot) {
+function Artefact(slot, playerNumber) {
 	var self 		= this;
 	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
 	self.slot		= slot;
@@ -175,7 +175,7 @@ function Artefact(slot) {
 			break;
 	}
 	self.img 		= new Image();
-	self.img.src 	= imgPath + "artefact.png";
+	self.img.src 	= imgPath + "artefact" + playerNumber + ".png";
 	self.cpt		= 0;
 	self.update 	= function() {
 		self.cpt		+= 1;
@@ -382,10 +382,7 @@ function addAmplitudeAndArtefact() {
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
 	canvasBars.push(amplitude);
 
-	var playerNumber = 0; // TODO dynamize
-	// playerNumber = 1;
-
-	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
+	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[App.Player.number], App.Player.number);
 	canvasArtefacts.push(artefact);
 
 	if(App.Host.deathFlags.length > 0) {
@@ -432,10 +429,16 @@ function updateBlocUnit(canvasWidth) {
 // **************************************************************************************************** //
 
 function startGame() {
+
+	// Hide buttons
+	document.querySelector("#startButtons").classList.add("hidden");
+	// Display score
+	document.querySelector("#score").classList.remove("hidden");
 	
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
-	document.querySelector("#artefactsToTake").innerHTML = App.energy;
+	// document.querySelector("#artefactsToTake").innerHTML = App.energy;
+	document.querySelector("#artefactsToTake").innerHTML = canvasArtefacts.length;
 
 	myGameArea.start();
 
@@ -475,29 +478,29 @@ function startGame() {
 			case 65:
 				// Top
 				App.Players[App.Player.number].position = 0;
-				player.slot = 0;
+				players[App.Player.number].slot = 0;
 				break;
 			case 90:
 				// Midtop
 				App.Players[App.Player.number].position = 1;
-				player.slot = 1;
+				players[App.Player.number].slot = 1;
 				break;
 			case 69:
 				// Midbot
 				App.Players[App.Player.number].position = 2;
-				player.slot = 2;
+				players[App.Player.number].slot = 2;
 				break;
 			case 82:
 				// Bot
 				App.Players[App.Player.number].position = 3;
-				player.slot = 3;
+				players[App.Player.number].slot = 3;
 				break;
 			case 38:
 				// Up arrow
 				if(App.Players[App.Player.number].position != 0) {
 		
 					App.Players[App.Player.number].position--;
-					player.slot -= 1;
+					players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
@@ -505,7 +508,7 @@ function startGame() {
 				if(App.Players[App.Player.number].position != 3) {
 		
 					App.Players[App.Player.number].position++;
-					player.slot += 1;
+					players[App.Player.number].slot += 1;
 				}
 				break;
 		}
@@ -513,21 +516,23 @@ function startGame() {
 
 	// ******************** Player movement on click events ******************** //
 
-	// window.onclick = function(e) {
+	window.onclick = function(e) {
 
-	// 	//  Adapt the click coordinates to the canvas
-	// 	x = e.pageX - rect.left;
-	// 	y = e.pageY - rect.top;
+		
 
-	// 	if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
-	// 		for (var i = 0; i < 4; i++) {
-	// 			if(buttons[i].clicked(y) == true) {
-	// 				App.Player.position = i;
-	// 				player.slot = i;
-	// 			}
-	// 		}
-	// 	}
-	// }
+		//  Adapt the click coordinates to the canvas
+		x = e.pageX - rect.left;
+		y = e.pageY - rect.top;
+
+		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
+			for (var i = 0; i < 4; i++) {
+				if(buttons[i].clicked(y) == true) {
+					App.Player.position = i;
+					players[App.Player.number].slot = i;
+				}
+			}
+		}
+	}
 	
 	// ******************** Notify websocket ******************** //
 	App.Player.onMove();
