@@ -35,8 +35,6 @@ var App = {
 
 		clickStart: function () {
 			if(document.querySelector("#startGameButton").attributes.state.value != "disabled") {
-				
-                console.log('Clicked "Start A Game"');
                 IO.startGame();
 			}
         },
