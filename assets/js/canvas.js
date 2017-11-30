@@ -371,7 +371,7 @@ function updateGameArea() {
 		canvasDeathFlags[i].update();
 	}
 
-	if(App.difficulty != "lazy") {
+	if(App.Host.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -386,21 +386,22 @@ function addAmplitudeAndArtefact() {
 	canvasArtefacts.push(artefact);
 
 	if(App.Host.deathFlags.length > 0) {
-		// At least one person has died, that means that we have the two deathFlags
-		if(App.Host.deathFlags[0]["AVG(duration)"]){
-			// Mean deaths
+
+		if(time == App.Host.deathFlags[0]["AVG(duration)"]){
 			var deathFlag = new DeathFlag(0);
 			canvasDeathFlags.push(deathFlag);
 		}
+		
 		if(time == App.Host.deathFlags[1]["duration"]) {
-			// Furthest death
 			var deathFlag = new DeathFlag(1);
 			canvasDeathFlags.push(deathFlag);
 		}
-
 	}
 
+
 	time++;
+
+	console.log(time + "   " + App.Host.audioSpectrum.length);
 
 	if(time >= App.Host.audioSpectrum.length) {
 		myGameArea.stopAddition();		
@@ -463,7 +464,7 @@ function startGame() {
 		buttons.push(button);
 	} 
 
-	// ******************** Player movement on key events ******************** //
+	// ******************** Player movement ******************** //
 
 	window.onkeyup = function(e) {
 
@@ -512,48 +513,43 @@ function startGame() {
 				}
 				break;
 		}
+
+		// ******************** Notify websocket ******************** //
+		App.Player.onMove(App.Player.position);
 	}
-
-	// ******************** Player movement on click events ******************** //
-
-	window.onclick = function(e) {
-
-		
-
-		//  Adapt the click coordinates to the canvas
-		x = e.pageX - rect.left;
-		y = e.pageY - rect.top;
-
-		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
-			for (var i = 0; i < 4; i++) {
-				if(buttons[i].clicked(y) == true) {
-					App.Player.position = i;
-					players[App.Player.number].slot = i;
-				}
-			}
-		}
-	}
-	
-	// ******************** Notify websocket ******************** //
-	App.Player.onMove();
 }
 
 
+window.onclick = function(e) {
+	// Get the canvas's positions
+	var rect = myGameArea.canvas.getBoundingClientRect();
+
+	//  Adapt the click coordinates to the canvas
+	x = e.pageX - rect.left;
+	y = e.pageY - rect.top;
+	console.log(x, y)
+	console.log("start verification")
+	if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
+		for (var i = 0; i < 4; i++) {
+			if(buttons[i].clicked(y) == true) {
+				App.Player.position = i;
+				player.slot = i;
+			}
+		}
+	}
+	App.Player.onMove(App.Player.position);
+}
 
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
-	console.log(data);
 
-	if(App.difficulty != "lazy") {
+	if(App.Host.difficulty != "lazy") {
 		// Handle energy
 		energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
 		energyBarSlot.update();
 		energyBar.update();
 	}
-
-	// Update score
-	document.querySelector("#artefactsTaken").innerHTML = App.Player.takenArtefactsCount;
 
 	// Handle artefact checking
 	if(gameState.isArtefactTaken) {
@@ -563,6 +559,7 @@ function updateGameScene(data) {
 
 		// Write score in view
 		// document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+		document.querySelector("#artefactsTaken").innerHTML = App.Player.energy;
 
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
@@ -582,7 +579,6 @@ window.onresize = function() {
 }
 
 function endGame (data) {
-	console.log(data);
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length

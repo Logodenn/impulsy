@@ -51,18 +51,28 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
   } else {
     pageNumber = req.params.pageNumber;
   }
-  db.score.rank(pageNumber * lineNumberHOF,0, (err, ranks) => {
-    data.ranks=ranks
-    if (typeof req.user !== 'undefined') {
-      db.score.rankUser(req.user.pseudo,0, (err, userRank) => {
-        if (err) logger.error(err)
-        data.userTotalScore=userRank[0].score_total
-        data.userRank=userRank[0].rank
-        res.render('hallOfFame',data);
-      })
-    } else {
-      res.render('hallOfFame', data);
-    }
+  db.score.rank(pageNumber * lineNumberHOF,0, (err, ranksSolo) => {
+    if (err) logger.error(err)
+    data.ranksSolo=ranksSolo
+    db.score.rank(pageNumber * lineNumberHOF,1, (err, ranksCoop) => {
+      if (err) logger.error(err)
+      data.ranksCoop=ranksCoop
+      if (typeof req.user !== 'undefined') {
+        db.score.rankUser(req.user.pseudo,0, (err, userRankSolo) => {
+          if (err) logger.error(err)
+          db.score.rankUser(req.user.pseudo,1, (err, userRankCoop) => {
+            data.userCoopScore=userRankCoop[0].score_total
+            data.userRankCoop=userRankCoop[0].rank
+            data.userSoloScore=userRankSolo[0].score_total
+            data.userRankSolo=userRankSolo[0].rank
+            res.render('hallOfFame',data);
+          })
+        })
+      } else {
+        res.render('hallOfFame', data);
+      }
+
+    })
   });
 });
 
