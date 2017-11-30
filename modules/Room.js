@@ -239,7 +239,7 @@ module.exports = class Room {
         difficulty: this.difficulty,
         coop: coop
       }
-      
+
       db.user.bestScores(player.user.id, this.spectrum.id, coop, (err, bestScores) => {
         if (err) logger.error(err)
         if (bestScores.length !== 0) {
@@ -292,9 +292,16 @@ module.exports = class Room {
         }
       }
     }
+
+    let takenArtefactsCount = 0
+
+    for (let player in this.players) {
+      takenArtefactsCount += this.players[player].takenArtefactsCount
+    }
+
     return {
       bar: this.currentBar,
-      takenArtefactsCount: player.takenArtefactsCount,
+      takenArtefactsCount: takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,
       position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
