@@ -523,6 +523,8 @@ function startGame() {
 				break;
 		}
 
+		// ******************** Notify websocket ******************** //
+		App.Player.onMove();
 	}
 	
 	// ******************** Player movement on click event ******************** //
@@ -543,10 +545,10 @@ function startGame() {
 				}
 			}
 		}
+	
+		// ******************** Notify websocket ******************** //
+		App.Player.onMove();
 	}
-
-	// ******************** Notify websocket ******************** //
-	App.Player.onMove();
 }
 
 function updateGameScene(data) {
