@@ -445,7 +445,7 @@ function startGame() {
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
 	// document.querySelector("#artefactsToTake").innerHTML = App.energy;
-	document.querySelector("#artefactsToTake").innerHTML = canvasArtefacts.length;
+	document.querySelector("#artefactsToTake").innerHTML = App.Host.energy;
 
 	myGameArea.start();
 
@@ -556,6 +556,8 @@ function updateGameScene(data) {
 		energyBarSlot.update();
 		energyBar.update();
 	}
+
+	document.querySelector("#artefactsTaken").innerHTML = data.takenArtefactsCount;
 
 	// Handle artefact checking
 	if(gameState.isArtefactTaken) {
