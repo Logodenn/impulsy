@@ -6,8 +6,7 @@ module.exports = class Player {
     this.number = number
     this.id = socket.id
     this.takenArtefactsCount = 0
-
-    this._position = 0
+    this.position = number
 
     if (user.logged_in) {
       this.user = {}
@@ -28,6 +27,8 @@ module.exports = class Player {
     // Check if this position is possible
     if ([0, 1, 2, 3].includes(position)) {
       this._position = position
+    } else {
+      this._position = this._position || 1
     }
   }
 
