@@ -127,7 +127,8 @@ var IO = {
     // **************************************************** //
 
     onUpdateGame: function(data) {
-        console.log(data);
+        // console.log(data);
+        App.Host.energy = data.energy;
         App.Player.takenArtefactsCount = data.takenArtefactsCount
         updateScore();
         updateGameScene(data);
