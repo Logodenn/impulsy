@@ -371,11 +371,14 @@ function updateGameArea() {
 		canvasDeathFlags[i].update();
 	}
 
+	for (i = 0; i < players.length; i++) {
+		players[i].update();
+	}
+
 	if(App.Host.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
 	}
-	players[App.Player.number].update();
 }
 
 function addAmplitudeAndArtefact() {
@@ -446,6 +449,7 @@ function startGame() {
 
 	myGameArea.start();
 
+	console.log("KKKKK", App.Players.length);
 	// Generate player visuals with the definition from the back
 	for(var i = 0; i < App.Players.length; i++) {
 		players.push(new Player(App.Players[i]));
