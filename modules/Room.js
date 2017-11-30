@@ -148,7 +148,7 @@ module.exports = class Room {
     })
 
     player.socket.on('playerMove', (data) => {
-      player.position = data
+      player.position = data.position
 
       for (let playerId in self.players) {
         if (playerId !== player.id) {
