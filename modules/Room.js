@@ -227,14 +227,13 @@ module.exports = class Room {
   }
 
   addScore (player) {
-    var coop
     if (player.user) {
-      if (this.mode=='solo'){
-        coop=0
-      } else{
-        coop=1
+      let coop = 1
+
+      if (this.mode === 'solo') {
+        coop = 0
       }
-      logger.info('difficulty '+this.difficulty)
+
       const score = {
         duration: player.takenArtefactsCount,
         user_id: player.user.id,
