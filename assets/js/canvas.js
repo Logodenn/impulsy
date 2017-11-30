@@ -1,8 +1,9 @@
 // ******************** Canvas setup ******************** //
 
 var blocUnit = 0;
-const visualCoefficient = 50;
-const pulserWidth = 165;
+var visualCoefficient = 50;
+var energyBarCoefficient = 10;
+var pulserWidth = 165;
 const imgPath = "../img/canvas/";
 
 // How to read blocUnit
@@ -28,11 +29,11 @@ var Canvas = {
 // Used to move the player according to its numerical position, from 0 to 3
 var Positions = [Canvas.topSlot, Canvas.middleTopSlot, Canvas.middleTopSlot, Canvas.botSlot];
 
-var energyBar = {
-    height  : blocUnit * 0.5,
-    width   : null,
-    y		: blocUnit * 0
-}
+// var energyBar = {
+//     height  : blocUnit * 0.5,
+//     width   : null,
+//     y		: blocUnit * 0
+// }
 
 // ******************** Colors ******************** //
 
@@ -55,6 +56,7 @@ var time = 0;
 // ******************** Components ******************** //
 
 var players 			= [];
+var energyBar;
 var pulsers 			= [];
 var canvasBars 			= [];
 var canvasArtefacts 	= [];
@@ -268,19 +270,19 @@ function Amplitude(barDefinition) {
 
 function EnergyBarSlot() {
 
-	var computedX = (Canvas.width * 0.5) - (App.energy * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
 	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.energy * visualCoefficient;
-	this.height 	= energyBar.height;
+	this.width 		= App.Host.energy * energyBarCoefficient;
+	this.height 	= blocUnit * 0.5;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
 	this.update 	= function() {
-		computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
-		this.width 		= App.Player.energy * visualCoefficient;
-		this.height 	= energyBar.height;
-		this.x			= computedX;
+		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
+		// this.width 		= App.Host.energy * energyBarCoefficient;
+		this.height 	= blocUnit * 0.5;
+		// this.x			= computedX;
 		this.y 			= blocUnit * 0;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -295,18 +297,20 @@ function EnergyBarSlot() {
 
 function EnergyBar() {
 
-	var computedX = (Canvas.width * 0.5) - (App.energy * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
 
 	this.color 		= COLOR.energyBar;
-	this.width 		= App.energy * visualCoefficient;
-	this.height 	= energyBar.height;
+	this.width 		= App.Host.energy * energyBarCoefficient;
+	this.height 	= blocUnit * 0.5;
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
 	this.update 	= function() {
-		computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
-		this.width 		= App.Player.energy * visualCoefficient;
-		this.height 	= energyBar.height;
-		this.x			= computedX;
+		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
+		// computedX = Canvas.width * 0.5;
+
+		this.width 		= App.Host.energy * energyBarCoefficient;
+		this.height 	= blocUnit * 0.5;
+		// this.x			= computedX;
 		this.y 			= blocUnit  * 0;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -375,7 +379,7 @@ function updateGameArea() {
 		players[i].update();
 	}
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -426,9 +430,8 @@ function updateBlocUnit(canvasWidth) {
 	Canvas.middleBotSlot	= 4 * blocUnit;
 	Canvas.botSlot			= 5 * blocUnit;
 
-	energyBar.height  = blocUnit * 0.5;
-    energyBar.width   = null;
-    energyBar.y		= blocUnit * 0;
+	// energyBar.height  	= blocUnit * 0.5;
+    // energyBar.y			= blocUnit * 0;
 }
 
 // ****************************************************************************************************** //
@@ -444,7 +447,7 @@ function startGame() {
 	
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
-	// document.querySelector("#artefactsToTake").innerHTML = App.energy;
+	// document.querySelector("#artefactsToTake").innerHTML = App.Host.energy;
 	document.querySelector("#artefactsToTake").innerHTML = canvasArtefacts.length;
 
 	myGameArea.start();
@@ -520,39 +523,41 @@ function startGame() {
 				break;
 		}
 
-		// ******************** Player movement on click event ******************** //
-		
-		window.onclick = function(e) {
-			// Get the canvas's positions
-			var rect = myGameArea.canvas.getBoundingClientRect();
-		
-			//  Adapt the click coordinates to the canvas
-			x = e.pageX - rect.left;
-			y = e.pageY - rect.top;
-			console.log(x, y)
-			if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
-				for (var i = 0; i < 4; i++) {
-					if(buttons[i].clicked(y) == true) {
-						App.Players[App.Player.number].position = i;
-						players[App.Player.number].slot = i;
-					}
+	}
+	
+	// ******************** Player movement on click event ******************** //
+	
+	window.onclick = function(e) {
+		// Get the canvas's positions
+		var rect = myGameArea.canvas.getBoundingClientRect();
+	
+		//  Adapt the click coordinates to the canvas
+		x = e.pageX - rect.left;
+		y = e.pageY - rect.top;
+		console.log(x, y)
+		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
+			for (var i = 0; i < 4; i++) {
+				if(buttons[i].clicked(y) == true) {
+					App.Players[App.Player.number].position = i;
+					players[App.Player.number].slot = i;
 				}
 			}
 		}
-
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
 	}
+
+	// ******************** Notify websocket ******************** //
+	App.Player.onMove();
 }
 
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
 
-	if(App.Host.difficulty != "lazy") {
+	if(App.difficulty != "lazy") {
 		// Handle energy
-		energyBar.width = gameState.energy * visualCoefficient;
-		console.log("energy",energyBar.width);
+		// energyBar.width = gameState.energy * energyBarCoefficient;
+		// energyBar.width = gameState.energy * visualCoefficient;
+		console.log("energy", energyBar.width);
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -588,12 +593,14 @@ function updateScore() {
 }
 
 function endGame (data) {
+	// Dirty dirty dirty fix
+	energyBar.width = 0; // Otherwirse we don't recieve the last energy loss, so we have a yellow part that still holds on
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
 		document.querySelector("#gameState").innerHTML = data.score;
 	} else {
-		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.energy + " artefacts!";
+		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Host.energy + " artefacts!";
 	}
 	// Show pop up
 	document.querySelector("#endGameLayer").classList.remove("hidden");
