@@ -118,7 +118,7 @@ module.exports = class Spectrum {
               this.deathFlags.push(mean[0])
             }
 
-            db.score.bestScoresTrack(id, (err, best) => {
+            db.score.bestScoresTrack(id, coop, (err, best) => {
               if (err) logger.error(err)
               else {
                 if (best.length > 0) {
