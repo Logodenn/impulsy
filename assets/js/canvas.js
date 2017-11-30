@@ -3,6 +3,7 @@
 var blocUnit = 0;
 const visualCoefficient = 50;
 const pulserWidth = 165;
+const imgPath = "../img/canvas/";
 
 // How to read blocUnit
 // 0 * blocUnit energyBar and deathFlags
@@ -23,6 +24,9 @@ var Canvas = {
 	middleBotSlot	: 4 * blocUnit,
 	botSlot			: 5 * blocUnit,
 }
+
+// Used to move the player according to its numerical position, from 0 to 3
+var Positions = [Canvas.topSlot, Canvas.middleTopSlot, Canvas.middleTopSlot, Canvas.botSlot];
 
 var energyBar = {
     height  : blocUnit * 0.5,
@@ -50,7 +54,7 @@ var time = 0;
 
 // ******************** Components ******************** //
 
-var player;
+var players 			= [];
 var pulsers 			= [];
 var canvasBars 			= [];
 var canvasArtefacts 	= [];
@@ -60,20 +64,20 @@ var buttons				= [];
 // ******************** Images ******************** //
 
 var imgArtefact = new Image();
-imgArtefact.src = "../img/artefact.png";
+imgArtefact.src = imgPath + "artefact.png";
 
 var imgArtefactTaken = new Image();
-imgArtefactTaken.src = "../img/artefactTaken.png";
+imgArtefactTaken.src = imgPath + "artefactTaken.png";
 
 // ******************** Player ******************** //
 
-function Player() {
+function Player(definition) {
 	var self = this;
 	self.x 			= 4 * blocUnit;
-	self.slot		= 1;
-	self.y 			= Canvas.middleTopSlot;
+	self.slot		= definition.position;
+	self.y 			= Positions[definition.position];
 	self.img 		= new Image();
-	self.img.src 	= "../img/unicorn.png";
+	self.img.src 	= imgPath + "player" + definition.number + ".png";
 	self.update 	= function() {
 		self.x 			= 4 * blocUnit;
 		self.y 			= Canvas.topSlot + self.slot * blocUnit;
@@ -92,7 +96,7 @@ function Pulsers(i) {
 	self.x 			= myGameArea.canvas.width - blocUnit;
 	self.y 			= Canvas.topSlot + self.index * blocUnit;
 	self.img 		= new Image();
-	self.img.src 	= "../img/pulser.png";
+	self.img.src 	= imgPath + "pulser.png";
 	self.update 	= function() {
 		self.x 			= myGameArea.canvas.width - blocUnit;
 		self.y 			= Canvas.topSlot + self.index * blocUnit;
@@ -110,8 +114,7 @@ function DeathFlag(type) {
 	//self.y 			= Canvas.botSlot;
 	self.y 			= Canvas.deathFlags;
 	self.img 		= new Image();
-	self.img.src 	= type == 0 ? "../img/deadFlagsAverage.png" : "../img/deadFlagBest.png";
-	self.cpt		= 0;
+	self.img.src 	= type == 0 ? imgPath + "deathFlagsAverage.png" : imgPath + "deathFlagBest.png";
 	self.update 	= function() {
 		self.cpt 		+= 1;
 		self.y 			= Canvas.deathFlags;
@@ -153,7 +156,7 @@ function Button(y) {
 
 // ******************** Artefact ******************** //
 
-function Artefact(slot) {
+function Artefact(slot, playerNumber) {
 	var self 		= this;
 	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
 	self.slot		= slot;
@@ -172,7 +175,7 @@ function Artefact(slot) {
 			break;
 	}
 	self.img 		= new Image();
-	self.img.src 	= "../img/artefact.png";
+	self.img.src 	= imgPath + "artefact" + playerNumber + ".png";
 	self.cpt		= 0;
 	self.update 	= function() {
 		self.cpt		+= 1;
@@ -265,10 +268,10 @@ function Amplitude(barDefinition) {
 
 function EnergyBarSlot() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.energy * 0.5 * visualCoefficient);
 	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.Player.energy * visualCoefficient;
+	this.width 		= App.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	// this.x 			= Canvas.width / 10;
 	this.x			= computedX;
@@ -292,10 +295,10 @@ function EnergyBarSlot() {
 
 function EnergyBar() {
 
-	var computedX = (Canvas.width * 0.5) - (App.Player.energy * 0.5 * visualCoefficient);
+	var computedX = (Canvas.width * 0.5) - (App.energy * 0.5 * visualCoefficient);
 
 	this.color 		= COLOR.energyBar;
-	this.width 		= App.Player.energy * visualCoefficient;
+	this.width 		= App.energy * visualCoefficient;
 	this.height 	= energyBar.height;
 	this.x			= computedX;
 	this.y 			= blocUnit * 0;
@@ -330,9 +333,6 @@ var myGameArea = {
 		updateBlocUnit(this.canvas.width);
 
 		document.querySelector("#canvasWrapper").appendChild(this.canvas);
-
-		// Show the up and down buttons - is hidden if media query is browser
-		document.querySelector("#moveButtons").classList.remove("hidden");
 
 		// ******************** Interval setup ******************** //
 
@@ -371,36 +371,43 @@ function updateGameArea() {
 		canvasDeathFlags[i].update();
 	}
 
+	for (i = 0; i < players.length; i++) {
+		players[i].update();
+	}
+
 	if(App.Host.difficulty != "lazy") {
 		energyBarSlot.update();
 		energyBar.update();
 	}
-	player.update();
 }
 
 function addAmplitudeAndArtefact() {
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
 	canvasBars.push(amplitude);
 
-	var playerNumber = 0; // TODO dynamize
-	// playerNumber = 1;
-
-	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[playerNumber]);
+	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[App.Player.number], App.Player.number);
 	canvasArtefacts.push(artefact);
 
-    if(App.Host.deathFlags.length > 0 && time == App.Host.deathFlags[0]["AVG(duration)"]){
-        var deathFlag = new DeathFlag(0);
-		canvasDeathFlags.push(deathFlag);
-	}
+	if(App.mode == "solo") {
+		// TODO check for coop mode (it is actually a dirty fix)
+
+		if(App.Host.deathFlags.length > 0) {
 	
-    if(App.Host.deathFlags.length > 0 && time == App.Host.deathFlags[1]["duration"]) {
-        var deathFlag = new DeathFlag(1);
-		canvasDeathFlags.push(deathFlag);
-    }
+	
+			if(time == App.Host.deathFlags[0]["AVG(duration)"]){
+				var deathFlag = new DeathFlag(0);
+				canvasDeathFlags.push(deathFlag);
+			}
+			
+			if(time == App.Host.deathFlags[1]["duration"]) {
+				var deathFlag = new DeathFlag(1);
+				canvasDeathFlags.push(deathFlag);
+			}
+		}
+	}
 
 	time++;
-
-	console.log(time + "   " + App.Host.audioSpectrum.length);
+	// console.log(time + "   " + App.Host.audioSpectrum.length);
 
 	if(time >= App.Host.audioSpectrum.length) {
 		myGameArea.stopAddition();		
@@ -429,17 +436,27 @@ function updateBlocUnit(canvasWidth) {
 // **************************************************************************************************** //
 
 function startGame() {
+
+	// Hide buttons
+	document.querySelector("#startButtons").classList.add("hidden");
+	// Display score
+	document.querySelector("#score").classList.remove("hidden");
 	
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
-	document.querySelector("#artefactsToTake").innerHTML = App.Player.energy;
+	// document.querySelector("#artefactsToTake").innerHTML = App.energy;
+	document.querySelector("#artefactsToTake").innerHTML = canvasArtefacts.length;
 
 	myGameArea.start();
 
-	player = new Player();
-	console.log(App.Host.difficulty);
-	if(App.Host.difficulty != "lazy") {
-		// Handle energyBar only if ht edifficulty is easy or crazy
+	console.log("KKKKK", App.Players.length);
+	// Generate player visuals with the definition from the back
+	for(var i = 0; i < App.Players.length; i++) {
+		players.push(new Player(App.Players[i]));
+	}
+
+	// Handle energyBar only if the difficulty is easy or crazy
+	if(App.difficulty != "lazy") {
 		energyBarSlot 	= new EnergyBarSlot();
 		energyBar		= new EnergyBar();
 	}
@@ -454,7 +471,7 @@ function startGame() {
 		buttons.push(button);
 	} 
 
-	// ******************** Player movement ******************** //
+	// ******************** Player movement on key event ******************** //
 
 	window.onkeyup = function(e) {
 
@@ -468,66 +485,65 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				App.Player.position = 0;
-				player.slot = 0;
+				App.Players[App.Player.number].position = 0;
+				players[App.Player.number].slot = 0;
 				break;
 			case 90:
 				// Midtop
-				App.Player.position = 1;
-				player.slot = 1;
+				App.Players[App.Player.number].position = 1;
+				players[App.Player.number].slot = 1;
 				break;
 			case 69:
 				// Midbot
-				App.Player.position = 2;
-				player.slot = 2;
+				App.Players[App.Player.number].position = 2;
+				players[App.Player.number].slot = 2;
 				break;
 			case 82:
 				// Bot
-				App.Player.position = 3;
-				player.slot = 3;
+				App.Players[App.Player.number].position = 3;
+				players[App.Player.number].slot = 3;
 				break;
 			case 38:
 				// Up arrow
-				if(App.Player.position != 0) {
+				if(App.Players[App.Player.number].position != 0) {
 		
-					App.Player.position--;
-					player.slot -= 1;
+					App.Players[App.Player.number].position--;
+					players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
-				if(App.Player.position != 3) {
+				if(App.Players[App.Player.number].position != 3) {
 		
-					App.Player.position++;
-					player.slot += 1;
+					App.Players[App.Player.number].position++;
+					players[App.Player.number].slot += 1;
 				}
 				break;
 		}
 
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove(App.Player.position);
-	}
-}
-
-
-window.onclick = function(e) {
-	// Get the canvas's positions
-	var rect = myGameArea.canvas.getBoundingClientRect();
-
-	//  Adapt the click coordinates to the canvas
-	x = e.pageX - rect.left;
-	y = e.pageY - rect.top;
-	console.log(x, y)
-	console.log("start verification")
-	if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
-		for (var i = 0; i < 4; i++) {
-			if(buttons[i].clicked(y) == true) {
-				App.Player.position = i;
-				player.slot = i;
+		// ******************** Player movement on click event ******************** //
+		
+		window.onclick = function(e) {
+			// Get the canvas's positions
+			var rect = myGameArea.canvas.getBoundingClientRect();
+		
+			//  Adapt the click coordinates to the canvas
+			x = e.pageX - rect.left;
+			y = e.pageY - rect.top;
+			console.log(x, y)
+			if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
+				for (var i = 0; i < 4; i++) {
+					if(buttons[i].clicked(y) == true) {
+						App.Players[App.Player.number].position = i;
+						players[App.Player.number].slot = i;
+					}
+				}
 			}
 		}
+
+		// ******************** Notify websocket ******************** //
+		App.Player.onMove();
 	}
-	App.Player.onMove(App.Player.position);
 }
 
 function updateGameScene(data) {
@@ -568,43 +584,13 @@ window.onresize = function() {
 	} 
 }
 
-function onTabletMove(direction) {
-	// TODO
-	// it's a dirty way to do this
-	// centralize the keyListeners and the buttonMoveListener
-
-	console.log(direction);
-
-	switch(direction) {
-		case 'up':
-			// Up arrow
-			if(App.Player.position != 0) {
-				
-				App.Player.position--;
-				player.y -= smallBar.height / 2;
-			}
-			break;
-		case 'down':
-			// Down arrow
-			if(App.Player.position != 3) {
-				
-				App.Player.position++;
-				player.y += smallBar.height / 2;
-			}
-			break;
-	}
-
-	// ******************** Notify websocket ******************** //
-	App.Player.onMove(App.Player.position);
-}
-
 function endGame (data) {
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
 		document.querySelector("#gameState").innerHTML = data.score;
 	} else {
-		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Player.energy + " artefacts!";
+		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.energy + " artefacts!";
 	}
 	// Show pop up
 	document.querySelector("#endGameLayer").classList.remove("hidden");

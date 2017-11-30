@@ -74,13 +74,17 @@ var IO = {
     // ***************************************************** //
 
     onNewPlayer: function(data) {
-        console.log(data + " has joined the room");
-        // console.log(data);
+        console.log(data.name + " has joined the room");
+        // TODO create a waiting/ready process
+        // But for now start right away the game
+        // Enable startGame button
+        App.Players.push(data);
+        document.querySelector("#startGameButton").attributes.state.value = "passive";
+        document.querySelector("#waitingRoomMessage").innerHTML = data.name + " is waiting for you!";
     },
 
     startGame: function() {
-        console.log("Game starting");
-        // IO.socket.emit('startGame', null);
+        // console.log("Game starting");
         IO.socket.emit('startGame');
     },
 
@@ -99,16 +103,22 @@ var IO = {
     // ****************************************************** //
 
     playerMove: function(data) {
-        // console.log("player " + data.number + " moved to: " + data.position);
-        console.log("player moved to: " + data);
+        // Notify back that self moved
+        // console.log("Player " + data.number + " has movedlayer moved to: " + data.position);
         IO.socket.emit('playerMove', data);		
+    },
+
+    onPlayerMove: function(data) {
+        // Update canvas because one player (self or the other) has moved
+        console.log("Player " + data.number + " has moved to: " + data.position);
+        players[data.number].update();		
     },
 
     onCoopMove: function(data) {
         console.log("Your teammate moved to:", data)
         // TODO notify self that the other player has moved
         // if(data.number != yourself) {
-            player.update();		
+            players[data.number].update();		
         // }
     },
 
