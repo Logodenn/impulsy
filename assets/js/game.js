@@ -38,13 +38,6 @@ var App = {
 				
                 console.log('Clicked "Start A Game"');
                 IO.startGame();
-
-                // Hide buttons
-                //document.querySelector("#difficultyButtons").classList.add("hidden");
-                document.querySelector("#startButtons").classList.add("hidden");
-
-                // Display score
-                document.querySelector("#score").classList.remove("hidden");
 			}
         },
 
