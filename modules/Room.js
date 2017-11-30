@@ -93,14 +93,13 @@ module.exports = class Room {
           this.stop()
         }
 
-        for (let key in this.players) {
-          const player = this.players[key]
-
-          if (this.currentBar >= this.spectrum.bars.length) {
-            this.win(player)
-          } else if (this.energy <= 0) {
-            this.lose(player)
-          } else {
+        if (this.currentBar >= this.spectrum.bars.length) {
+          this.win()
+        } else if (this.energy <= 0) {
+          this.lose()
+        } else {
+          for (let key in this.players) {
+            const player = this.players[key]
             const data = this.check(player)
 
             for (var playerId in this.players) {
@@ -191,36 +190,40 @@ module.exports = class Room {
     }
   }
 
-  win (player) {
-    logger.info(`Game in room ${this.id}: Player ${player.socket.id} won`)
+  win () {
+    logger.info(`Game in room ${this.id} is won`)
 
     // Stop the game loop
     this.stop()
 
-    player.socket.emit('gameOver', {
-      'win': true,
-      'score': player.takenArtefactsCount,
-      'max': this.energy
-    })
+    for (let player in this.players) {
+      this.players[player].socket.emit('gameOver', {
+        'win': true,
+        'score': player.takenArtefactsCount,
+        'max': this.energy
+      })
 
-    // This is, for now, done sytematically. It might be better to ask the user before adding the score
-    this.addScore(player)
+      // This is, for now, done sytematically. It might be better to ask the user before adding the score
+      this.addScore(player)
+    }
   }
 
-  lose (player) {
-    logger.info(`Game in room ${this.id}: Player ${player.socket.id} lost`)
+  lose () {
+    logger.info(`Game in room ${this.id} is lost`)
 
     // Stop the game loop
     this.stop()
 
-    player.socket.emit('gameOver', {
-      'win': false,
-      'score': player.takenArtefactsCount,
-      'max': this.energy
-    })
+    for (let player in this.players) {
+      this.players[player].socket.emit('gameOver', {
+        'win': true,
+        'score': player.takenArtefactsCount,
+        'max': this.energy
+      })
 
-    // This is, for now, done sytematically. It might be better to ask the user before adding the score
-    this.addScore(player)
+      // This is, for now, done sytematically. It might be better to ask the user before adding the score
+      this.addScore(player)
+    }
   }
 
   addScore (player) {
