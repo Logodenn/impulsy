@@ -19,8 +19,8 @@
 
         <section class="content">
 
-            <div id="startButtons" class="buttonWrapper">
-                {{!-- <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button> --}}
+            <div id="startButtons" class="buttonWrapper flex-col">
+                <span id="waitingRoomMessage">Ready?</span>
                 <button id="startGameButton" class="button" state="disabled" onclick="App.Host.clickStart()">Start game</button>
             </div>
 
@@ -29,11 +29,6 @@
             </div>
 
             <div id="canvasWrapper"></div>
-
-            <div id="moveButtons" class="flex-row hidden">
-                <button id="upwardButton" class="button hidden" state="passive" onclick="onTabletMove('up')">Up</button>
-                <button id="downwardButton" class="button hidden" state="passive" onclick="onTabletMove('down')">Do</button>
-            </div>
 
             {{!-- ENDGAME LAYER --}}
 

@@ -34,4 +34,12 @@ module.exports = class Player {
   get position () {
     return this._position
   }
+
+  get metadata () {
+    return {
+      name: this.name,
+      number: this.number,
+      position: this.position
+    }
+  }
 }
