@@ -121,10 +121,10 @@ function favoriteTrack(button) {
 function playAgain() {
 
     var action = "/room";
-    /*var data = new FormData();
+    var data = new FormData();
     data.append('trackId', App.Host.trackId.toString());
     data.append('difficulty', App.difficulty.toString());
-    data.append('mode', App.mode.toString);*/
+    data.append('mode', App.mode.toString);
     var gameData = {
         trackId     : App.Host.trackId,
         difficulty  : App.difficulty,
