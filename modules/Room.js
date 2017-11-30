@@ -130,7 +130,7 @@ module.exports = class Room {
 
     for (var playerId in this.players) {
       if (playerId !== clientSocket.id) {
-        this.players[playerId].socket.emit('newPlayer', this.players[clientSocket.id].name)
+        this.players[playerId].socket.emit('newPlayer', this.players[clientSocket.id].metadata)
       }
     }
   }
@@ -303,6 +303,8 @@ module.exports = class Room {
   }
 
   getMetaData (player) {
+    let players = Object.keys(this.players).map(idx => this.players[idx].metadata)
+
     return {
       id: this.id,
       position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -312,7 +314,8 @@ module.exports = class Room {
       mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       artefacts: this.artefacts,
-      energy: this.energy // duration of the music
+      energy: this.energy, // duration of the music
+      players: players
     }
   }
 

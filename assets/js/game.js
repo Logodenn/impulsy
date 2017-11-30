@@ -1,4 +1,5 @@
 
+
 // ******************** App ******************** //
 
 var App = {
@@ -34,16 +35,7 @@ var App = {
 
 		clickStart: function () {
 			if(document.querySelector("#startGameButton").attributes.state.value != "disabled") {
-				
-                console.log('Clicked "Start A Game"');
                 IO.startGame();
-
-                // Hide buttons
-                //document.querySelector("#difficultyButtons").classList.add("hidden");
-                document.querySelector("#startButtons").classList.add("hidden");
-
-                // Display score
-                document.querySelector("#score").classList.remove("hidden");
 			}
         },
 
@@ -65,12 +57,18 @@ var App = {
             // Logic
             App.Host.audioSpectrum 	    = game.spectrum.bars.slice(0);
             App.Host.deathFlags         = game.spectrum.deathFlags.slice(0);
-            App.Player.energy           = game.energy;
-            App.Player.position 	    = game.position;
+            App.Host.energy             = game.energy;
+            
+            // Players
+            App.Players                 = game.players.slice(0);
             App.Player.number           = game.playerNumber;
             App.Player.takenArtefactsCount = 0;
 
-			document.querySelector("#startGameButton").attributes.state.value = "passive";
+            if(App.mode == "coop") {
+                document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for a second player...";
+            } else {
+                document.querySelector("#startGameButton").attributes.state.value = "passive";
+            }
         }
 	},
 
@@ -80,11 +78,14 @@ var App = {
         // position: 1,
         // This Player object is used to transit data through the WS
 
-		onMove : function(data) {
+		onMove : function() {
             // Notify WS
-            IO.playerMove(App.Player.position);
-            // IO.socket.emit('playerMove', {playerPosition: App.Player.position});
-            player.update();
+            var data = {
+                number: App.Player.number,
+                position: App.Players[App.Player.number].position
+            }
+            IO.playerMove(data);
+            // player.update();
         },
         
         // In case the player does not move but the position is right
