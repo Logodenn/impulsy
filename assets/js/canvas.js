@@ -449,7 +449,6 @@ function startGame() {
 
 	myGameArea.start();
 
-	console.log("KKKKK", App.Players.length);
 	// Generate player visuals with the definition from the back
 	for(var i = 0; i < App.Players.length; i++) {
 		players.push(new Player(App.Players[i]));
@@ -552,7 +551,8 @@ function updateGameScene(data) {
 
 	if(App.Host.difficulty != "lazy") {
 		// Handle energy
-		energyBar.width = gameState.energy * visualCoefficient; // TODO this should be done in .update()
+		energyBar.width = gameState.energy * visualCoefficient;
+		console.log("energy",energyBar.width);
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -562,10 +562,6 @@ function updateGameScene(data) {
 
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
-
-		// Write score in view
-		// document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
-		document.querySelector("#artefactsTaken").innerHTML = App.Player.energy;
 
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
@@ -582,6 +578,13 @@ window.onresize = function() {
 		buttons[i].update();
 		console.log("button updated");
 	} 
+}
+
+function updateScore() {
+	// Write score in view
+	// document.querySelector("#artefactsTaken").innerHTML = App.Player.artefactsTaken.length;
+	document.querySelector("#artefactsTaken").innerHTML = "hey dude";
+	// TODO
 }
 
 function endGame (data) {
