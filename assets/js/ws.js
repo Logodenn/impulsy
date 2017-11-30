@@ -78,6 +78,7 @@ var IO = {
         // TODO create a waiting/ready process
         // But for now start right away the game
         // Enable startGame button
+        App.Players.push(data);
         document.querySelector("#startGameButton").attributes.state.value = "passive";
         document.querySelector("#waitingRoomMessage").innerHTML = data.name + " is waiting for you!";
     },
