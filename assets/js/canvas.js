@@ -397,7 +397,6 @@ function addAmplitudeAndArtefact() {
 
 		if(App.Host.deathFlags.length > 0) {
 	
-	
 			if(time == App.Host.deathFlags[0]["AVG(duration)"]){
 				var deathFlag = new DeathFlag(0);
 				canvasDeathFlags.push(deathFlag);
@@ -523,8 +522,6 @@ function startGame() {
 				break;
 		}
 
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
 	}
 	
 	// ******************** Player movement on click event ******************** //
@@ -545,10 +542,10 @@ function startGame() {
 				}
 			}
 		}
-	
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
 	}
+
+	// ******************** Notify websocket ******************** //
+	App.Player.onMove();
 }
 
 function updateGameScene(data) {
@@ -599,6 +596,7 @@ function updateScore() {
 function endGame (data) {
 	// Dirty dirty dirty fix
 	energyBar.width = 0; // Otherwirse we don't recieve the last energy loss, so we have a yellow part that still holds on
+	energyBar.update();
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
