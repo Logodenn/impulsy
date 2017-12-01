@@ -2,12 +2,12 @@
 	text-transform: uppercase;
 	text-align: center;
 	font-size: 2.5rem;
-	color: font-light;
-	/* color: focus; */
+	color: $font-light;
+	/* color: $focus; */
 	background-size: 1000% 1000%;
 	animation: rainbow 18s ease infinite;
 
-	/* color: transparent;
+	/* color: $transparent;
 	//background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3;
 	background: linear-gradient(124deg,#b928bd, #11CADC, #FAC32C;
 	background-size: 1000% 1000%;
