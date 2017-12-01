@@ -11,70 +11,69 @@
 
         {{> menu hallOfFame="true" }}
 
-        <section class="content">
+        <h1 class="title">Hall of fame</h1>
 
-            <h1 class="title">Hall of fame</h1>
+        <section class="content flex-row">
+            <section>
+                <h2 class="title">Solo mode</h2>
 
-            <h2 class="title">Solo mode</h2>
-
-            <table>
-                {{!-- TODO handle case where table is huge --}}
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Player</th>
-                        <th>Cumulated score</th>
-                    </tr>
-                </thead>
-                <tbody id="rank">
-                    {{#each ranksSolo}}
+                <table>
+                    {{!-- TODO handle case where table is huge --}}
+                    <thead>
                         <tr>
-                            <td>{{rank}}</td>
-                            <td>{{pseudo}}</td>
-                            <td>{{score_total}}</td>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Cumulated score</th>
                         </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="rank">
+                        {{#each ranksSolo}}
+                            <tr>
+                                <td>{{rank}}</td>
+                                <td>{{pseudo}}</td>
+                                <td>{{score_total}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
 
-            {{#if userConnected}}
-                <div id="userData" class="flex-col">
-                    <span>Your cumulated score is {{userSoloScore}}</span>
-                    <span>Your rank is {{userRankSolo}}</span>
-                </div>
-            {{/if}}
+                {{#if userConnected}}
+                    <div id="userData" class="flex-col">
+                        <span>Your cumulated score is {{userSoloScore}}</span>
+                        <span>Your rank is {{userRankSolo}}</span>
+                    </div>
+                {{/if}}
+            </section>
+            <section>
+                <h2 class="title">Cooperation mode</h2>
 
-            <h2 class="title">Cooperation mode</h2>
-
-            <table>
-                {{!-- TODO handle case where table is huge --}}
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Player</th>
-                        <th>Cumulated score</th>
-                    </tr>
-                </thead>
-                <tbody id="rank">
-                    {{#each ranksCoop}}
+                <table>
+                    {{!-- TODO handle case where table is huge --}}
+                    <thead>
                         <tr>
-                            <td>{{rank}}</td>
-                            <td>{{pseudo}}</td>
-                            <td>{{score_total}}</td>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Cumulated score</th>
                         </tr>
-                    {{/each}}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="rank">
+                        {{#each ranksCoop}}
+                            <tr>
+                                <td>{{rank}}</td>
+                                <td>{{pseudo}}</td>
+                                <td>{{score_total}}</td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
 
-            {{#if userConnected}}
-                <div id="userData" class="flex-col">
-                    <span>Your cumulated score is {{userCoopScore}}</span>
-                    <span>Your rank is {{userRankCoop}}</span>
-                </div>
-            {{/if}}
-
+                {{#if userConnected}}
+                    <div id="userData" class="flex-col">
+                        <span>Your cumulated score is {{userCoopScore}}</span>
+                        <span>Your rank is {{userRankCoop}}</span>
+                    </div>
+                {{/if}}
+            </section>
         </section>
-        
     </body>
-    <script src="js/hallOfFame.js"></script>
 </html>
