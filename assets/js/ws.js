@@ -61,7 +61,7 @@ var IO = {
 
         IO.socket.on('newPlayer', IO.onNewPlayer);
         IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('coopMove', IO.onCoopMove);
+        IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
         IO.socket.on('missedArtefact', IO.onMissedArtefact);
         IO.socket.on('gameOver', IO.onEndOfGame);
@@ -111,6 +111,7 @@ var IO = {
     onPlayerMove: function(data) {
         // Update canvas because one player (self or the other) has moved
         console.log("Player " + data.number + " has moved to: " + data.position);
+        players[data.number].slot = data.position
         players[data.number].update();		
     },
 
@@ -127,11 +128,13 @@ var IO = {
     // **************************************************** //
 
     onUpdateGame: function(data) {
-        // console.log(data);
+        console.log(data);
         App.Host.energy = data.energy;
         App.Player.takenArtefactsCount = data.takenArtefactsCount
+
         updateScore();
         updateGameScene(data);
+
     },
 
     onMissedArtefact: function(data) {
