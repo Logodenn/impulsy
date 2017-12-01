@@ -87,13 +87,13 @@ module.exports = class Room {
 
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
-        logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length}`)
+        logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
 
         if (this.players.length === 0) {
           this.stop()
         }
 
-        if (this.currentBar >= this.spectrum.bars.length) {
+        if (this.currentBar >= this.spectrum.bars.length - 1) {
           this.win()
         } else if (this.energy <= 0) {
           this.lose()
@@ -208,7 +208,7 @@ module.exports = class Room {
     for (let player in this.players) {
       this.players[player].socket.emit('gameOver', {
         'win': true,
-        'score': player.takenArtefactsCount,
+        'score': this.takenArtefactsCount,
         'max': this.energy
       })
 
@@ -226,7 +226,7 @@ module.exports = class Room {
     for (let player in this.players) {
       this.players[player].socket.emit('gameOver', {
         'win': true,
-        'score': player.takenArtefactsCount,
+        'score': this.takenArtefactsCount,
         'max': this.energy
       })
 
@@ -304,15 +304,9 @@ module.exports = class Room {
       }
     }
 
-    let takenArtefactsCount = 0
-
-    for (let player in this.players) {
-      takenArtefactsCount += this.players[player].takenArtefactsCount
-    }
-
     return {
       bar: this.currentBar,
-      takenArtefactsCount: takenArtefactsCount,
+      takenArtefactsCount: this.takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,
       position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -345,5 +339,15 @@ module.exports = class Room {
       spectrum: this.spectrum,
       energy: this.energy // duration of the music
     }
+  }
+
+  get takenArtefactsCount () {
+    let takenArtefactsCount = 0
+
+    for (let player in this.players) {
+      takenArtefactsCount += this.players[player].takenArtefactsCount
+    }
+
+    return takenArtefactsCount
   }
 }
