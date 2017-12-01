@@ -2,7 +2,7 @@
 // @import '../main.scss';
 
 h2.title {
-    border-bottom: solid 3px var(--color-background-light);
+    border-bottom: solid 3px background-light;
     border-radius: 3px;
     margin-bottom: 10px;    
 }
@@ -13,17 +13,17 @@ h2.title {
 }
 
 .button label{
-    color: var(--color-background);
+    color: background;
 }
 
 #ytSearch .track {
     border: 0;
     /* padding: 20px 40px; */
     width: 280px;
-    /* background: var(--color-active); */
+    /* background: active; */
     border-radius: 3px;
-    border: solid 3px var(--color-background-light);
-    color: var(--color-background);
+    border: solid 3px background-light;
+    color: background;
     margin: 5px;
 
     background-position: center;
@@ -39,11 +39,11 @@ h2.title {
     /* padding: 5px 10px; */
     font-family: "Calibri";
     font-size: 1rem;
-    text-shadow: 2px 2px 8px var(--color-background),
-                -1px 0px var(--color-background-light),
-                2px 1px var(--color-background),
-                1px 2px var(--color-background),
-                2px -1px var(--color-background);
+    text-shadow: 2px 2px 8px background),
+                -1px 0px background-light),
+                2px 1px background),
+                1px 2px background),
+                2px -1px background;
     /* width: 200px;
     height: 52px; */
 }

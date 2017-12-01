@@ -40,7 +40,7 @@ ul {
 body {
   height: 100vh;
   width: 100vw;
-  background: var(--color-background);
+  background: background);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -56,12 +56,12 @@ body {
   align-items: center; }
 
 .welcome {
-  color: var(--color-background-light);
-  box-shadow: -1px 2px 10px 3px var(--color-focus);
+  color: background-light);
+  box-shadow: -1px 2px 10px 3px focus);
   margin-bottom: 20px; }
 
 .pseudo {
-  color: var(--color-active); }
+  color: active); }
 
 :root {
   --color-background: #271043;
@@ -81,7 +81,7 @@ body * {
   font-family: "cartoon";
   /* font-size: 2.4rem; */
   font-size: 36px;
-  color: var(--color-font-light);
+  color: font-light);
   /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */ }
 
 /****************************** Components ******************************/
@@ -98,13 +98,13 @@ body * {
   left: 0;
   width: 250px;
   height: 100vh;
-  background: var(--color-background-dark);
+  background: background-dark);
   display: flex;
   flex-direction: column;
   text-align: center;
   padding: 20px;
   transition: left 0.1s;
-  border-right: solid 3px var(--color-font-light);
+  border-right: solid 3px font-light);
   box-shadow: -1px 2px 10px 3px rgba(0, 0, 0, 0.3); }
 
 .menu[state=closed] {
@@ -113,14 +113,14 @@ body * {
   transition: left 0.1s; }
 
 .menuItem {
-  /* border-bottom: solid var(--color-font-light) 2px;
+  /* border-bottom: solid font-light) 2px;
     border-radius: 3px; */
   margin-bottom: 12px;
-  color: var(--color-font-light); }
+  color: font-light); }
 
 .menuItem:hover, .menuItem.currentPage {
-  color: var(--color-background);
-  background: var(--color-focus);
+  color: background);
+  background: focus);
   border-radius: 3px; }
 
 .closer {
@@ -131,10 +131,10 @@ body * {
   border: 0;
   padding: 20px 40px;
   width: 280px;
-  background: var(--color-active);
+  background: active);
   border-radius: 3px;
-  border: solid 3px var(--color-background-light);
-  color: var(--color-background);
+  border: solid 3px background-light);
+  color: background);
   margin: 5px; }
 
 .button-small {
@@ -157,39 +157,39 @@ body * {
   width: auto; }
 
 .button:hover {
-  background: var(--color-focus);
-  border: solid 3px var(--color-focus); }
+  background: focus);
+  border: solid 3px focus); }
 
 .button:active, .button[state=active] {
-  background: var(--color-focus);
-  border: solid 3px var(--color-focus);
+  background: focus);
+  border: solid 3px focus);
   box-shadow: -1px 2px 10px 3px rgba(0, 0, 0, 0.3) inset;
   transform: translateY(4px); }
 
 .button[state=disabled] {
-  background: var(--color-disabled);
-  border: solid 3px var(--color-disabled); }
+  background: disabled);
+  border: solid 3px disabled); }
 
 .input {
   width: 300px;
   border: 0;
   padding: 10px 20px;
-  background: var(--color-font-light);
+  background: font-light);
   border-radius: 3px;
   border: solid 3px transparent;
-  border-left: solid 3px var(--color-background-light);
-  color: var(--color-background); }
+  border-left: solid 3px background-light);
+  color: background); }
 
 .input[disabled=disabled] {
-  background: var(--color-background);
-  color: var(--color-focus); }
+  background: background);
+  color: focus); }
 
 .input:active:not([disabled=disabled]), .input:focus:not([disabled=disabled]) {
-  background: var(--color-focus);
-  border: solid 3px var(--color-focus);
+  background: focus);
+  border: solid 3px focus);
   box-shadow: -1px 2px 10px 3px rgba(0, 0, 0, 0.3) inset;
   transform: translateY(4px);
-  color: var(--color-background); }
+  color: background); }
 
 .modal {
   position: fixed;
@@ -201,8 +201,8 @@ body * {
   /* background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
 	background-size: 1000% 1000%;
 	animation: rainbow 18s ease infinite; */
-  /* background: var(--color-background); */
-  background: var(--color-background-dark); }
+  /* background: background); */
+  background: background-dark); }
 
 .modal[state="closed"] {
   display: none; }
@@ -234,8 +234,8 @@ body * {
   text-transform: uppercase;
   text-align: center;
   font-size: 2.5rem;
-  color: var(--color-font-light);
-  /* color: var(--color-focus); */
+  color: font-light);
+  /* color: focus); */
   background-size: 1000% 1000%;
   animation: rainbow 18s ease infinite;
   /* color: transparent;
@@ -262,13 +262,13 @@ body * {
   position: fixed;
   top: 50px;
   right: 50px;
-  color: var(--color-focus); }
+  color: focus); }
 
 #score #artefactsTaken {
-  color: var(--color-active); }
+  color: active); }
 
 #score #artefactsToTake {
-  color: var(--color-background-light); }
+  color: background-light); }
 
 /********** Canvas **********/
 #canvasWrapper {
@@ -296,7 +296,7 @@ body * {
   /* background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
 	background-size: 1000% 1000%;
 	animation: rainbow 18s ease infinite; */
-  /* background: var(--color-background); */
+  /* background: background); */
   background: #1f0627; }
 
 @keyframes rainbow {
@@ -316,7 +316,7 @@ p {
   text-align: center; }
 
 h2.title {
-  border-bottom: solid 3px var(--color-background-light);
+  border-bottom: solid 3px background-light);
   border-radius: 3px;
   margin-bottom: 10px; }
 
@@ -325,16 +325,16 @@ h2.title {
   align-items: center; }
 
 .button label {
-  color: var(--color-background); }
+  color: background); }
 
 #ytSearch .track {
   border: 0;
   /* padding: 20px 40px; */
   width: 280px;
-  /* background: var(--color-active); */
+  /* background: active); */
   border-radius: 3px;
-  border: solid 3px var(--color-background-light);
-  color: var(--color-background);
+  border: solid 3px background-light);
+  color: background);
   margin: 5px;
   background-position: center;
   background-size: 100% auto;
@@ -347,14 +347,14 @@ h2.title {
   /* padding: 5px 10px; */
   font-family: "Calibri";
   font-size: 1rem;
-  text-shadow: 2px 2px 8px var(--color-background), -1px 0px var(--color-background-light), 2px 1px var(--color-background), 1px 2px var(--color-background), 2px -1px var(--color-background);
+  text-shadow: 2px 2px 8px background), -1px 0px background-light), 2px 1px background), 1px 2px background), 2px -1px background);
   /* width: 200px;
     height: 52px; */ }
 
 .catchPhrase {
   text-transform: uppercase;
   text-align: center;
-  /* color: var(--color-font-light); */ }
+  /* color: font-light); */ }
 
 .buttonWrapper {
   /* width: 750px; */ }
@@ -371,7 +371,7 @@ h2.title {
 .catchPhrase {
   text-transform: uppercase;
   text-align: center;
-  /* color: var(--color-font-light); */ }
+  /* color: font-light); */ }
 
 .buttonWrapper {
   /* width: 750px; */ }
