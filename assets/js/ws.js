@@ -61,12 +61,17 @@ var IO = {
 
         IO.socket.on('newPlayer', IO.onNewPlayer);
         IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('coopMove', IO.onCoopMove);
+        IO.socket.on('playerMove', IO.onPlayerMove);
         IO.socket.on('updateGame', IO.onUpdateGame);
         IO.socket.on('missedArtefact', IO.onMissedArtefact);
         IO.socket.on('gameOver', IO.onEndOfGame);
         IO.socket.on('audioChunk', IO.onAudioChunk);
         IO.socket.on('audioEnd', IO.onAudioEnd);
+
+        if (data.gameMetadata.players.length == 2) {
+            document.querySelector("#startGameButton").attributes.state.value = "passive";
+            document.querySelector("#waitingRoomMessage").innerHTML = data.gameMetadata.players[0].name + " is waiting for you!";
+        }
     },
 
     // ******************************************************* //
@@ -111,15 +116,8 @@ var IO = {
     onPlayerMove: function(data) {
         // Update canvas because one player (self or the other) has moved
         console.log("Player " + data.number + " has moved to: " + data.position);
+        players[data.number].slot = data.position
         players[data.number].update();		
-    },
-
-    onCoopMove: function(data) {
-        console.log("Your teammate moved to:", data)
-        // TODO notify self that the other player has moved
-        // if(data.number != yourself) {
-            players[data.number].update();		
-        // }
     },
 
     // ****************************************************** //
@@ -130,6 +128,7 @@ var IO = {
         // console.log(data);
         App.Host.energy = data.energy;
         App.Player.takenArtefactsCount = data.takenArtefactsCount
+
         updateScore();
         updateGameScene(data);
     },
@@ -141,8 +140,9 @@ var IO = {
     
 	onEndOfGame: function (data) {
         endGame(data);
+
+        chunkPlayer._stop()
 		// TODO
-		// Notify players that game has ended
 		// remove listeners
     },
 
