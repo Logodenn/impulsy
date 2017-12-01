@@ -51,7 +51,7 @@ models((err, _db) => {
           createScore({
             track_id: track.id,
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
-            duration: 24,
+            duration: 1,
             user_id: 1
           }, callback)
         },
@@ -63,7 +63,7 @@ models((err, _db) => {
           createScore({
             track_id: track.id,
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
-            duration: 12,
+            duration: 1,
             user_id: 2
           }, callback)
         },
@@ -75,7 +75,7 @@ models((err, _db) => {
           createScore({
             track_id: track.id,
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
-            duration: 12,
+            duration: 1,
             user_id: 1
           }, callback)
         },
@@ -87,7 +87,7 @@ models((err, _db) => {
           createScore({
             track_id: track.id,
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
-            duration: 12,
+            duration: 1,
             user_id: 2
           }, callback)
         }
