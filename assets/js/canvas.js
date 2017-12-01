@@ -488,29 +488,29 @@ function startGame() {
 			case 65:
 				// Top
 				App.Players[App.Player.number].position = 0;
-				players[App.Player.number].slot = 0;
+				//players[App.Player.number].slot = 0;
 				break;
 			case 90:
 				// Midtop
 				App.Players[App.Player.number].position = 1;
-				players[App.Player.number].slot = 1;
+				//players[App.Player.number].slot = 1;
 				break;
 			case 69:
 				// Midbot
 				App.Players[App.Player.number].position = 2;
-				players[App.Player.number].slot = 2;
+				//players[App.Player.number].slot = 2;
 				break;
 			case 82:
 				// Bot
 				App.Players[App.Player.number].position = 3;
-				players[App.Player.number].slot = 3;
+				//players[App.Player.number].slot = 3;
 				break;
 			case 38:
 				// Up arrow
 				if(App.Players[App.Player.number].position != 0) {
 		
 					App.Players[App.Player.number].position--;
-					players[App.Player.number].slot -= 1;
+					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
@@ -518,7 +518,7 @@ function startGame() {
 				if(App.Players[App.Player.number].position != 3) {
 		
 					App.Players[App.Player.number].position++;
-					players[App.Player.number].slot += 1;
+					//players[App.Player.number].slot += 1;
 				}
 				break;
 		}
@@ -541,7 +541,7 @@ function startGame() {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
 					App.Players[App.Player.number].position = i;
-					players[App.Player.number].slot = i;
+					//players[App.Player.number].slot = i;
 				}
 			}
 		}
