@@ -205,8 +205,10 @@ module.exports = class Room {
     // Stop the game loop
     this.stop()
 
-    for (let player in this.players) {
-      this.players[player].socket.emit('gameOver', {
+    for (let playerId in this.players) {
+      let player = this.players[playerId]
+
+      player.socket.emit('gameOver', {
         'win': true,
         'score': this.takenArtefactsCount,
         'max': this.energy
@@ -223,8 +225,10 @@ module.exports = class Room {
     // Stop the game loop
     this.stop()
 
-    for (let player in this.players) {
-      this.players[player].socket.emit('gameOver', {
+    for (let playerId in this.players) {
+      let player = this.players[playerId]
+
+      player.socket.emit('gameOver', {
         'win': true,
         'score': this.takenArtefactsCount,
         'max': this.energy
@@ -236,6 +240,7 @@ module.exports = class Room {
   }
 
   addScore (player) {
+    console.log('addScore')
     if (player.user) {
       let coop = 1
 
@@ -244,15 +249,17 @@ module.exports = class Room {
       }
 
       const score = {
-        duration: player.takenArtefactsCount,
+        duration: this.takenArtefactsCount,
         user_id: player.user.id,
         track_id: this.spectrum.id,
         difficulty: this.difficulty,
         coop: coop
       }
 
+      console.log('addScore', score)
       db.user.bestScores(player.user.id, this.spectrum.id, coop, (err, bestScores) => {
         if (err) logger.error(err)
+
         if (bestScores.length !== 0) {
           if (bestScores[0].duration < player.takenArtefactsCount) {
             db.score.create(score, (err, res) => {
