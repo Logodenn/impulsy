@@ -13,15 +13,15 @@
 	position: fixed;
     top: 50px;
 	right: 50px;
-	color: focus;
+	color: $focus;
 }
 
 #score #artefactsTaken {
-	color: active;
+	color: $active;
 }
 
 #score #artefactsToTake {
-	color: background-light;
+	color: $background-light;
 }
 
 /********** Canvas **********/
