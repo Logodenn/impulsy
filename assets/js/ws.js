@@ -115,26 +115,17 @@ var IO = {
         players[data.number].update();		
     },
 
-    onCoopMove: function(data) {
-        console.log("Your teammate moved to:", data)
-        // TODO notify self that the other player has moved
-        // if(data.number != yourself) {
-            players[data.number].update();		
-        // }
-    },
-
     // ****************************************************** //
     // ******************** GAME EVENTS ******************** //
     // **************************************************** //
 
     onUpdateGame: function(data) {
-        console.log(data);
+        // console.log(data);
         App.Host.energy = data.energy;
         App.Player.takenArtefactsCount = data.takenArtefactsCount
 
         updateScore();
         updateGameScene(data);
-
     },
 
     onMissedArtefact: function(data) {
