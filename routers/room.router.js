@@ -10,6 +10,8 @@ router.post('/', (req, res) => {
   const id = req.body.track
   const mode = req.body.mode
 
+  console.log(req.body)
+
   if (!difficulty || !id) {
     logger.error(`Wrong value for id or difficulty --> id: ${id} - difficulty: ${difficulty}`)
 
