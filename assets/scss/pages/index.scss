@@ -13,7 +13,7 @@ h2.title {
 }
 
 .button label{
-    color: background;
+    color: $background;
 }
 
 #ytSearch .track {
@@ -23,7 +23,7 @@ h2.title {
     /* background: active; */
     border-radius: 3px;
     border: solid 3px background-light;
-    color: background;
+    color: $background;
     margin: 5px;
 
     background-position: center;
