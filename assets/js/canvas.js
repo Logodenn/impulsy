@@ -442,6 +442,7 @@ function startGame() {
 
 	// Hide buttons
 	document.querySelector("#startButtons").classList.add("hidden");
+	document.querySelector("#roomMetadata").classList.add("hidden");
 	// Display score
 	document.querySelector("#score").classList.remove("hidden");
 	
