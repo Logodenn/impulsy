@@ -147,11 +147,22 @@ module.exports = class Room {
     })
 
     player.socket.on('playerMove', (data) => {
-      player.position = data.position
+      let canMove = true
 
       for (let playerId in self.players) {
-        if (playerId !== player.id) {
-          self.players[playerId].socket.emit('coopMove', data)
+        if (self.players[playerId].position === data.position) {
+          // This means there is already someone at this position
+          canMove = false
+        }
+      }
+
+      if (canMove) {
+        player.position = data.position
+
+        for (let playerId in self.players) {
+          if (playerId !== player.id) {
+            self.players[playerId].socket.emit('coopMove', data)
+          }
         }
       }
     })
