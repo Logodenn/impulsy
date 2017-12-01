@@ -240,7 +240,6 @@ module.exports = class Room {
   }
 
   addScore (player) {
-    console.log('addScore')
     if (player.user) {
       let coop = 1
 
@@ -256,7 +255,6 @@ module.exports = class Room {
         coop: coop
       }
 
-      console.log('addScore', score)
       db.user.bestScores(player.user.id, this.spectrum.id, coop, (err, bestScores) => {
         if (err) logger.error(err)
 
