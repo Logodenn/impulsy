@@ -20,7 +20,7 @@ module.exports = class Room {
     this.difficulty = _difficulty
     this.mode = _mode
     this.currentBar = 0
-    this.energy = 100
+    this._energy = 100
     this.audioStream = null
   }
 
@@ -334,6 +334,14 @@ module.exports = class Room {
       energy: this.energy, // duration of the music
       players: players
     }
+  }
+
+  set energy (energy) {
+    this._energy = energy > 0 ? energy : 0
+  }
+
+  get energy () {
+    return this._energy
   }
 
   get metadata () {
