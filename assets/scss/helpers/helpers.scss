@@ -46,11 +46,11 @@ body {
 }
 
 .welcome {
-	color: background-light;
+	color: $background-light;
 	box-shadow: -1px 2px 10px 3px focus;
 	margin-bottom: 20px;
 }
 
 .pseudo {
-	color: active;
+	color: $active;
 }

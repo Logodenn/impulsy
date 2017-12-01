@@ -4,7 +4,7 @@
     top: 50px;
     left: 50px;
     background: transparent;
-    border-color: transparent;
+    border-color: $transparent;
 }
 
 .menu {
@@ -32,11 +32,11 @@
     /* border-bottom: solid font-light) 2px;
     border-radius: 3px; */
     margin-bottom: 12px;
-    color: font-light;
+    color: $font-light;
 }
 
 .menuItem:hover, .menuItem.currentPage {
-    color: background;
+    color: $background;
     background: focus;
     border-radius: 3px;
 }
