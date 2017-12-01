@@ -594,9 +594,15 @@ function updateScore() {
 }
 
 function endGame (data) {
-	// Dirty dirty dirty fix
-	energyBar.width = 0; // Otherwirse we don't recieve the last energy loss, so we have a yellow part that still holds on
-	energyBar.update();
+
+	// Handle energyBar only if the difficulty is easy or crazy
+	if(App.difficulty != "lazy") {
+	
+		// Dirty dirty dirty fix
+		energyBar.width = 0; // Otherwirse we don't recieve the last energy loss, so we have a yellow part that still holds on
+		energyBar.update();
+	}
+	
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
