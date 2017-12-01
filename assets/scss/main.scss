@@ -1,0 +1,23 @@
+
+/****************************** Helpers ******************************/
+
+@import 'helpers/reset.scss';
+@import 'helpers/colors.scss';
+@import 'helpers/helpers.scss';
+@import 'helpers/font.scss';
+
+/****************************** Components ******************************/
+
+@import 'components/menu.scss';
+@import 'components/button.scss';
+@import 'components/input.scss';
+@import 'components/modal.scss';
+@import 'components/loading.scss';
+@import 'components/title.scss';
+
+@import 'pages/game.scss';
+@import 'pages/hallOfFame.scss';
+@import 'pages/howItWorks.scss';
+@import 'pages/index.scss';
+@import 'pages/login.scss';
+@import 'pages/signup.scss';
