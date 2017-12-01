@@ -1,6 +1,12 @@
 
 @import '../main.css';
 
+/****** Room metadata *******/
+
+#roomMetadata #trackTitle {
+	margin-bottom: 100px;
+}
+
 /********** Score **********/
 
 #score {
