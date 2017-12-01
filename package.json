@@ -30,6 +30,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.7.0",
+    "sass-globbing": "^1.0.0-alpha1",
     "slow-stream": "0.0.4",
     "socket.io": "^2.0.3",
     "socket.io-stream": "^0.9.1",
