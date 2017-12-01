@@ -142,7 +142,7 @@ function Button(y) {
 	  var mytop     = self.y;
 	  var mybottom  = self.y + (self.height);
 	  var clicked   = false;
-	  console.log(mytop, mybottom);
+	//   console.log(mytop, mybottom);
 	  if (y > mytop && y < mybottom) {
 		  clicked   = true;
 	  }
@@ -395,13 +395,15 @@ function addAmplitudeAndArtefact() {
 	if(App.mode == "solo") {
 		// TODO check for coop mode (it is actually a dirty fix)
 
-		if(App.Host.deathFlags.length > 0) {
-	
+		// Average death
+		if(App.Host.deathFlags[0]) {	
 			if(time == App.Host.deathFlags[0]["AVG(duration)"]){
 				var deathFlag = new DeathFlag(0);
 				canvasDeathFlags.push(deathFlag);
 			}
-			
+		}
+		// Best death
+		if (App.Host.deathFlags[1]) {
 			if(time == App.Host.deathFlags[1]["duration"]) {
 				var deathFlag = new DeathFlag(1);
 				canvasDeathFlags.push(deathFlag);
@@ -410,7 +412,6 @@ function addAmplitudeAndArtefact() {
 	}
 
 	time++;
-	// console.log(time + "   " + App.Host.audioSpectrum.length);
 
 	if(time >= App.Host.audioSpectrum.length) {
 		myGameArea.stopAddition();		
@@ -536,7 +537,7 @@ function startGame() {
 		//  Adapt the click coordinates to the canvas
 		x = e.pageX - rect.left;
 		y = e.pageY - rect.top;
-		console.log(x, y)
+		// console.log(x, y)
 		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
@@ -559,7 +560,6 @@ function updateGameScene(data) {
 		// Handle energy
 		// energyBar.width = gameState.energy * energyBarCoefficient;
 		// energyBar.width = gameState.energy * visualCoefficient;
-		console.log("energy", energyBar.width);
 		energyBarSlot.update();
 		energyBar.update();
 	}
@@ -570,8 +570,6 @@ function updateGameScene(data) {
 	if(gameState.isArtefactTaken) {
 
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
-		// console.log("Nb of taken artefact : " + App.Player.artefactsTaken.length);
-
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
 	}
@@ -585,7 +583,7 @@ window.onresize = function() {
 
 	for (var i = 0; i < buttons.length; i++) {
 		buttons[i].update();
-		console.log("button updated");
+		// console.log("button updated");
 	} 
 }
 
