@@ -20,6 +20,7 @@ var chunkPlayer = {
     chunkPlayer._lastBufferDuration = 0
     chunkPlayer._playedChunk = 0
     chunkPlayer._playing = false
+    chunkPlayer._source.stop()
   },
 
   _start: function () {
