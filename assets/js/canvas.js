@@ -65,8 +65,8 @@ var buttons				= [];
 
 // ******************** Images ******************** //
 
-var imgArtefact = new Image();
-imgArtefact.src = imgPath + "artefact.png";
+// var imgArtefact = new Image();
+// imgArtefact.src = imgPath + "artefact.png";
 
 var imgArtefactTaken = new Image();
 imgArtefactTaken.src = imgPath + "artefactTaken.png";
