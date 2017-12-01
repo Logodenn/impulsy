@@ -135,8 +135,9 @@ var IO = {
     
 	onEndOfGame: function (data) {
         endGame(data);
+
+        chunkPlayer._stop()
 		// TODO
-		// Notify players that game has ended
 		// remove listeners
     },
 
