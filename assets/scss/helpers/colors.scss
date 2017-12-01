@@ -1,13 +1,11 @@
-:root {
-  --color-background: #271043;
-  --color-background-light: #b928bd;
-  --color-background-dark: #1f0627;
+$background: #271043;
+$background-light: #b928bd;
+$background-dark: #1f0627;
 
-  --color-active: #11CADC;
-  --color-focus: #FAC32C;
-  --color-disabled: #716383;
+$active: #11CADC;
+$focus: #FAC32C;
+$disabled: #716383;
 
-  /* --color-font: #E0EEF0; */
-  --color-font-light: #E0EEF0;
-}
+/* --color-font: #E0EEF0; */
+$font-light: #E0EEF0;
 
