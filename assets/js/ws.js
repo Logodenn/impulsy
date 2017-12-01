@@ -67,6 +67,11 @@ var IO = {
         IO.socket.on('gameOver', IO.onEndOfGame);
         IO.socket.on('audioChunk', IO.onAudioChunk);
         IO.socket.on('audioEnd', IO.onAudioEnd);
+
+        if (data.gameMetadata.players.length == 2) {
+            document.querySelector("#startGameButton").attributes.state.value = "passive";
+            document.querySelector("#waitingRoomMessage").innerHTML = data.gameMetadata.players[0].name + " is waiting for you!";
+        }
     },
 
     // ******************************************************* //
