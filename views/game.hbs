@@ -18,6 +18,11 @@
         {{> menu room="true" }}
 
         <section class="content">
+            
+            <div id="roomMetadata" class="flex-col">
+                <h1 id="trackTitle">{{metadata.spectrum.name}}</h1>
+                <span id="roomDifficulty">Diffciulty: {{metadata.difficulty}}</span>
+            </div>
 
             <div id="startButtons" class="buttonWrapper flex-col">
                 <span id="waitingRoomMessage">Ready?</span>
