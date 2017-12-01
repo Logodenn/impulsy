@@ -160,9 +160,7 @@ module.exports = class Room {
         player.position = data.position
 
         for (let playerId in self.players) {
-          if (playerId !== player.id) {
-            self.players[playerId].socket.emit('coopMove', data)
-          }
+          self.players[playerId].socket.emit('playerMove', data)
         }
       }
     })
