@@ -65,8 +65,8 @@ var buttons				= [];
 
 // ******************** Images ******************** //
 
-var imgArtefact = new Image();
-imgArtefact.src = imgPath + "artefact.png";
+// var imgArtefact = new Image();
+// imgArtefact.src = imgPath + "artefact.png";
 
 var imgArtefactTaken = new Image();
 imgArtefactTaken.src = imgPath + "artefactTaken.png";
@@ -441,6 +441,7 @@ function startGame() {
 
 	// Hide buttons
 	document.querySelector("#startButtons").classList.add("hidden");
+	document.querySelector("#roomMetadata").classList.add("hidden");
 	// Display score
 	document.querySelector("#score").classList.remove("hidden");
 	
@@ -487,29 +488,29 @@ function startGame() {
 			case 65:
 				// Top
 				App.Players[App.Player.number].position = 0;
-				players[App.Player.number].slot = 0;
+				//players[App.Player.number].slot = 0;
 				break;
 			case 90:
 				// Midtop
 				App.Players[App.Player.number].position = 1;
-				players[App.Player.number].slot = 1;
+				//players[App.Player.number].slot = 1;
 				break;
 			case 69:
 				// Midbot
 				App.Players[App.Player.number].position = 2;
-				players[App.Player.number].slot = 2;
+				//players[App.Player.number].slot = 2;
 				break;
 			case 82:
 				// Bot
 				App.Players[App.Player.number].position = 3;
-				players[App.Player.number].slot = 3;
+				//players[App.Player.number].slot = 3;
 				break;
 			case 38:
 				// Up arrow
 				if(App.Players[App.Player.number].position != 0) {
 		
 					App.Players[App.Player.number].position--;
-					players[App.Player.number].slot -= 1;
+					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
@@ -517,7 +518,7 @@ function startGame() {
 				if(App.Players[App.Player.number].position != 3) {
 		
 					App.Players[App.Player.number].position++;
-					players[App.Player.number].slot += 1;
+					//players[App.Player.number].slot += 1;
 				}
 				break;
 		}
@@ -538,7 +539,7 @@ function startGame() {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
 					App.Players[App.Player.number].position = i;
-					players[App.Player.number].slot = i;
+					//players[App.Player.number].slot = i;
 				}
 			}
 		}
@@ -594,7 +595,6 @@ function updateScore() {
 }
 
 function endGame (data) {
-
 	// Handle energyBar only if the difficulty is easy or crazy
 	if(App.difficulty != "lazy") {
 	
@@ -602,7 +602,7 @@ function endGame (data) {
 		energyBar.width = 0; // Otherwirse we don't recieve the last energy loss, so we have a yellow part that still holds on
 		energyBar.update();
 	}
-	
+
 	if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length

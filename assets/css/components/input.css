@@ -4,6 +4,7 @@
     padding: 10px 20px;
     background: var(--color-font-light);
     border-radius: 3px;
+    border: solid 3px transparent;
     border-left: solid 3px var(--color-background-light);
     color: var(--color-background);
 }
