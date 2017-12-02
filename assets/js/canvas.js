@@ -78,16 +78,16 @@ function Player(definition) {
 	self.x 			= 4 * blocUnit;
 	self.slot		= definition.position;
 	self.y 			= Positions[definition.position];
-	self.img 		= new Image();
-	self.img.src 	= imgPath + "player" + definition.number + ".png";
+	self.number		= definition.number;
 	self.update 	= function() {
 		self.x 			= 4 * blocUnit;
 		self.y 			= Canvas.topSlot + self.slot * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images["player" + self.number], self.x, self.y, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
-	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+
+	self.update()
 }
 
 // ******************** Pulsers ******************** //
@@ -97,16 +97,15 @@ function Pulsers(i) {
 	self.index		= i;
 	self.x 			= myGameArea.canvas.width - blocUnit;
 	self.y 			= Canvas.topSlot + self.index * blocUnit;
-	self.img 		= new Image();
-	self.img.src 	= imgPath + "pulser.png";
 	self.update 	= function() {
 		self.x 			= myGameArea.canvas.width - blocUnit;
 		self.y 			= Canvas.topSlot + self.index * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images.pulser, self.x, self.y, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
-	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	
+	self.update()
 }
 
 // ******************** Death flags ******************** //
@@ -116,18 +115,18 @@ function DeathFlag(type) {
 	//self.y 			= Canvas.botSlot;
 	self.y 			= Canvas.deathFlags;
 	self.cpt		= 0;
-	self.img 		= new Image();
-	self.img.src 	= type == 0 ? imgPath + "deathFlagsAverage.png" : imgPath + "deathFlagBest.png";
 	self.update 	= function() {
 		self.cpt 		+= 1;
 		self.y 			= Canvas.deathFlags;
         self.x 			= myGameArea.canvas.width - 2 * blocUnit - self.cpt * (3.5 * blocUnit / 400);
 		ctx 			= myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+
+		var imageName = type == 0 ? "deathFlagsAverage" : "deathFlagBest";
+		ctx.drawImage(imageLoader.images[imageName], self.x, self.y, blocUnit, blocUnit);
 	}
 
 	self.ctx = myGameArea.context;
-	self.ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	self.update()
 }
 
 
@@ -161,6 +160,7 @@ function Button(y) {
 
 function Artefact(slot, playerNumber) {
 	var self 		= this;
+	self.isArtefactTaken	= false;
 	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
 	self.slot		= slot;
 	switch(self.slot) {
@@ -177,8 +177,6 @@ function Artefact(slot, playerNumber) {
 			self.y = Canvas.botSlot;
 			break;
 	}
-	self.img 		= new Image();
-	self.img.src 	= imgPath + "artefact" + playerNumber + ".png";
 	self.cpt		= 0;
 	self.update 	= function() {
 		self.cpt		+= 1;
@@ -198,13 +196,18 @@ function Artefact(slot, playerNumber) {
 				break;
 		}
 		ctx = myGameArea.context;
-		ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+
+		if (self.isArtefactTaken) {
+			ctx.drawImage(imageLoader.images.artefactTaken, self.x, self.y, blocUnit, blocUnit);
+		} else {
+			ctx.drawImage(imageLoader.images["artefact" + playerNumber], self.x, self.y, blocUnit, blocUnit);
+		}
 	}
 	self.isTaken = function() {
-		self.img = imgArtefactTaken;
+		self.isArtefactTaken = true;
 	}
 	self.ctx = myGameArea.context;
-	ctx.drawImage(self.img, self.x, self.y, blocUnit, blocUnit);
+	ctx.drawImage(imageLoader.images["artefact" + playerNumber], self.x, self.y, blocUnit, blocUnit);
 }
 
 // ******************** Amplitude ******************** //
@@ -341,8 +344,8 @@ var myGameArea = {
 
 		// ******************** Interval setup ******************** //
 
-		this.intervalAddAmplitude 	= setInterval("addAmplitudeAndArtefact();",500);
-		this.intervalUpdate 		= setInterval("updateGameArea();", 10);
+		this.intervalAddAmplitude 	= setInterval(addAmplitudeAndArtefact,500);
+		this.intervalUpdate 		= setInterval(updateGameArea, 10);
 
 		// ******************** Variables ******************** //
 		
