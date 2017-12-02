@@ -2,8 +2,8 @@
 // @import '../main.scss';
 
 h2.title {
-    border-bottom: solid 3px background-light;
-    border-radius: 3px;
+    border-bottom: solid 3px $background-light;
+    border-radius: $br;
     margin-bottom: 10px;    
 }
 
@@ -39,11 +39,11 @@ h2.title {
     /* padding: 5px 10px; */
     font-family: "Calibri";
     font-size: 1rem;
-    text-shadow: 2px 2px 8px background),
-                -1px 0px background-light),
-                2px 1px background),
-                1px 2px background),
-                2px -1px background;
+    text-shadow: 2px 2px 8px $background,
+                -1px 0px $background-light,
+                2px 1px $background,
+                1px 2px $background,
+                2px -1px $background;
     /* width: 200px;
     height: 52px; */
 }
