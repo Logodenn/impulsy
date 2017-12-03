@@ -100,10 +100,21 @@ module.exports = class Room {
         } else {
           for (let key in this.players) {
             const player = this.players[key]
-            const data = this.check(player)
 
-            for (var playerId in this.players) {
+            let data = this.check(player, this.currentBar)
+            for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
+            }
+
+            if (this.currentBar > 1) {
+              let data = this.check(player, this.currentBar - 1)
+              data.HEY = true
+
+              if (data.isArtefactTaken) {
+                for (let playerId in this.players) {
+                  this.players[playerId].socket.emit('updateGame', data)
+                }
+              }
             }
           }
         }
@@ -161,6 +172,24 @@ module.exports = class Room {
 
         for (let playerId in self.players) {
           self.players[playerId].socket.emit('playerMove', data)
+        }
+
+        if (self.currentBar < self.spectrum.bars.length) {
+          const checkData = self.check(player, self.currentBar)
+
+          for (var playerId in self.players) {
+            self.players[playerId].socket.emit('updateGame', checkData)
+          }
+
+          if (self.currentBar > 1) {
+            let data = self.check(player, self.currentBar - 1)
+
+            if (data.isArtefactTaken) {
+              for (let playerId in self.players) {
+                this.players[playerId].socket.emit('updateGame', data)
+              }
+            }
+          }
         }
       }
     })
@@ -273,8 +302,8 @@ module.exports = class Room {
     }
   }
 
-  check (player) {
-    const artefactTaken = this.spectrum.checkArtefacts(this.currentBar, player)
+  check (player, barNumber) {
+    const artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
     if (artefactTaken !== null) {
       if (artefactTaken) {
         switch (this.difficulty) {
@@ -310,7 +339,7 @@ module.exports = class Room {
     }
 
     return {
-      bar: this.currentBar,
+      bar: barNumber,
       takenArtefactsCount: this.takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,

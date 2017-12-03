@@ -1,5 +1,5 @@
 
-@import '../main.css';
+// @import '../main.scss';
 
 /****** Room metadata *******/
 
@@ -13,15 +13,14 @@
 	position: fixed;
     top: 50px;
 	right: 50px;
-	color: var(--color-focus);
-}
+	color: $focus;
 
-#score #artefactsTaken {
-	color: var(--color-active);
-}
-
-#score #artefactsToTake {
-	color: var(--color-background-light);
+	#artefactsTaken {
+		color: $active;
+	}
+	#artefactsToTake {
+		color: $background-light;
+	}
 }
 
 /********** Canvas **********/
@@ -39,10 +38,6 @@
 	left: 50vw - 10vw; /* half the screen minus half its width to center */
 }
 
-#moveButtons button {
-	/* width: 300px; */
-}
-
 /********** Endgame popup **********/
 
 #endGameLayer {
@@ -50,17 +45,11 @@
 	text-align: center;
 	width: 400px;
 	padding: 20px 30px;
-	border-radius: 3px;
-	box-shadow: -1px 2px 10px 3px rgba(0, 0, 0, 0.3);
-	/* background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+	border-radius: $br;
+	@include shadow($shadow);
+	/* background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3;
 	background-size: 1000% 1000%;
 	animation: rainbow 18s ease infinite; */
-	/* background: var(--color-background); */
-	background: #1f0627;
-}
-
-@keyframes rainbow { 
-    0%{background-position:0% 82%}
-    50%{background-position:100% 19%}
-    100%{background-position:0% 82%}
+	/* background: $background; */
+	background: $background-dark;
 }
