@@ -1,0 +1,69 @@
+
+/********** Mixins **********/
+
+@mixin flex($direction) {
+	display: flex;
+	flex-direction: $direction;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+@mixin shadow($color) {
+	box-shadow: -1px 2px 10px 3px $color;
+	// TODO create a shadow propagation var
+}
+
+@mixin shadow-inset($color) {
+	box-shadow: -1px 2px 10px 3px $color inset;
+	// TODO create a shadow propagation var
+}
+
+/********** Keyframes **********/
+
+@keyframes rainbow { 
+    0%{background-position:0% 82%}
+    50%{background-position:100% 19%}
+    100%{background-position:0% 82%}
+}
+
+/********** Classes **********/
+
+.hidden {
+	display: none !important;
+}
+
+.blurred {
+	filter: blur(2px);
+}
+
+.flex-row {
+    @include flex(row);
+}
+
+.flex-col {
+    @include flex(column);
+}
+
+/********** Section **********/
+
+body {
+	height: 100vh;
+	width: 100vw;
+	background: $background;
+	@include flex(column);	
+}
+
+.content {
+	height: 90vh;
+	width: 90vw;
+	/* padding: 50px; */
+	@include flex(column);
+}
+
+.userForm {
+	align-items: end;
+	
+	button {
+		align-self: center;
+	}
+}
