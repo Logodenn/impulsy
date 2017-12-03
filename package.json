@@ -10,7 +10,7 @@
     "start": "npm run compile:sass && node bin/www",
     "test": "mocha tests",
     "db:create": "node utils/db",
-    "compile:sass": "node-sass assets/scss/main.scss assets/css/main.css"
+    "compile:sass": "node-sass assets/scss/main.scss assets/public/css/main.css"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -27,6 +27,7 @@
     "helpers": "0.0.6",
     "moment": "^2.19.1",
     "mysql": "^2.15.0",
+    "node-sass": "^4.7.2",
     "orm": "^4.0.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
