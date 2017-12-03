@@ -303,7 +303,6 @@ module.exports = class Room {
   }
 
   check (player, barNumber) {
-    console.log("CHECK:", player.position, barNumber)
     const artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
     if (artefactTaken !== null) {
       if (artefactTaken) {
