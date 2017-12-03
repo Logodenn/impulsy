@@ -106,16 +106,16 @@ module.exports = class Room {
               this.players[playerId].socket.emit('updateGame', data)
             }
 
-            if (this.currentBar > 1) {
+            // This checks for the bar before the current one
+            /* if (this.currentBar > 1) {
               let data = this.check(player, this.currentBar - 1)
-              data.HEY = true
 
               if (data.isArtefactTaken) {
                 for (let playerId in this.players) {
                   this.players[playerId].socket.emit('updateGame', data)
                 }
               }
-            }
+            } */
           }
         }
 
@@ -174,13 +174,14 @@ module.exports = class Room {
           self.players[playerId].socket.emit('playerMove', data)
         }
 
-        if (self.currentBar < self.spectrum.bars.length) {
+        /* if (self.currentBar < self.spectrum.bars.length) {
           const checkData = self.check(player, self.currentBar)
 
           for (var playerId in self.players) {
             self.players[playerId].socket.emit('updateGame', checkData)
           }
 
+          // This checks for the bar before the current one
           if (self.currentBar > 1) {
             let data = self.check(player, self.currentBar - 1)
 
@@ -190,7 +191,7 @@ module.exports = class Room {
               }
             }
           }
-        }
+        } */
       }
     })
 
