@@ -115,6 +115,7 @@ function DeathFlag(type) {
 	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
 	//self.y 			= Canvas.botSlot;
 	self.y 			= Canvas.deathFlags;
+	self.cpt		= 0;
 	self.img 		= new Image();
 	self.img.src 	= type == 0 ? imgPath + "deathFlagsAverage.png" : imgPath + "deathFlagBest.png";
 	self.update 	= function() {
