@@ -9,7 +9,10 @@ router.post('/', (req, res) => {
   const difficulty = req.body.difficulty
   const id = req.body.track
   const mode = req.body.mode
-
+  // console.log(req.body.gameData)
+  if (req.body.gameData){
+    console.log(JSON.parse(req.body.gameData))
+  }
   if (!difficulty || !id) {
     logger.error(`Wrong value for id or difficulty --> id: ${id} - difficulty: ${difficulty}`)
 
@@ -66,6 +69,7 @@ router.post('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const roomId = req.params.id
 
+  console.log(roomId)
   if (RoomManager.rooms.hasOwnProperty(roomId)) {
     var data = {}
     data.userConnected = false
