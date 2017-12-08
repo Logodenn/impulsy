@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Impulsy - Ride the music!</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/css/pages/index.css" rel="stylesheet">
-        <script src="/js/utils.js"></script>
+        {{> head }}
         <script src="/js/trackSelection.js"></script>
     </head>
     <body>
@@ -15,6 +11,21 @@
         <section class="content">
 
             <h1 class="title">Impulsy - Ride the music</h1>
+
+            <!-- ********** FAST PLAY BUTTON (dirty form) ********** -->
+            {{#if trend.[0]}}
+                {{#with trend.[0]}}
+                    <form id="difficultyForm" action="/room" method="post" class="form flex-col buttonWrapper">
+                        <input id="selectedTrack" class="input" type="hidden" name="track" value="{{track_id}}" />
+                        <input id="selectedDifficulty" class="input" type="hidden" name="difficulty" value="lazy" />
+                        <input id="selectedMode" class="input" type="hidden" name="mode" value="solo" />
+
+                        <a href="/room">
+                            <button class="button" type="submit" form="difficultyForm" state="passive">Play!</button>
+                        </a>
+                    </form>
+                {{/with}}
+            {{/if}}
 
             <!-- ********** MOST PLAYED TRACKS ********** -->
             {{#if userConnected}}

@@ -61,10 +61,16 @@ router.get('/hallOfFame/:pageNumber?', function (req, res) {
         db.score.rankUser(req.user.pseudo,0, (err, userRankSolo) => {
           if (err) logger.error(err)
           db.score.rankUser(req.user.pseudo,1, (err, userRankCoop) => {
-            data.userCoopScore=userRankCoop[0].score_total
-            data.userRankCoop=userRankCoop[0].rank
-            data.userSoloScore=userRankSolo[0].score_total
-            data.userRankSolo=userRankSolo[0].rank
+            if (userRankCoop.length > 0) {
+              data.userCoopScore=userRankCoop[0].score_total
+              data.userRankCoop=userRankCoop[0].rank
+            }
+
+            if (userRankSolo.length > 0) {
+              data.userSoloScore=userRankSolo[0].score_total
+              data.userRankSolo=userRankSolo[0].rank
+            }
+
             res.render('hallOfFame',data);
           })
         })

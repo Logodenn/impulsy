@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Impulsy - Ride the music!</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/css/pages/game.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-        <script src="/js/utils.js"></script>
+        {{> head }}
         <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/ImageLoader.js"></script>
         <script src="/js/chunkPlayer.js"></script>
         <script src="/js/ws.js"></script>
         <script src="/js/game.js"></script>
@@ -18,6 +14,11 @@
         {{> menu room="true" }}
 
         <section class="content">
+            
+            <div id="roomMetadata" class="flex-col">
+                <h1 id="trackTitle">{{metadata.spectrum.name}}</h1>
+                <span id="roomDifficulty">Difficulty: {{metadata.difficulty}}</span>
+            </div>
 
             <div id="startButtons" class="buttonWrapper flex-col">
                 <span id="waitingRoomMessage">Ready?</span>
