@@ -209,7 +209,11 @@ module.exports = {
                             logger.error(err);
                             cb(err);
                         } else {
-                            cb(null, data);
+                            if (data[0]['AVG(duration)']==null){
+                                cb(null, []);
+                            } else{
+                                cb(null, data);
+                            }
                         }
                     });
             }

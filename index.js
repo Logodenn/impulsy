@@ -134,7 +134,7 @@ app.use(passport.session())
 app.set('view engine', 'hbs')
 hbs.registerPartials(path.join(__dirname, '/views/partials'))
 
-app.use(express.static(path.join(__dirname, '/assets')))
+app.use(express.static(path.join(__dirname, '/assets/public')))
 
 passport.serializeUser(function (user, done) {
   done(null, user.id)
