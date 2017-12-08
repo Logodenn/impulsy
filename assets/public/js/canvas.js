@@ -556,6 +556,15 @@ function startGame() {
 	}
 }
 
+function resetGame() {
+	players = []
+	pulsers = []
+	buttons = []
+
+	myGameArea.stop()
+	myGameArea.stopAddition()
+}
+
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
