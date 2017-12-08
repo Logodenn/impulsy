@@ -1,0 +1,24 @@
+.input {
+    width: 300px;
+    border: 0;
+    padding: 10px 20px;
+    background: $font-light;
+    border-radius: $br;
+    border: solid 3px transparent;
+    border-left: solid 3px $background-light;
+    color: $background;
+
+    &[disabled=disabled] {
+        background: $background;
+        color: $focus;
+    }
+
+    &:active:not([disabled=disabled]),
+    &:focus:not([disabled=disabled]) {
+        background: $focus;
+        border: solid 3px $focus;
+        @include shadow-inset($shadow);
+        transform: translateY(4px);
+        color: $background;
+    }
+}

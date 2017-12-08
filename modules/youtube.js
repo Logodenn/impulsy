@@ -9,13 +9,12 @@ yt.setKey(process.env.YOUTUBE_API_KEY)
 const search = (_opts, _callback) => {
   yt.clearParams()
 
-  yt.search(_opts.keywords, _opts.tracksCount, { type: 'video' }, (err, data) => {
+  yt.search(_opts.keywords, _opts.tracksCount, { type: 'video', videoDuration: 'short' }, (err, data) => {
     if (err) {
       logger.error('search - Failed to search for Youtube tracks')
 
       return _callback(err)
     }
-
     _callback(err, data)
   })
 }
