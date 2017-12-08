@@ -96,9 +96,11 @@ var IO = {
     onGameStarted: function(data) {
         // TODO start countdown
         // startCountdown()
+        resetGame();
         startGame();
         // TODO: Change chunkPLayer and create a new chunkPlayer
         if (!chunkPlayer._startTime) {
+            chunkPlayer._stop()
             setTimeout(chunkPlayer._start, 4270);
         }
     },
