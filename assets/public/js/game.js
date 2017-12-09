@@ -66,6 +66,9 @@ var App = {
 
             if(App.mode == "coop") {
                 document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for a second player...";
+                var getUrl = window.location;
+                var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+                document.querySelector("#facebookInvitation").innerHTML = '<a href="/share?service=facebook&title=share &url='+baseUrl+'/'+game.id+'" target="_blank">Facebook</a>';                
             } else {
                 document.querySelector("#startGameButton").attributes.state.value = "passive";
             }
