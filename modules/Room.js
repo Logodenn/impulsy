@@ -92,7 +92,7 @@ module.exports = class Room {
     this.currentBar = 0
 
     setTimeout(() => {
-      let cpt = 0
+      let cpt = 1
       this.loopTimer = setInterval(() => {
         logger.debug('cpt test : '+cpt % 4)
         if (cpt % 4 != 0) {
@@ -108,7 +108,7 @@ module.exports = class Room {
           } else {
             for (let key in this.players) {
               const player = this.players[key]
-
+              
               let data = this.check(player, this.currentBar, false)
               for (let playerId in this.players) {
                 this.players[playerId].socket.emit('updateGame', data)
@@ -366,6 +366,8 @@ module.exports = class Room {
       }
       else{
         logger.error("Function check have a problem ")
+        logger.error(artefactTaken)
+        logger.error(this.artefactsTaken[barNumber])
       }
     }
     this.artefactsTaken[barNumber] == artefactTaken
