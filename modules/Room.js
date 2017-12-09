@@ -94,8 +94,8 @@ module.exports = class Room {
     setTimeout(() => {
       let cpt = 1
       this.loopTimer = setInterval(() => {
-        logger.debug('cpt test : '+cpt % 4)
-        if (cpt % 4 != 0) {
+        logger.debug('cpt test : '+cpt % 5)
+        if (cpt % 5 != 0) {
           logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
 
           if (this.players.length === 0) {
