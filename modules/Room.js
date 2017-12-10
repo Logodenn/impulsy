@@ -15,7 +15,6 @@ module.exports = class Room {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
-    this.artefactsTaken = []
     this.players = {}
     this.loopTimer = null
     this.spectrum = new Spectrum()
@@ -38,11 +37,16 @@ module.exports = class Room {
 
     let sound = this.spectrum.link
     let getStream = audio.getYoutubeStream
-    let i = 0
-    for (let elem in this.spectrum.bars){
-      this.artefactsTaken[i] = false
-      i++
-    }
+    // Useless ? ?
+    // let i = 0
+    // for (var playerId in this.players){
+    //   for (let elem in this.spectrum.bars){
+    //     this.play
+    //     artefactsTaken[i] = false
+    //     i++
+    //   }
+    // }
+    
     // May not be the best way to check if the track is local or not
     if (sound === null) {
       getStream = audio.getLocalStream
@@ -328,8 +332,8 @@ module.exports = class Room {
   }
 
   check(player, barNumber, loose) {
-    logger.debug(this.artefactsTaken[barNumber])
-    if (this.artefactsTaken[barNumber] == false) {
+    logger.debug(player.artefactsTaken[barNumber])
+    if (player.artefactsTaken[barNumber] == false) {
     const artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
     if (artefactTaken !== null) {
       if (artefactTaken) {
@@ -367,10 +371,10 @@ module.exports = class Room {
       else{
         logger.error("Function check have a problem ")
         logger.error(artefactTaken)
-        logger.error(this.artefactsTaken[barNumber])
+        logger.error(player.artefactsTaken[barNumber])
       }
     }
-    this.artefactsTaken[barNumber] == artefactTaken
+    player.artefactsTaken[barNumber] == artefactTaken
     return {
       bar: barNumber,
       takenArtefactsCount: this.takenArtefactsCount,
