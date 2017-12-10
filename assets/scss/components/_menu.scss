@@ -33,8 +33,8 @@
         margin-bottom: 12px;
         color: $font-light;
 
-        &:hover,
-        &:currentPage {
+        & .hover,
+        & .currentPage {
             color: $background;
             background: $focus;
             border-radius: $br;
