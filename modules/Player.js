@@ -7,6 +7,7 @@ module.exports = class Player {
     this.id = socket.id
     this.takenArtefactsCount = 0
     this.position = number
+    this.artefactsTaken = []
 
     if (user.logged_in) {
       this.user = {}
