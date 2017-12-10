@@ -445,8 +445,9 @@ function updateBlocUnit(canvasWidth) {
 function startGame() {
 
 	// Hide buttons
-	document.querySelector("#startButtons").classList.add("hidden");
 	document.querySelector("#roomMetadata").classList.add("hidden");
+	document.querySelector("#startButtons").classList.add("hidden");
+	document.querySelector("#invite").classList.add("hidden");
 	// Display score
 	document.querySelector("#score").classList.remove("hidden");
 	
@@ -614,6 +615,11 @@ function endGame (data) {
 	} else {
 		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Host.energy + " artefacts!";
 	}
+
+	// Taunt on social media
+	document.querySelector("#tauntFacebook").innerHTML = '<a href="/share?service=facebook&title=I got a score of 136 in Impulsy! Can you do better? Come and play! http://impulsy.fr&url=<URLDELAPAGE> target="_blank"><button class="button" state="passive">Facebook</button></a>';                	
+	
+
 	// Show pop up
 	document.querySelector("#endGameLayer").classList.remove("hidden");
 	// Blur canvas
