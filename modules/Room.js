@@ -333,7 +333,7 @@ module.exports = class Room {
 
   check(player, barNumber, loose) {
     logger.debug(player.artefactsTaken[barNumber])
-    if (player.artefactsTaken[barNumber] == false) {
+    if (!player.artefactsTaken[barNumber]) {
     const artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
     if (artefactTaken !== null) {
       if (artefactTaken) {
