@@ -58,7 +58,7 @@ var App = {
             var game    = data.gameMetadata;
             var latency = data.latency;
 
-            console.log(game);
+            // console.log(game);
             // var track =JSON.parse(game.track.replace('j:',''));
 
             // Settings
