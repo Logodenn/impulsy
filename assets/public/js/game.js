@@ -66,6 +66,9 @@ var App = {
 
             if(App.mode == "coop") {
                 document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for a second player...";
+                document.querySelector("#inviteMessage").classList.remove("hidden");
+                document.querySelector("#inviteFacebook").innerHTML = '<a href="/share?service=facebook&title=Join Me!&url='+window.location.href+'" target="_blank"><button id="inviteButton" class="button" state="passive">Use Facebook</button></a>';                
+                document.querySelector("#inviteTwitter").innerHTML = '<a href="/share?service=twitter&title=Join Me!&url='+window.location.href+'" target="_blank"><button id="inviteButton" class="button" state="passive">Use Twitter</button></a>';                
             } else {
                 document.querySelector("#startGameButton").attributes.state.value = "passive";
             }

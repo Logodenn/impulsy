@@ -34,7 +34,7 @@
         color: $font-light;
 
         &:hover,
-        &:currentPage {
+        &.currentPage {
             color: $background;
             background: $focus;
             border-radius: $br;
