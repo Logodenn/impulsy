@@ -56,3 +56,14 @@
         color: $active;
     }
 }
+
+@media (max-width: 640px) {
+
+    .menu {
+        width: 180px;
+    
+        &[state=closed] {
+            left: calc(-180px - 20px * 2 - 3px); /* Self-width minus its padding minus its border */
+        }
+    }
+}
