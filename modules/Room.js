@@ -13,7 +13,6 @@ module.exports = class Room {
     this.id = uuid()
     this.isGameStarted = false
     this.roomManager = require('./RoomManager').getInstance()
-
     this.players = {}
     this.loopTimer = null
     this.spectrum = new Spectrum()
@@ -36,6 +35,15 @@ module.exports = class Room {
 
     let sound = this.spectrum.link
     let getStream = audio.getYoutubeStream
+    // Useless ? ?
+    // let i = 0
+    // for (var playerId in this.players){
+    //   for (let elem in this.spectrum.bars){
+    //     this.play
+    //     artefactsTaken[i] = false
+    //     i++
+    //   }
+    // }
 
     // May not be the best way to check if the track is local or not
     if (sound === null) {
@@ -83,11 +91,13 @@ module.exports = class Room {
       this.players[playerId].socket.emit('gameStarted')
     }
 
-    this.currentBar = 0
+    this.currentBar = -1
 
     setTimeout(() => {
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
+
+        this.currentBar++
 
         if (this.players.length === 0) {
           this.stop()
@@ -101,13 +111,13 @@ module.exports = class Room {
           for (let key in this.players) {
             const player = this.players[key]
 
-            let data = this.check(player, this.currentBar)
+            let data = this.check(player, this.currentBar, false)
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
             }
 
             // This checks for the bar before the current one
-            /* if (this.currentBar > 1) {
+            if (this.currentBar > 1) {
               let data = this.check(player, this.currentBar - 1)
 
               if (data.isArtefactTaken) {
@@ -115,11 +125,13 @@ module.exports = class Room {
                   this.players[playerId].socket.emit('updateGame', data)
                 }
               }
-            } */
+            }
+          }
+
+          if (this.currentBar > 0) {
+            this.loseEnergy()
           }
         }
-
-        this.currentBar++
       }, gameSpeed)
     }, positionCheckDelay)
   }
@@ -174,7 +186,8 @@ module.exports = class Room {
           self.players[playerId].socket.emit('playerMove', data)
         }
 
-        /* if (self.currentBar < self.spectrum.bars.length) {
+        // Check is we are still playing and if the loop has started
+        if (self.currentBar < self.spectrum.bars.length && this.loopTimer && this.currentBar >= 0) {
           const checkData = self.check(player, self.currentBar)
 
           for (var playerId in self.players) {
@@ -191,7 +204,7 @@ module.exports = class Room {
               }
             }
           }
-        } */
+        }
       }
     })
 
@@ -304,37 +317,17 @@ module.exports = class Room {
   }
 
   check (player, barNumber) {
-    const artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
-    if (artefactTaken !== null) {
-      if (artefactTaken) {
-        switch (this.difficulty) {
-          case 'crazy':
-            this.energy = this.energy - 1
-            break
-          case 'easy':
-            // Energy doesn't change
-            this.energy = this.energy
-            break
-          case 'lazy':
-            // Do stuff
-            break
-          default:
-            logger.error('Check the difficulty or the current bar something is going wrong')
-        }
-        player.takenArtefactsCount += 1
-      } else {
-        switch (this.difficulty) {
-          case 'crazy':
-            this.energy = this.energy - 2
-            break
-          case 'easy':
-            this.energy = this.energy - 1
-            break
-          case 'lazy':
-            // Do stuff
-            break
-          default:
-            logger.error('Check the difficulty or the current bar something is going wrong')
+    let artefactTaken = false
+
+    if (!player.artefactsTaken[barNumber] && barNumber >= 0) {
+      artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
+
+      if (artefactTaken !== null) {
+        player.artefactsTaken[barNumber] = artefactTaken
+
+        if (artefactTaken) {
+          player.takenArtefactsCount++
+          this.gainEnergy()
         }
       }
     }
@@ -346,6 +339,40 @@ module.exports = class Room {
       isArtefactTaken: artefactTaken,
       position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
       playerNumber: player.number
+    }
+  }
+
+  loseEnergy () {
+    if (this.spectrum.bars[this.currentBar].artefacts[0] !== null) {
+      switch (this.difficulty) {
+        case 'crazy':
+          this.energy = this.energy - 2
+          break
+        case 'easy':
+          this.energy = this.energy - 1
+          break
+        case 'lazy':
+          // Do stuff
+          break
+        default:
+          logger.error('Check the difficulty or the current bar something is going wrong')
+      }
+    }
+  }
+
+  gainEnergy () {
+    switch (this.difficulty) {
+      case 'crazy':
+        this.energy = this.energy + 1
+        break
+      case 'easy':
+        // No energy change
+        break
+      case 'lazy':
+        // No energy change
+        break
+      default:
+        logger.error('Check the difficulty or the current bar something is going wrong')
     }
   }
 
