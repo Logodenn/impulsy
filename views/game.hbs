@@ -27,8 +27,10 @@
 
             <div id="invite" class="buttonWrapper flex-col">
                 <span id="inviteMessage" class="hidden">Wanna invite a friend?</span>
-                <div id="inviteFacebook"></div>
-                <div id="inviteTwitter"></div>
+                <div class="buttonWrapper flex-row">
+                    <div id="inviteFacebook"></div>
+                    <div id="inviteTwitter"></div>
+                </div>
                 {{!-- <button id="inviteButton" class="button" state="passive" onclick="TODO">Use Facebook</button> --}}
             </div>
 
@@ -56,8 +58,8 @@
                     </a>
                 {{/if}}
                 {{!-- TAUNT  --}}
-                <div id="taunt" class="buttonWrapper flex-col">
-                    <span>Wanna taunt?</span>
+                <span>Wanna taunt?</span>
+                <div id="taunt" class="buttonWrapper flex-row">
                     <div id="tauntTwitter"></div>
                     <div id="tauntFacebook"></div>
                     {{!-- <button id="inviteButton" class="button" state="passive" onclick="TODO">Use Facebook</button> --}}
