@@ -558,10 +558,14 @@ function startGame() {
 }
 
 function resetGame() {
-	players = []
-	pulsers = []
-	buttons = []
-	time	= 0
+	players 			= []
+	pulsers 			= []
+	buttons 			= []
+	canvasBars 			= [];
+	canvasArtefacts 	= [];
+	canvasDeathFlags  	= [];
+	time				= 0
+
 	// console.log("Below is value of var myGameArea");
 	// console.log(myGameArea);
 
@@ -585,7 +589,6 @@ function updateGameScene(data) {
 
 	// Handle artefact checking
 	if(gameState.isArtefactTaken) {
-
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
