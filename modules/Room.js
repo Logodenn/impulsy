@@ -195,14 +195,7 @@ module.exports = class Room {
       }
     })
 
-    player.socket.on('playAgain', (data) => {
-      player.takenArtefactsCount = 0
-      self.resetGame()
-      player.socket.emit('roomJoined', {
-        roomId: self.id,
-        gameMetadata: self.getMetaData(player)
-      })
-    })
+    player.socket.on('playAgain', () => self.resetGame())
 
     player.socket.on('disconnect', () => {
       self.onPlayerDisconnect(player.socket)
@@ -406,6 +399,16 @@ module.exports = class Room {
       }
     })
     this.energy = energy
+
+    // Reset players
+    for (let playerId in this.players) {
+      this.players[playerId].takenArtefactsCount = 0
+
+      this.players[playerId].socket.emit('roomJoined', {
+        roomId: this.id,
+        gameMetadata: this.getMetaData(this.players[playerId])
+      })
+    }
   }
 
   get takenArtefactsCount () {
