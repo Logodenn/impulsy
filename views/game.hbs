@@ -25,6 +25,13 @@
                 <button id="startGameButton" class="button" state="disabled" onclick="App.Host.clickStart()">Start game</button>
             </div>
 
+            <div id="invite" class="buttonWrapper flex-col">
+                <span id="inviteMessage" class="hidden">Wanna invite a friend?</span>
+                <div id="inviteFacebook"></div>
+                <div id="inviteTwitter"></div>
+                {{!-- <button id="inviteButton" class="button" state="passive" onclick="TODO">Use Facebook</button> --}}
+            </div>
+
             <div id="score" class="hidden">
                 <span id="artefactsTaken">0</span> / <span id="artefactsToTake">32</span>
             </div>
@@ -48,6 +55,13 @@
                         <button class="button" state="disabled">Sign up</button>
                     </a>
                 {{/if}}
+                {{!-- TAUNT  --}}
+                <div id="taunt" class="buttonWrapper flex-col">
+                    <span>Wanna taunt?</span>
+                    <div id="tauntTwitter"></div>
+                    <div id="tauntFacebook"></div>
+                    {{!-- <button id="inviteButton" class="button" state="passive" onclick="TODO">Use Facebook</button> --}}
+                </div>
 
                 {{!-- PLAY --}}
                 <!--<button class="button" onclick="playAgain()" disabled>Play again</button>-->
