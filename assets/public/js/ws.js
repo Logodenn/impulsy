@@ -13,6 +13,7 @@ var IO = {
     // ************************************************************ //
     // ******************** WS INITIALIZATION ******************** //
     // ********************************************************** //
+    isBinded : false,
 
     init: function() {
         IO.socket = io.connect();
@@ -59,14 +60,18 @@ var IO = {
         // console.log('Game metadata is: ', data);
         App.Host.gameInit(data);
 
-        IO.socket.on('newPlayer', IO.onNewPlayer);
-        IO.socket.on('gameStarted', IO.onGameStarted);
-        IO.socket.on('playerMove', IO.onPlayerMove);
-        IO.socket.on('updateGame', IO.onUpdateGame);
-        IO.socket.on('missedArtefact', IO.onMissedArtefact);
-        IO.socket.on('gameOver', IO.onEndOfGame);
-        IO.socket.on('audioChunk', IO.onAudioChunk);
-        IO.socket.on('audioEnd', IO.onAudioEnd);
+        if (!IO.isBinded) {
+            IO.socket.on('newPlayer', IO.onNewPlayer);
+            IO.socket.on('gameStarted', IO.onGameStarted);
+            IO.socket.on('playerMove', IO.onPlayerMove);
+            IO.socket.on('updateGame', IO.onUpdateGame);
+            IO.socket.on('missedArtefact', IO.onMissedArtefact);
+            IO.socket.on('gameOver', IO.onEndOfGame);
+            IO.socket.on('audioChunk', IO.onAudioChunk);
+            IO.socket.on('audioEnd', IO.onAudioEnd);
+
+            IO.isBinded = true
+        }
 
         if (data.gameMetadata.players.length == 2) {
             document.querySelector("#startGameButton").attributes.state.value = "passive";
