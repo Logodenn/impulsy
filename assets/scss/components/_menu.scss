@@ -5,6 +5,7 @@
     left: 50px;
     background: transparent;
     border-color: transparent;
+    z-index: 10;
 }
 
 .menu {
@@ -58,6 +59,11 @@
 }
 
 @media (max-width: 640px) {
+
+    #burger {
+        top: 0;
+        left: 0;
+    }
 
     .menu {
         width: 180px;
