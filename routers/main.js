@@ -4,6 +4,7 @@ const getArrayArthefacts = require('../utils/artefacts')
 const db = require('../models/controllers')
 const cookies = require('cookies')
 const audio = require('../modules/audio')
+const share = require('social-share');
 const numberOfTrend = 10
 const numberOfUserMostPlayed = 10
 const numberOfUserFavorite = 10
@@ -200,5 +201,10 @@ router.post('/favorite/:id', (req, res) => {
     })
   }
 })
+
+router.get('/share', (req, res) => {
+  var url = share(req.query.service, req.query);
+  res.redirect(url);
+});
 
 module.exports = router
