@@ -390,6 +390,7 @@ function updateGameArea() {
 }
 
 function addAmplitudeAndArtefact() {
+	// console.log(App.Host.audioSpectrum[time]);
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
 	canvasBars.push(amplitude);
 
@@ -560,6 +561,9 @@ function resetGame() {
 	players = []
 	pulsers = []
 	buttons = []
+	time	= 0
+	// console.log("Below is value of var myGameArea");
+	// console.log(myGameArea);
 
 	myGameArea.stop()
 	myGameArea.stopAddition()
