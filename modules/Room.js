@@ -208,6 +208,8 @@ module.exports = class Room {
       }
     })
 
+    player.socket.on('playAgain', () => self.resetGame())
+
     player.socket.on('disconnect', () => {
       self.onPlayerDisconnect(player.socket)
     })
@@ -408,6 +410,31 @@ module.exports = class Room {
       mode: this.mode, // mode of the game (solo or coop)
       spectrum: this.spectrum,
       energy: this.energy // duration of the music
+    }
+  }
+
+  resetGame () {
+    logger.info('Game reset : ' + this.id)
+    this.isGameStarted = false
+    this.loopTimer = null
+    this.currentBar = 0
+    this.audioStream = null
+    let energy = 0
+    this.spectrum.bars.forEach(bar => {
+      if (bar.artefacts[0] !== null && bar.artefacts[1] !== null) {
+        energy++
+      }
+    })
+    this.energy = energy
+
+    // Reset players
+    for (let playerId in this.players) {
+      this.players[playerId].takenArtefactsCount = 0
+
+      this.players[playerId].socket.emit('roomJoined', {
+        roomId: this.id,
+        gameMetadata: this.getMetaData(this.players[playerId])
+      })
     }
   }
 
