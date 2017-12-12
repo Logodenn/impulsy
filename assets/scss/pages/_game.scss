@@ -53,3 +53,10 @@
 	/* background: $background; */
 	background: $background-dark;
 }
+
+@media (max-width: 640px) {
+	
+	#endGameLayer {
+		width: auto;
+	}
+}

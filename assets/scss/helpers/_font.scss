@@ -10,3 +10,11 @@ body * {
     color: $font-light;
     /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
 }
+
+@media (max-width: 640px) {
+	
+	body * {
+		font-size: 26px;
+	}
+	
+}
