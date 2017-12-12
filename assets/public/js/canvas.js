@@ -617,8 +617,8 @@ function endGame (data) {
 	}
 
 	// Taunt on social media
-	document.querySelector("#tauntTwitter").innerHTML = '<a href="/share?service=twitter&title=I got a score of '+data.score+' in Impulsy! Can you do better? Come and play! http://impulsy.fr&url='+window.location.href+' target="_blank"><button class="button" state="passive">Twitter</button></a>';                	
-	document.querySelector("#tauntFacebook").innerHTML = '<a href="/share?service=facebook&title=I got a score of '+data.score+' in Impulsy! Can you do better? Come and play! http://impulsy.fr&url='+window.location.href+' target="_blank"><button class="button" state="passive">Facebook</button></a>';                	
+	document.querySelector("#tauntFacebook").innerHTML = '<a href="/share?service=facebook&title=I got a score of '+data.score+' in Impulsy! Can you do better? Come and play! http://impulsy.fr&url='+window.location.href+' target="_blank"><button class="button button-small" state="passive"><img src="../img/trololof.svg" alt="Facebook Logo" width="30px" height="30px"></button></a>'                	
+	document.querySelector("#tauntTwitter").innerHTML = '<a href="/share?service=twitter&title=I got a score of '+data.score+' in Impulsy! Can you do better? Come and play! http://impulsy.fr&url='+window.location.href+' target="_blank"><button class="button button-small" state="passive"><img src="../img/trololot.svg" alt="Twitter Logo" width="30px" height="30px"></button></a>'                	
 	
 
 	// Show pop up
