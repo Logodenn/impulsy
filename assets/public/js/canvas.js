@@ -390,6 +390,7 @@ function updateGameArea() {
 }
 
 function addAmplitudeAndArtefact() {
+	// console.log(App.Host.audioSpectrum[time]);
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
 	canvasBars.push(amplitude);
 
@@ -454,6 +455,7 @@ function startGame() {
 	// Set score view
 	// document.querySelector("#artefactsToTake").innerHTML = App.Player.artefactsToTake.length;
 	// document.querySelector("#artefactsToTake").innerHTML = App.energy;
+	document.querySelector("#artefactsTaken").innerHTML = 0;
 	document.querySelector("#artefactsToTake").innerHTML = App.Host.energy;
 
 	myGameArea.start();
@@ -557,6 +559,22 @@ function startGame() {
 	}
 }
 
+function resetGame() {
+	players 			= []
+	pulsers 			= []
+	buttons 			= []
+	canvasBars 			= [];
+	canvasArtefacts 	= [];
+	canvasDeathFlags  	= [];
+	time				= 0
+
+	// console.log("Below is value of var myGameArea");
+	// console.log(myGameArea);
+
+	myGameArea.stop()
+	myGameArea.stopAddition()
+}
+
 function updateGameScene(data) {
 	var gameState = data; // Dirty, back should send data, not data.data
 	// gameState is so : { energy: 163, isArtefactTaken: false, nbArtefacts: null, bar: 31 }
@@ -573,7 +591,6 @@ function updateGameScene(data) {
 
 	// Handle artefact checking
 	if(gameState.isArtefactTaken) {
-
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()

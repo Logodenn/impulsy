@@ -41,6 +41,20 @@ var App = {
 
         gameInit: function (data) {
 
+            //TODO handle if playAgain
+            if(document.querySelector("#startButtons").classList.contains("hidden")) {
+
+                // Display buttons
+                document.querySelector("#startButtons").classList.remove("hidden");
+                // Hide score
+                document.querySelector("#score").classList.add("hidden");
+                // Hide pop up
+                document.querySelector("#endGameLayer").classList.add("hidden");
+                // Unblur canvas
+                document.querySelector("#canvasWrapper").classList.remove("blurred");
+                document.querySelector("#canvasWrapper").innerHTML = "";
+            }
+
             var game    = data.gameMetadata;
             var latency = data.latency;
 
@@ -122,29 +136,11 @@ function favoriteTrack(button) {
 }
 
 function playAgain() {
-
-    var action = "/room";
-    /*var data = new FormData();
-    data.append('trackId', App.Host.trackId.toString());
-    data.append('difficulty', App.difficulty.toString());
-    data.append('mode', App.mode.toString);*/
     var gameData = {
+        roomId      : App.gameId,
         trackId     : App.Host.trackId,
         difficulty  : App.difficulty,
         mode        : App.mode
     }
-    
-    // ********** AJAX ********** //
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var jsonResponse = JSON.parse(this.responseText);
-        }
-    };
-
-    xhttp.open("POST", action, true);
-    //Send the proper header information along with the request
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(JSON.stringify(gameData.toString));
+    IO.playAgain(gameData)
 }
