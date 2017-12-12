@@ -48,3 +48,17 @@
   font-size: 1rem;
   width: auto;
 }
+
+@media (max-width: 640px) {
+	
+	.button {
+    padding: 10px 20px;
+    width: auto;
+  }
+  
+  .button-track {
+    // padding: 5px 10px;
+    font-size: 0.6rem;
+  }
+	
+}
