@@ -15,8 +15,16 @@
 	background-clip: text; */
 }
 
-@keyframes rainbow { 
-    0%{background-position:0% 82%}
-    50%{background-position:100% 19%}
-    100%{background-position:0% 82%}
+// @keyframes rainbow { 
+//     0%{background-position:0% 82%}
+//     50%{background-position:100% 19%}
+//     100%{background-position:0% 82%}
+// }
+
+@media (max-width: 640px) {
+	
+	.title {
+		font-size: 1.5rem;
+	}
+	
 }
