@@ -430,6 +430,7 @@ module.exports = class Room {
     // Reset players
     for (let playerId in this.players) {
       this.players[playerId].takenArtefactsCount = 0
+      this.players[playerId].artefactsTaken = []
 
       this.players[playerId].socket.emit('roomJoined', {
         roomId: this.id,
