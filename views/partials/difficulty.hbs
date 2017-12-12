@@ -1,0 +1,54 @@
+
+<section id="difficulty" class="flex-col modal" state="closed">
+
+    <!-- ********** HEADER ********** -->
+
+    <div class="closer" onclick="toggleElement('difficulty','close')">X</div>
+
+    <!-- ********** FORM ********** -->
+
+    <form id="difficultyForm" action="/room" method="post" class="form flex-col buttonWrapper">
+        <span id="selectedTrackDisplay"></span>
+
+        {{!-- Actual inputs --}}
+
+        <input id="selectedTrack" class="input" type="hidden" name="track" value="" />
+        <input id="selectedDifficulty" class="input" type="hidden" name="difficulty" value="lazy" />
+        <input id="selectedMode" class="input" type="hidden" name="mode" value="solo" />
+
+        {{!-- UI buttons --}}
+
+        <div class="flex-row">
+            {{!-- Difficulty --}}
+            <div id="lazy" class="button" state="active" onclick="setDifficulty('lazy')">Lazy</div>
+            <div id="easy" class="button" state="passive" onclick="setDifficulty('easy')">Easy</div>
+            <div id="crazy" class="button" state="passive" onclick="setDifficulty('crazy')">Crazy</div>
+        </div>
+        
+        <div id="mode" class="flex-row hidden">
+            {{!-- Mode --}}
+            <div id="solo" class="button" state="active" onclick="setMode('solo')">Solo</div>
+            <div id="coop" class="button" state="passive" onclick="setMode('coop')">Coop</div>
+        </div>
+            {{!-- <div id="lazy" class="inputWrapper button flex-row" state="active" onclick="setDifficulty('lazy')">
+                <label for="dlazy">Lazy</label>
+                <input id="dlazy" class="hidden" type="radio" name="difficulty" value="lazy" checked>
+            </div>
+
+            <div id="easy" class="inputWrapper button flex-row" state="passive" onclick="setDifficulty('easy')">
+                <label for="deasy">Easy</label>
+                <input id="deasy" class="hidden" type="radio" name="difficulty" value="easy">
+            </div>
+
+            <div id="crazy" class="inputWrapper button flex-row" state="passive" onclick="setDifficulty('crazy')">                    
+                <label for="dcrazy">Crazy</label>
+                <input id="dcrazy" class="hidden" type="radio" name="difficulty" value="crazy">
+            </div> --}}
+
+        <!-- ********** SUBMIT ********** -->
+
+        <a href="/room">
+            <button class="button" type="submit" form="difficultyForm" state="passive">Create room</button>
+        </a>
+    </form>
+</section>

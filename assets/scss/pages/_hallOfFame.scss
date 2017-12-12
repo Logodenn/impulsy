@@ -1,0 +1,15 @@
+
+// @import '../main.scss';
+
+.rankWrapper {
+	align-items: baseline;
+	text-align: center;
+	width: 100%;
+}
+
+@media (max-width: 640px) {
+	
+	.rankWrapper {
+		flex-direction: column !important;
+	}
+}

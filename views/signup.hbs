@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Impulsy - Sign up!</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/css/pages/signup.css" rel="stylesheet">
-        <script src="/js/signup.js"></script>
+        {{> head }}
     </head>
     <body>
 
+        {{> menu signup="true" }}
+
         <section class="content">
-
-            {{!-- HOME BUTTON --}}
-
-            <a href="/">
-                <button id="homeButton" class="button button-small"><img src="/img/home.svg" alt="Home" width="30px" height="30px"></button>
-            </a>
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
 
@@ -23,11 +15,11 @@
 
                 {{!-- SIGN UP FORM --}}
 
-                <form id="signupForm" action="/signup" method="post" class="form flex-col">
+                <form id="signupForm" action="/signup" method="post" class="userForm flex-col">
 
                     <div class="inputWrapper">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" class="input">
+                        <input type="text" id="username" name="username" class="input" autofocus>
                     </div>
 
                     <div class="inputWrapper">

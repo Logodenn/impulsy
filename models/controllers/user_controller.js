@@ -1,6 +1,6 @@
 var orm = require('orm');
 var models = require('../models');
-const logger = require('winston');
+const logger = require('../../utils/logger')(module)
 
 
 module.exports = {
@@ -17,7 +17,6 @@ module.exports = {
                     } else {
                         cb(null, users);
                     }
-                    logger.info("Done!");
                 });
             }
         });
@@ -36,7 +35,6 @@ module.exports = {
                 } else {
                     cb(null, user);
                 }
-                logger.info("Done!");
             });
         });
     },
@@ -44,7 +42,7 @@ module.exports = {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
-                cb(err);
+                cb(err, null);
             } else {
                 if (isMail) {
                     couple = {
@@ -58,11 +56,15 @@ module.exports = {
                 db.models.user.find(couple, function (err, user) {
                     if (err) {
                         logger.error(err);
-                        cb(err);
+                        cb(err, null);
                     } else {
-                        cb(null, user[0]);
+                        if (user.length != 0){
+                            cb(null, user[0]);
+                        }else{
+                            cb("No User", null);
+                        }
+                        
                     }
-                    logger.info("Done!");
                 });
             }
         });
@@ -156,7 +158,7 @@ module.exports = {
                                 logger.debug(err);
                                 cb(err);
                             } else {
-                                logger.info("user" + user.id + " updated !");
+                                //logger.info("user" + user.id + " updated !");
                                 cb(null, userUpdate)
                             }
                         });
@@ -188,7 +190,6 @@ module.exports = {
                             }
                         });
                     }
-                    logger.info("Done!");
                 });
             }
         });
@@ -300,13 +301,12 @@ module.exports = {
                             }
                         });
                     }
-                    logger.info("Done!");
                 });
             }
         });
     },
 
-    createFavoriteTrack: function (pseudo, name, cb) {
+    createFavoriteTrack: function (pseudo, id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -320,7 +320,7 @@ module.exports = {
                         cb(err);
                     } else {
                         db.models.track.find({
-                            name: name
+                            id: id
                         }, function (err, track) {
                             if (err) {
                                 logger.error(err);
@@ -357,7 +357,7 @@ module.exports = {
         });
     },
 
-    removeFavoriteTrack: function (pseudo, name, cb) {
+    removeFavoriteTrack: function (pseudo, id, cb) {
         models(function (err, db) {
             if (err) {
                 logger.error(err);
@@ -371,7 +371,7 @@ module.exports = {
                         cb(err);
                     } else {
                         db.models.track.find({
-                            name: name
+                            id: id
                         }, function (err, track) {
                             if (err) {
                                 logger.error(err);
@@ -386,89 +386,25 @@ module.exports = {
                 });
             }
         });
+    },
+    bestScores: function (userId, trackId, coop, cb) {
+        models(function (err, db) {
+            if (err) {
+                logger.error(err);
+                cb(err);
+            } else {
+                db.driver.execQuery("select duration from user join score"
+                +" on user_id=user.id"
+                +" where coop=? and user_id=? and track_id=? order by duration desc;", [coop,userId,trackId],
+                    function (err, data) {
+                        if (err) {
+                            logger.error(err);
+                            cb(err);
+                        } else {
+                            cb(null, data);
+                        }
+                    })
+            }
+        });
     }
 };
-/*
-module.exports = {
-    create: function (user) {
-        models(function (err, db) {
-            if (err) throw err;
-
-            db.sync(function (err) {
-                if (err) throw err;
-                db.models.user.create(user, function (err, message) {
-                    if (err) {
-                        console.error(err);
-                    } else {
-                        console.log(message);
-                    }
-                    db.close();
-                    console.log("Done!");
-                });
-            });
-        });
-    },
-
-    delete: function (user) {
-        models(function (err, db) {
-            if (err) throw err;
-
-            db.sync(function (err) {
-                if (err) throw err;
-
-                db.models.user.findAsync({pseudo: user.pseudo})
-                    .then(function (results) {
-                        results[0].removeAsync();
-                    }).then(function (results) {
-                    console.log(user);
-                    console.log("Deleted !");
-                }).catch(function (err) {
-                    console.error(err);
-                    db.close();
-                    console.log("Done!");
-                });
-            });
-        });
-    },
-
-    update: function (userBefore, userAfter) {
-        models(function (err, db) {
-            if (err) throw err;
-
-            db.sync(function (err) {
-                if (err) throw err;
-
-                db.models.user.findAsync({pseudo: userBefore.pseudo})
-                    .then(function (results) {
-                        results[0].password = userAfter.password;
-                        results[0].rank = userAfter.rank;
-                        results[0].pseudo = userAfter.pseudo;
-                        results[0].saveAsync();
-                    }).then(function () {
-                        console.log(userAfter);
-                        console.log("updated");
-
-                        db.close();
-                        console.log("Done!");
-                    }
-                ).catch(function (err) {
-                    console.error(err);
-                    db.close();
-                    console.log("Done!");
-                });
-            });
-        });
-    }
-
-    /!*list: function (req, res, next) {
-    req.models.message.find().limit(4).order('-id').all(function (err, messages) {
-        if (err) return next(err);
-
-        var items = messages.map(function (m) {
-            return m.serialize();
-        });
-
-        res.send({ items: items });
-    });
-},*!/
-}*/

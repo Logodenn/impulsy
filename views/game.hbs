@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Impulsy - Ride the music!</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/css/pages/game.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+        {{> head }}
         <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/ImageLoader.js"></script>
         <script src="/js/chunkPlayer.js"></script>
         <script src="/js/ws.js"></script>
         <script src="/js/game.js"></script>
@@ -14,16 +11,27 @@
     </head>
     <body>
 
+        {{> menu room="true" }}
+
         <section class="content">
-            {{!-- HOME BUTTON --}}
+            
+            <div id="roomMetadata" class="flex-col">
+                <h1 id="trackTitle">{{metadata.spectrum.name}}</h1>
+                <span id="roomDifficulty">Difficulty: {{metadata.difficulty}}</span>
+            </div>
 
-            <a href="/">
-                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
-            </a>
+            <div id="startButtons" class="buttonWrapper flex-col">
+                <span id="waitingRoomMessage">Ready?</span>
+                <button id="startGameButton" class="button" state="disabled" onclick="App.Host.clickStart()">Start game</button>
+            </div>
 
-            <div id="startButtons" class="buttonWrapper">
-                <button id="createGameButton" class="button" state="passive" onclick="App.Host.onCreateClick()">Init: create game</button>
-                <button id="startGameButton" class="button" state="disabled" onclick="App.Host.onStartClick()">Ready: start game</button>
+            <div id="invite" class="buttonWrapper flex-col">
+                <span id="inviteMessage" class="hidden">Wanna invite a friend?</span>
+                <div class="buttonWrapper flex-row">
+                    <div id="inviteFacebook"></div>
+                    <div id="inviteTwitter"></div>
+                </div>
+                {{!-- <button id="inviteButton" class="button" state="passive" onclick="TODO">Use Facebook</button> --}}
             </div>
 
             <div id="score" class="hidden">
@@ -32,36 +40,34 @@
 
             <div id="canvasWrapper"></div>
 
-            <div id="moveButtons" class="flex-row hidden">
-                <button id="upwardButton" class="button hidden" state="passive" onclick="onTabletMove('up')">Up</button>
-                <button id="downwardButton" class="button hidden" state="passive" onclick="onTabletMove('down')">Do</button>
-            </div>
-
             {{!-- ENDGAME LAYER --}}
 
             <div id="endGameLayer" class="flex-col hidden">
-                Your score is <span id="gameState"></span>
-                {{!-- <span>Your score is : $$$</span>  --}}
-
-                {{!-- SAVE SCORE --}} 
-
-                {{!-- if the user hasn't logged in --}}
-                {{!-- <span>Wanna save your score?</span> --}}
-                <a class="hidden" href="#">
-                    <button class="button" state="disabled">Sign up</button>
-                </a>
-
-                {{!-- FAVORITE --}}
-
-                <a class="hidden" href="#">
-                    <button class="button" state="disabled">Favorite this track</button>
-                </a>
+                <span>Your score is <span id="gameState"></span></span>
+                
+                {{#if userConnected}}
+                    {{!-- FAVORITE --}}
+                    <a href="#">
+                        <button class="button" state="passive" onclick="favoriteTrack(this)">Favorite</button>
+                    </a>
+                {{else}}
+                    {{!-- SUGGEST SIGNING UP  --}} 
+                    <span>Wanna save your score?</span>
+                    <a href="#">
+                        <button class="button" state="disabled">Sign up</button>
+                    </a>
+                {{/if}}
+                {{!-- TAUNT  --}}
+                <span>Wanna taunt?</span>
+                <div id="taunt" class="buttonWrapper flex-row">
+                    <div id="tauntTwitter"></div>
+                    <div id="tauntFacebook"></div>
+                    {{!-- <button id="inviteButton" class="button" state="passive" onclick="TODO">Use Facebook</button> --}}
+                </div>
 
                 {{!-- PLAY --}}
-
-                <a class="hidden" href="/">
-                    <button class="button">Play again</button>
-                </a>                
+                <button class="button" onclick="playAgain()">Play again</button>
+                {{!-- <button class="button" state="disabled">Play again</button> --}}
             </div>
 
         </section>

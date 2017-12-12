@@ -1,34 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Impulsy - Ride the music!</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/css/pages/hallOfFame.css" rel="stylesheet">
+        {{> head }}
     </head>
     <body>
 
+        {{> menu hallOfFame="true" }}
+
         <section class="content">
-
-            {{!-- HOME BUTTON --}}
-
-            <a href="/">
-                <button id="homeButton" class="button button-small"><img src="../img/home.svg" alt="Home" width="30px" height="30px"></button>
-            </a>
 
             <h1 class="title">Hall of fame</h1>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Cumulated score</th>
-                    </tr>
-                </thead>
-                <tbody id="rank"></tbody>
-            </table>
+            {{!-- SOLO RANK --}}
+            <section class="flex-row rankWrapper">
+
+                <section>
+                    <h2 class="title">Solo mode</h2>
+
+                    <table>
+                        {{!-- TODO handle case where table is huge --}}
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Cumulated score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rank">
+                            {{#each ranksSolo}}
+                                <tr>
+                                    <td>{{rank}}</td>
+                                    <td>{{pseudo}}</td>
+                                    <td>{{score_total}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+
+                    {{#if userConnected}}
+                        <div id="userData" class="flex-col">
+                            <span>Your cumulated score is {{userSoloScore}}</span>
+                            <span>Your rank is {{userRankSolo}}</span>
+                        </div>
+                    {{/if}}
+                </section>
+
+                {{!-- COOP RANK --}}
+                <section>
+                    <h2 class="title">Cooperation mode</h2>
+
+                    <table>
+                        {{!-- TODO handle case where table is huge --}}
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Cumulated score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rank">
+                            {{#each ranksCoop}}
+                                <tr>
+                                    <td>{{rank}}</td>
+                                    <td>{{pseudo}}</td>
+                                    <td>{{score_total}}</td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+
+                    {{#if userConnected}}
+                        <div id="userData" class="flex-col">
+                            <span>Your cumulated score is {{userCoopScore}}</span>
+                            <span>Your rank is {{userRankCoop}}</span>
+                        </div>
+                    {{/if}}
+                </section>
+            </section>
+
         </section>
-        
     </body>
-    <script src="js/hallOfFame.js"></script>
 </html>

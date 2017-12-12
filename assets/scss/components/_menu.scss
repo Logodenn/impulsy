@@ -1,0 +1,75 @@
+
+#burger {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    background: transparent;
+    border-color: transparent;
+    z-index: $menuIndex - 1;
+}
+
+.menu {
+    position: fixed;
+    z-index: $menuIndex;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: $background-dark;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    transition: left 0.1s;
+    border-right: solid 3px $font-light;
+    @include shadow($shadow);
+
+    &[state=closed] {
+        left: calc(-250px - 20px * 2 - 3px); /* Self-width minus its padding minus its border */
+        transition: left 0.1s;
+    }
+
+    .menuItem {
+        /* border-bottom: solid font-light) 2px;
+        border-radius: 3px; */
+        margin-bottom: 12px;
+        color: $font-light;
+
+        &:hover,
+        &.currentPage {
+            color: $background;
+            background: $focus;
+            border-radius: $br;
+        }
+    }
+
+    .closer {
+        align-self: right;
+        cursor: pointer;
+    }
+    
+    .welcome {
+        color: $background-light;
+        @include shadow($focus);
+        margin-bottom: 20px;
+    }
+    
+    .pseudo {
+        color: $active;
+    }
+}
+
+@media (max-width: 640px) {
+
+    #burger {
+        top: 0;
+        left: 0;
+    }
+
+    .menu {
+        width: 180px;
+    
+        &[state=closed] {
+            left: calc(-180px - 20px * 2 - 3px); /* Self-width minus its padding minus its border */
+        }
+    }
+}

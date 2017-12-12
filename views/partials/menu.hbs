@@ -1,0 +1,31 @@
+
+{{!-- Burger --}}
+
+<button id="burger" class="button button-small" onclick="toggleElement('menu','open')">
+    <img src="../img/burger.svg" alt="Home" width="30px" height="30px">
+</button>
+
+{{!-- Menu --}}
+
+<section id="menu" class="menu" state="closed">
+    <div class="button-small closer" onclick="toggleElement('menu','close')">X</div>
+    {{#if userConnected}}
+        <span class="welcome">Hello <span class="pseudo">{{userName}}</span></span>
+    {{/if}}
+    <ul>
+        <a href="/"><li class="menuItem {{#if index}}currentPage{{/if}}">Select a track</li></a>
+        {{#if userConnected}}
+            <a href="/logout"><li class="menuItem">Log out</li></a>
+        {{else}}
+            <a href="/login"><li class="menuItem {{#if login}}currentPage{{/if}}">Log in</li></a>
+            <a href="/signup"><li class="menuItem {{#if signup}}currentPage{{/if}}">Sign up</li></a>
+        {{/if}}
+        <a href="/hallOfFame"><li class="menuItem {{#if hallOfFame}}currentPage{{/if}}">Hall of fame</li></a>
+        <a href="/howItWorks"><li class="menuItem {{#if howItWorks}}currentPage{{/if}}">How it works</li></a>
+
+        {{!-- {{#each pages}}
+            <a href="/{{href}}"><li class="menuItem {{#if isCurrentPage}}currentPage{{/if}}">{{action}}</li></a>
+        {{/each}} --}}
+        
+    </ul>
+</section>
