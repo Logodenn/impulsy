@@ -4,19 +4,20 @@
   width: 280px;
   background: $active;
   border-radius: $br;
-  border: solid 3px $background-light;
+  border-bottom: solid 3px $background-light;
   color: $background;
   margin: 5px;
 
   &:hover {
     background: $focus;
-    border: solid 3px $focus;
+    // border-bottom: solid 3px $focus;
   }
 
   &:active,
   &[state=active] {
     background: $focus;
-    border: solid 3px $focus;
+    // border: solid 3px $focus;
+    border: none;
     @include shadow-inset($shadow);
     transform: translateY(4px);
   }
