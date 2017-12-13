@@ -4,6 +4,7 @@ var canvasImagesPath = '../img/canvas/'
 var canvasImagesNames = [
   'artefact0.png',
   'artefact1.png',
+  'artefactCoop.png',
   'artefactTaken.png',
   'player0.png',
   'player1.png',
