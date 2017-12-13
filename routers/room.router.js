@@ -69,16 +69,24 @@ router.post('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const roomId = req.params.id
 
-  console.log(roomId)
   if (RoomManager.rooms.hasOwnProperty(roomId)) {
-    var data = {}
-    data.userConnected = false
-    if (req.user) {
-      data.userConnected = true
-      data.userName = req.user.pseudo
+    const room =  RoomManager.rooms[roomId]
+
+    if (room.canBeJoined()) {
+      let data = {
+        metadata: RoomManager.rooms[roomId].metadata,
+        userConnected: false
+      }
+
+      if (req.user) {
+        data.userConnected = true
+        data.userName = req.user.pseudo
+      }
+
+      res.render('game', data)
+    } else {
+      res.status(400).redirect('/')
     }
-    data.metadata = RoomManager.rooms[roomId].metadata
-    res.render('game', data)
   } else {
     res.status(404).redirect('/')
   }
