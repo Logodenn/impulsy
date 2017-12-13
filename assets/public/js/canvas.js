@@ -604,6 +604,9 @@ function updateGameScene(data) {
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
+		if(App.mode == "coop") {
+			canvasArtefactsCoop[gameState.bar].isTaken()
+		}
 	}
 }
 
