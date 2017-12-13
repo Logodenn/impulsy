@@ -61,11 +61,11 @@ exports = module.exports = class RoomManager {
 
       this.rooms[room.id].energy = energy
 
-      logger.info(`Room ${room.id} is created with parameters: {
-        trackId: ${_trackId},
-        difficulty: ${_difficulty},
-        mode: ${_mode}
-      }`)
+      logger.info(`Room ${room.id} is created with parameters:`)
+      logger.info(`\t- trackId: ${_trackId}`)
+      logger.info(`\t- difficulty: ${_difficulty}`)
+      logger.info(`\t- mode: ${_mode}`)
+
       _callback(null, room.id)
     })
   }
