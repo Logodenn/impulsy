@@ -52,14 +52,12 @@ var tabColorToChange = ["g-", "r+", "r-", "g+"];
 // ******************** Game variables ******************** //
 
 var time = 0;
-
-// ******************** Components ******************** //
-
 var players 			= [];
 var energyBar;
 var pulsers 			= [];
 var canvasBars 			= [];
 var canvasArtefacts 	= [];
+var canvasArtefactsCoop	= [];
 var canvasDeathFlags  	= [];
 var buttons				= [];
 
@@ -369,6 +367,9 @@ function updateGameArea() {
 	for (i = 0; i < canvasBars.length; i++) {
 		canvasBars[i].update();
 		canvasArtefacts[i].update();
+		if(App.mode == "coop") {
+			canvasArtefactsCoop[i].update();
+		}
 	}
 
 	for (i = 0; i < pulsers.length; i++) {
@@ -396,6 +397,13 @@ function addAmplitudeAndArtefact() {
 
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[App.Player.number], App.Player.number);
 	canvasArtefacts.push(artefact);
+
+	if(App.mode == "coop") {
+		var otherPlayer = App.Player.number == 0 ? 1 : 0;
+		 
+		var artefactCoop = new Artefact(App.Host.audioSpectrum[time].artefacts[otherPlayer], "Coop");
+		canvasArtefactsCoop.push(artefactCoop);
+	}
 
 	if(App.mode == "solo") {
 		// TODO check for coop mode (it is actually a dirty fix)
@@ -560,11 +568,13 @@ function startGame() {
 }
 
 function resetGame() {
+	// Maybe we should create a GameArray object that allows to loop over its arrays to reset them dynamically
 	players 			= []
 	pulsers 			= []
 	buttons 			= []
 	canvasBars 			= [];
 	canvasArtefacts 	= [];
+	canvasArtefactsCoop	= [];
 	canvasDeathFlags  	= [];
 	time				= 0
 
@@ -594,6 +604,9 @@ function updateGameScene(data) {
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// Update artefact visual
 		canvasArtefacts[gameState.bar].isTaken()
+		if(App.mode == "coop") {
+			canvasArtefactsCoop[gameState.bar].isTaken()
+		}
 	}
 }
 
