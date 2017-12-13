@@ -44,10 +44,34 @@ module.exports = class Room {
     return canBeJoined
   }
 
+  isReadyToStart () {
+    let isReadyToStart = true
+
+    if (this.mode === 'coop') {
+      if (Object.keys(this.players).length !== 2) {
+        isReadyToStart = false
+      }
+    } else if (this.mode === 'solo') {
+      if (Object.keys(this.players).length !== 1) {
+        isReadyToStart = false
+      }
+    }
+
+    return isReadyToStart
+  }
+
   startGame () {
-    if (!this.energy || this.players.length === 0 || this.spectrum.bars.length === 0) {
-      logger.info('Everything is not setup correctly', this)
+    if (!this.isReadyToStart()) {
       return
+    }
+
+    let self = this
+
+    // triggerCountdown
+    for (let player in self.players) {
+      this.players[player].socket.emit('countDown', {
+        duration: 3
+      })
     }
 
     let sound = this.spectrum.link
@@ -67,8 +91,6 @@ module.exports = class Room {
       getStream = audio.getLocalStream
       sound = this.spectrum.name
     }
-
-    let self = this
 
     getStream({
       videoId: sound,
@@ -177,14 +199,7 @@ module.exports = class Room {
   bindPlayerEvents (player) {
     const self = this
 
-    player.socket.on('startGame', () => {
-      // triggerCountdown
-      player.socket.emit('countDown', {
-        duration: 3
-      })
-      // startGame
-      self.startGame()
-    })
+    player.socket.on('startGame', () => self.startGame())
 
     player.socket.on('playerMove', (data) => {
       let canMove = true
