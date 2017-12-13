@@ -15,6 +15,7 @@ module.exports = class Room {
     this.roomManager = require('./RoomManager').getInstance()
     this.players = {}
     this.loopTimer = null
+    this.countdownTimeout = null
     this.spectrum = new Spectrum()
     this.difficulty = _difficulty
     this.mode = _mode
@@ -25,6 +26,22 @@ module.exports = class Room {
 
   destroy () {
     this.roomManager.deleteRoom(this)
+  }
+
+  canBeJoined () {
+    let canBeJoined = true
+
+    if (this.mode === 'coop') {
+      if (Object.keys(this.players).length >= 2) {
+        canBeJoined = false
+      }
+    } else if (this.mode === 'solo') {
+      if (Object.keys(this.players).length >= 1) {
+        canBeJoined = false
+      }
+    }
+
+    return canBeJoined
   }
 
   startGame () {
@@ -93,7 +110,7 @@ module.exports = class Room {
 
     this.currentBar = -1
 
-    setTimeout(() => {
+    this.countdownTimeout = setTimeout(() => {
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
 
@@ -224,6 +241,10 @@ module.exports = class Room {
     if (this.loopTimer) {
       clearInterval(this.loopTimer)
     }
+
+    if (this.countdownTimeout) {
+      clearTimeout(this.countdownTimeout)
+    }
   }
 
   onPlayerDisconnect (socket) {
@@ -235,7 +256,7 @@ module.exports = class Room {
 
     this.stop()
 
-    if (this.players.length === 0) {
+    if (Object.keys(this.players).length === 0) {
       this.destroy()
     } else {
       for (var playerId in this.players) {
@@ -415,6 +436,9 @@ module.exports = class Room {
 
   resetGame () {
     logger.info('Game reset : ' + this.id)
+
+    this.stop()
+
     this.isGameStarted = false
     this.loopTimer = null
     this.currentBar = 0
