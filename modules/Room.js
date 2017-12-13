@@ -147,6 +147,10 @@ module.exports = class Room {
         } else if (this.energy <= 0) {
           this.lose()
         } else {
+          if (this.currentBar > 0) {
+            this.loseEnergy()
+          }
+
           for (let key in this.players) {
             const player = this.players[key]
 
@@ -165,10 +169,6 @@ module.exports = class Room {
                 }
               }
             }
-          }
-
-          if (this.currentBar > 0) {
-            this.loseEnergy()
           }
         }
       }, gameSpeed)
@@ -401,7 +401,7 @@ module.exports = class Room {
   gainEnergy () {
     switch (this.difficulty) {
       case 'crazy':
-        this.energy = this.energy + 1
+        this.energy = this._energy + 1
         break
       case 'easy':
         // No energy change
@@ -432,11 +432,11 @@ module.exports = class Room {
   }
 
   set energy (energy) {
-    this._energy = energy > 0 ? energy : 0
+    this._energy = energy
   }
 
   get energy () {
-    return this._energy
+    return this._energy > 0 ? this._energy : 0
   }
 
   get metadata () {
