@@ -25,6 +25,8 @@ module.exports = class Room {
   }
 
   destroy () {
+    logger.info(`Room ${this.id} - Destroyed`)
+
     this.roomManager.deleteRoom(this)
   }
 
@@ -248,6 +250,8 @@ module.exports = class Room {
   }
 
   stop () {
+    logger.info(`Room ${this.id} - Stopping game`)
+
     if (this.audioStream) {
       this.audioStream.pause()
       this.audioStream.unpipe()
