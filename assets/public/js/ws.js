@@ -69,6 +69,7 @@ var IO = {
             IO.socket.on('gameOver', IO.onEndOfGame);
             IO.socket.on('audioChunk', IO.onAudioChunk);
             IO.socket.on('audioEnd', IO.onAudioEnd);
+            IO.socket.on('playerDisconnected', IO.onPlayerDisconnected);
 
             IO.isBinded = true
         }
@@ -91,6 +92,11 @@ var IO = {
         App.Players.push(data);
         document.querySelector("#startGameButton").attributes.state.value = "passive";
         document.querySelector("#waitingRoomMessage").innerHTML = data.name + " is waiting for you!";
+    },
+
+    onPlayerDisconnected: function () {
+        document.querySelector("#startGameButton").attributes.state.value = "disabled";
+        document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for another player...";
     },
 
     startGame: function() {
