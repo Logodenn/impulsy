@@ -56,6 +56,10 @@ exports = module.exports = class RoomManager {
       this.rooms[room.id].spectrum.bars.forEach(bar => {
         if (bar.artefacts[0] !== null && bar.artefacts[1] !== null) {
           energy++
+
+          if (room.mode === 'coop') {
+            energy++
+          }
         }
       })
 
