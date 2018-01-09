@@ -24,6 +24,7 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
 const hbs = require('hbs')
+const pwdHash = require('./modules/password')
 
 /* ROOMS */
 
@@ -68,7 +69,7 @@ passport.use('local-login', new Strategy({
       if (!result) {
         return cb(null, false)
       }
-      if (result.password !== password) { // TODO salt password with username/email   ?
+      if (result.password !== pwdHash(password)) { 
         return cb(null, false)
       }
       return cb(null, result)
@@ -85,7 +86,7 @@ passport.use('local-signup', new Strategy({
     var user = {
       pseudo: req.body.username,
       mail: req.body.mail,
-      password: req.body.password, // TODO : salt password
+      password: pwdHash(req.body.password), 
       rank: -1
     }
     db.user.getUser(user.mail, true, function (err, result) {
@@ -96,6 +97,7 @@ passport.use('local-signup', new Strategy({
                   if (err) {
                     throw err
                   }
+                  
                   return cb(null, user)
               })
           }

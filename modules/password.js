@@ -1,4 +1,6 @@
 var crypto = require('crypto');
+const logger = require('../utils/logger')(module)
+
 // https://ciphertrick.com/2016/01/18/salt-hash-passwords-using-nodejs-crypto/ 
 /**
  * generates random string of characters i.e salt
@@ -17,7 +19,7 @@ var genRandomString = function(length){
  * @param {string} password - List of required fields.
  * @param {string} salt - Data to be validated.
  */
-var sha512 = function(password, salt){
+const sha512 = (password, salt) => {
     var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
     hash.update(password);
     var value = hash.digest('hex');
@@ -27,13 +29,17 @@ var sha512 = function(password, salt){
     };
 };
 
-function saltHashPassword(userpassword) {
-    var salt = genRandomString(20); /** Gives us salt of length 20 */
+const saltHashPassword = (userpassword) => {
+    //var salt = genRandomString(20); /** Gives us salt of length 20 */
+    var salt = "SaltLogodenn"
     var passwordData = sha512(userpassword, salt);
-    console.log('UserPassword = '+userpassword);
-    console.log('Passwordhash = '+passwordData.passwordHash);
-    console.log('nSalt = '+passwordData.salt);
-}
+    logger.debug('UserPassword = '+userpassword);
+    logger.debug('Passwordhash = '+passwordData.passwordHash);
+    logger.debug('nSalt = '+passwordData.salt);
+    return passwordData.passwordHash
+};
 
-saltHashPassword('MYPASSWORD');
-saltHashPassword('MYPASSWORD');
+module.exports = saltHashPassword;
+
+// saltHashPassword('MYPASSWORD');
+// saltHashPassword('MYPASSWORD');
