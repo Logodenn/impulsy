@@ -7,6 +7,8 @@ const audio = require('./audio')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
+const thHight = 10
+const thLow = 10
 
 module.exports = class Room {
   constructor (_difficulty, _mode) {
@@ -144,26 +146,28 @@ module.exports = class Room {
           this.stop()
         }
 
-        if (this.currentBar >= this.spectrum.bars.length - 1) {
-          this.win()
-        } else if (this.energy <= 0) {
+        // Comment because win when player take the last artefact 
+        // if (this.currentBar >= this.spectrum.bars.length - 1) {
+        //   this.win()
+        // } else
+        if (this.energy <= 0) {
           this.lose()
         } else {
-          if (this.currentBar > 0) {
+          if (this.currentBar - thLow> 0) {
             this.loseEnergy()
           }
 
           for (let key in this.players) {
             const player = this.players[key]
 
-            let data = this.check(player, this.currentBar, false)
+            let data = this.check(player, player.position.x, false)
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
             }
 
             // This checks for the bar before the current one
             if (this.currentBar > 1) {
-              let data = this.check(player, this.currentBar - 1)
+              let data = this.check(player, player.position.x - 1)
 
               if (data.isArtefactTaken) {
                 for (let playerId in this.players) {
@@ -207,22 +211,35 @@ module.exports = class Room {
       let canMove = true
 
       for (let playerId in self.players) {
-        if (self.players[playerId].position === data.position) {
+        if (self.players[playerId].position.x === data.x & self.players[playerId].position.y === data.y) {
           // This means there is already someone at this position
           canMove = false
         }
       }
 
+      if (data.x < self.currentBar - thLow)
+      {
+        // GameOver unicorn touch the left side
+        self.lose()
+      }
+      else if(data.x > self.currentBar+thHight)
+      {
+        // GameOver unicorn touch the speaker 
+        self.lose()
+      }
+
       if (canMove) {
-        player.position = data.position
+        player.position.x = data.x
+        player.position.y = data.y
 
         for (let playerId in self.players) {
           self.players[playerId].socket.emit('playerMove', data)
         }
 
         // Check is we are still playing and if the loop has started
-        if (self.currentBar < self.spectrum.bars.length && this.loopTimer && this.currentBar >= 0) {
-          const checkData = self.check(player, self.currentBar)
+        // self.currentBar < self.spectrum.bars.length
+        if (self.currentBar < self.spectrum.bars.length + thLow && self.loopTimer && self.currentBar >= 0) {
+          const checkData = self.check(player, data.barNumber)
 
           for (var playerId in self.players) {
             self.players[playerId].socket.emit('updateGame', checkData)
@@ -230,7 +247,7 @@ module.exports = class Room {
 
           // This checks for the bar before the current one
           if (self.currentBar > 1) {
-            let data = self.check(player, self.currentBar - 1)
+            let data = self.check(player, data.barNumber)
 
             if (data.isArtefactTaken) {
               for (let playerId in self.players) {
@@ -368,8 +385,20 @@ module.exports = class Room {
         player.artefactsTaken[barNumber] = artefactTaken
 
         if (artefactTaken) {
-          player.takenArtefactsCount++
-          this.gainEnergy()
+          if(this.mode != "coop"){
+            if (barNumber == this.spectrum.bars.length){
+              this.win()
+            }
+            else{
+              player.takenArtefactsCount++
+              this.gainEnergy()
+            }
+          }else{
+            // TODO : revoir pour coop si l'autre joueur à tout récupéré (voir si c'est le mode coop)
+            player.takenArtefactsCount++
+            this.gainEnergy()
+          }
+          
         }
       }
     }
@@ -379,7 +408,8 @@ module.exports = class Room {
       takenArtefactsCount: this.takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,
-      position: player.position, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      y: player.position.y, // here 0, 1, 2, 3 --- 0 upper and 3 lowest      
+      x: player.position.x, // bar number 
       playerNumber: player.number
     }
   }
