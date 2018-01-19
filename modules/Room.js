@@ -184,9 +184,17 @@ module.exports = class Room {
   addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
-    const currentNumberOfPlayers = Object.keys(this.players).length
+    let playerNumber = 0
 
-    this.players[clientSocket.id] = new Player(clientSocket, currentNumberOfPlayers, clientSocket.request.user)
+    for (let player in this.players) {
+      if (playerNumber !== player.number) {
+        break
+      } else {
+        playerNumber++
+      }
+    }
+
+    this.players[clientSocket.id] = new Player(clientSocket, playerNumber, { x: 0, y: playerNumber }, clientSocket.request.user)
 
     this.bindPlayerEvents(this.players[clientSocket.id])
 
