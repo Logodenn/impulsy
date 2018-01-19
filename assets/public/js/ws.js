@@ -97,6 +97,13 @@ var IO = {
     onPlayerDisconnected: function () {
         document.querySelector("#startGameButton").attributes.state.value = "disabled";
         document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for another player...";
+
+        if(App.mode) {
+            // Game exists so it must be stopped
+            document.querySelector("#disconnectedUserLayer").classList.remove("hidden");
+            // endGame(data);
+            chunkPlayer._stop()
+        }
     },
 
     startGame: function() {

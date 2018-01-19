@@ -40,6 +40,15 @@
 
             <div id="canvasWrapper"></div>
 
+            {{!-- DISCONNECTED USER LAYER --}}
+
+            <div id="disconnectedUserLayer" class="flex-col hidden">
+                <span>The other user has left the game...</span>
+                <a href="/">
+                    <button class="button" state="passive">Play again!</button>
+                </a>
+            </div>
+
             {{!-- ENDGAME LAYER --}}
 
             <div id="endGameLayer" class="flex-col hidden">
