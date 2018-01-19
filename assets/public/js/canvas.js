@@ -504,52 +504,52 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				App.Players[App.Player.number].position = 0;
+				App.Players[App.Player.number].y = 0;
 				//players[App.Player.number].slot = 0;
 				break;
 			case 90:
 				// Midtop
-				App.Players[App.Player.number].position = 1;
+				App.Players[App.Player.number].y = 1;
 				//players[App.Player.number].slot = 1;
 				break;
 			case 69:
 				// Midbot
-				App.Players[App.Player.number].position = 2;
+				App.Players[App.Player.number].y = 2;
 				//players[App.Player.number].slot = 2;
 				break;
 			case 82:
 				// Bot
-				App.Players[App.Player.number].position = 3;
+				App.Players[App.Player.number].y = 3;
 				//players[App.Player.number].slot = 3;
 				break;
 			case 38:
 				// Up arrow
-				if(App.Players[App.Player.number].position != 0) {
+				if(App.Players[App.Player.number].y != 0) {
 		
-					App.Players[App.Player.number].position--;
+					App.Players[App.Player.number].y--;
 					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
-				if(App.Players[App.Player.number].position != 3) {
+				if(App.Players[App.Player.number].y != 3) {
 		
-					App.Players[App.Player.number].position++;
+					App.Players[App.Player.number].y++;
 					//players[App.Player.number].slot += 1;
 				}
 				break;
 			case 37:
 				// Left arrow
 				if(players[0].x > 0) {
-					//App.Players[App.Player.number].x--;
-					players[0].x-=1;
+					App.Players[App.Player.number].x--;
+					//players[0].x-=1;
 				}	
 				break;
 			case 39:
 				// Rigth arrow
 				if(players[0].x < canvasBars.length-1) {
-					//App.Players[App.Player.number].x++;
-					players[0].x+=1;
+					App.Players[App.Player.number].x++;
+					//players[0].x+=1;
 				}	
 				break;
 		}
@@ -578,7 +578,7 @@ function startGame() {
 						App.Players[App.Player.number].x += 1;
 					}
 
-					App.Players[App.Player.number].position = i;
+					App.Players[App.Player.number].y = i;
 					//players[App.Player.number].slot = i;
 				}
 			}
