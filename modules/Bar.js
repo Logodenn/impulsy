@@ -16,7 +16,7 @@ module.exports = class Bar {
 
   checkArtefact (player) {
     if (this.artefacts[player.number] !== null) {
-      if (this.artefacts[player.number] === player.position) {
+      if (this.artefacts[player.number] === player.position.y) {
         return true
       } else {
         return false
