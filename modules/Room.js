@@ -7,7 +7,7 @@ const audio = require('./audio')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
-const thHight = 10
+const thHigh = 10
 const thLow = 10
 
 module.exports = class Room {
@@ -80,15 +80,6 @@ module.exports = class Room {
 
     let sound = this.spectrum.link
     let getStream = audio.getYoutubeStream
-    // Useless ? ?
-    // let i = 0
-    // for (var playerId in this.players){
-    //   for (let elem in this.spectrum.bars){
-    //     this.play
-    //     artefactsTaken[i] = false
-    //     i++
-    //   }
-    // }
 
     // May not be the best way to check if the track is local or not
     if (sound === null) {
@@ -146,17 +137,11 @@ module.exports = class Room {
           this.stop()
         }
 
-        // Comment because win when player take the last artefact
-        // if (this.currentBar >= this.spectrum.bars.length - 1) {
-        //   this.win()
-        // } else
-        if (this.energy <= 0) {
+        this.loseEnergy()
+
+        if (this.energy <= 0 || this.currentBar > this.spectrum.bars.length + thHigh) {
           this.lose()
         } else {
-          if (this.currentBar - thLow > 0) {
-            this.loseEnergy()
-          }
-
           for (let key in this.players) {
             const player = this.players[key]
 
@@ -231,7 +216,7 @@ module.exports = class Room {
       if (data.x < self.currentBar - thLow) {
         // GameOver unicorn touch the left side
         self.lose()
-      } else if (data.x > self.currentBar + thHight) {
+      } else if (data.x > self.currentBar + thHigh) {
         // GameOver unicorn touch the speaker
         self.lose()
       }
