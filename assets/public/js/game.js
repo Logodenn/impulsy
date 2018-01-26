@@ -99,7 +99,7 @@ var App = {
             // Notify WS
             var data = {
                 number: App.Player.number,
-                y: App.Players[App.Player.number].y
+                y: App.Players[App.Player.number].y,
                 x: App.Players[App.Player.number].x
             }
             IO.playerMove(data);
