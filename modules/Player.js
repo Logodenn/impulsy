@@ -6,7 +6,7 @@ module.exports = class Player {
     this.number = number
     this.socket = socket
     this.artefactsTaken = []
-    this.position = position
+    this._position = position
     this.takenArtefactsCount = 0
 
     if (user.logged_in) {
@@ -44,7 +44,7 @@ module.exports = class Player {
     return {
       name: this.name,
       number: this.number,
-      position: this.position
+      position: this._position
     }
   }
 }
