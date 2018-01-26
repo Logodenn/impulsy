@@ -421,20 +421,18 @@ module.exports = class Room {
   }
 
   loseEnergy () {
-    if (this.spectrum.bars[this.currentBar].artefacts[0] !== null) {
-      switch (this.difficulty) {
-        case 'crazy':
-          this.energy = this.energy - 2
-          break
-        case 'easy':
-          this.energy = this.energy - 1
-          break
-        case 'lazy':
-          // Do stuff
-          break
-        default:
-          logger.error('Check the difficulty or the current bar something is going wrong')
-      }
+    switch (this.difficulty) {
+      case 'crazy':
+        this.energy = this.energy - 2
+        break
+      case 'easy':
+        this.energy = this.energy - 1
+        break
+      case 'lazy':
+        // Do stuff
+        break
+      default:
+        logger.error('Check the difficulty or the current bar something is going wrong')
     }
   }
 
