@@ -78,7 +78,7 @@ function Player(definition) {
 	self.slot		= definition.position.y;
 	self.y 			= Positions[definition.position.y];
 	self.number		= definition.number;
-	self.x	= 0;
+	self.x	= definition.position.x;
 	self.update 	= function() {
 		self.posX 		= started ? canvasBars[self.x].x : 4 * blocUnit;
 		self.y 			= Canvas.topSlot + self.slot * blocUnit;
@@ -505,37 +505,37 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				App.Players[App.Player.number].y = 0;
-				//players[App.Player.number].slot = 0;
+				// App.Players[App.Player.number].y = 0;
+				App.Players[App.Player.number].slot = 0;
 				break;
 			case 90:
 				// Midtop
-				App.Players[App.Player.number].y = 1;
-				//players[App.Player.number].slot = 1;
+				// App.Players[App.Player.number].y = 1;
+				App.Players[App.Player.number].slot = 1;
 				break;
 			case 69:
 				// Midbot
-				App.Players[App.Player.number].y = 2;
-				//players[App.Player.number].slot = 2;
+				// App.Players[App.Player.number].y = 2;
+				App.Players[App.Player.number].slot = 2;
 				break;
 			case 82:
 				// Bot
-				App.Players[App.Player.number].y = 3;
-				//players[App.Player.number].slot = 3;
+				// App.Players[App.Player.number].y = 3;
+				App.Players[App.Player.number].slot = 3;
 				break;
 			case 38:
 				// Up arrow
-				if(App.Players[App.Player.number].y != 0) {
+				if(App.Players[App.Player.number].slot != 0) {
 		
-					App.Players[App.Player.number].y--;
+					App.Players[App.Player.number].slot--;
 					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
-				if(App.Players[App.Player.number].y != 3) {
+				if(App.Players[App.Player.number].slot != 3) {
 		
-					App.Players[App.Player.number].y++;
+					App.Players[App.Player.number].slot++;
 					//players[App.Player.number].slot += 1;
 				}
 				break;
