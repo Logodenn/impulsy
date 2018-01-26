@@ -83,7 +83,7 @@ function Player(definition) {
 		self.posX 		= started ? canvasBars[self.x].x : 4 * blocUnit;
 		self.y 			= Canvas.topSlot + self.slot * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(imageLoader.images["player" + self.number], self.x, self.y, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.y, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
 
