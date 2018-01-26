@@ -217,7 +217,8 @@ module.exports = class Room {
 
     player.socket.on('playerMove', (data) => {
       let canMove = true
-
+      logger.debug("Move player : ");
+      console.log(data)
       for (let playerId in self.players) {
         if (self.players[playerId].position.x === data.x & self.players[playerId].position.y === data.y) {
           // This means there is already someone at this position
@@ -241,6 +242,8 @@ module.exports = class Room {
         player.position.y = data.y
 
         for (let playerId in self.players) {
+          logger.debug("Send for front : ");
+          console.log(data)
           self.players[playerId].socket.emit('playerMove', data)
         }
 
