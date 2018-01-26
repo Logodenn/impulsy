@@ -5,6 +5,7 @@ var visualCoefficient = 50;
 var energyBarCoefficient = 10;
 var pulserWidth = 165;
 const imgPath = "../img/canvas/";
+var started = 0;
 
 // How to read blocUnit
 // 0 * blocUnit energyBar and deathFlags
@@ -74,8 +75,8 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 function Player(definition) {
 	var self = this;
 	self.posX 		= 4 * blocUnit;
-	self.slot		= definition.position;
-	self.y 			= Positions[definition.position];
+	self.slot		= definition.position.y;
+	self.y 			= Positions[definition.position.y];
 	self.number		= definition.number;
 	self.x	= 0;
 	self.update 	= function() {
