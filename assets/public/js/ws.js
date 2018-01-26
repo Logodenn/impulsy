@@ -98,7 +98,7 @@ var IO = {
         document.querySelector("#startGameButton").attributes.state.value = "disabled";
         document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for another player...";
 
-        if(App.mode) {
+        if(document.querySelector("canvas")) {
             // Game exists so it must be stopped
             document.querySelector("#disconnectedUserLayer").classList.remove("hidden");
             // endGame(data);
