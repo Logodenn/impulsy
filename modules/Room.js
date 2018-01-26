@@ -159,7 +159,7 @@ module.exports = class Room {
 
           for (let key in this.players) {
             const player = this.players[key]
-
+            logger.debug("Player "+player.number+" position : x,y "+player.position.x+","+player.position.y)
             let data = this.check(player, player.position.x, false)
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
@@ -413,7 +413,6 @@ module.exports = class Room {
         }
       }
     }
-
     return {
       bar: barNumber,
       takenArtefactsCount: this.takenArtefactsCount,
@@ -464,7 +463,7 @@ module.exports = class Room {
 
     return {
       id: this.id,
-      position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      position: player.position, 
       playerNumber: player.number,
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level

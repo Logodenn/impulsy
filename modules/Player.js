@@ -29,7 +29,7 @@ module.exports = class Player {
     if ([0, 1, 2, 3].includes(position.y)) {
       this._position.y = position.y
     } else {
-      this._position.y = this._position.y || 1
+      this._position.y = 1
     }
 
     // TODO : check x
