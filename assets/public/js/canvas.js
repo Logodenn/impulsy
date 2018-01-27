@@ -75,15 +75,15 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 function Player(definition) {
 	var self = this;
 	self.posX 		= 4 * blocUnit;
-	self.slot		= definition.position.y;
-	self.y 			= Positions[definition.position.y];
+	self.posY 		= Positions[definition.position.y];
+	self.y			= definition.position.y;
+	self.x			= definition.position.x;
 	self.number		= definition.number;
-	self.x	= definition.position.x;
 	self.update 	= function() {
-		self.posX 		= started ? canvasBars[self.x].x : 4 * blocUnit;
-		self.y 			= Canvas.topSlot + self.slot * blocUnit;
+		self.posX 		= started ? canvasBars[App.Players[self.number].position.x].x : 4 * blocUnit;
+		self.posY 		= Canvas.topSlot + App.Players[self.number].position.y * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.y, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.posY, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
 
@@ -506,50 +506,50 @@ function startGame() {
 			case 65:
 				// Top
 				// App.Players[App.Player.number].y = 0;
-				App.Players[App.Player.number].slot = 0;
+				App.Players[App.Player.number].position.y = 0;
 				break;
 			case 90:
 				// Midtop
 				// App.Players[App.Player.number].y = 1;
-				App.Players[App.Player.number].slot = 1;
+				App.Players[App.Player.number].position.y = 1;
 				break;
 			case 69:
 				// Midbot
 				// App.Players[App.Player.number].y = 2;
-				App.Players[App.Player.number].slot = 2;
+				App.Players[App.Player.number].position.y = 2;
 				break;
 			case 82:
 				// Bot
 				// App.Players[App.Player.number].y = 3;
-				App.Players[App.Player.number].slot = 3;
+				App.Players[App.Player.number].position.y = 3;
 				break;
 			case 38:
 				// Up arrow
-				if(App.Players[App.Player.number].slot != 0) {
+				if(App.Players[App.Player.number].y != 0) {
 		
-					App.Players[App.Player.number].slot--;
+					App.Players[App.Player.number].position.y--;
 					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
-				if(App.Players[App.Player.number].slot != 3) {
+				if(App.Players[App.Player.number].y != 3) {
 		
-					App.Players[App.Player.number].slot++;
+					App.Players[App.Player.number].position.y++;
 					//players[App.Player.number].slot += 1;
 				}
 				break;
 			case 37:
 				// Left arrow
 				if(players[0].x > 0) {
-					App.Players[App.Player.number].x--;
+					App.Players[App.Player.number].position.x--;
 					//players[0].x-=1;
 				}	
 				break;
 			case 39:
 				// Rigth arrow
 				if(players[0].x < canvasBars.length-1) {
-					App.Players[App.Player.number].x++;
+					App.Players[App.Player.number].position.x++;
 					//players[0].x+=1;
 				}	
 				break;

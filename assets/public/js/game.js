@@ -99,8 +99,8 @@ var App = {
             // Notify WS
             var data = {
                 number: App.Player.number,
-                y: App.Players[App.Player.number].slot,
-                x: App.Players[App.Player.number].x
+                y: App.Players[App.Player.number].position.y,
+                x: App.Players[App.Player.number].position.x
             }
             console.log("Envoi onMove : ",data);
             IO.playerMove(data);
