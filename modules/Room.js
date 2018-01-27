@@ -205,10 +205,8 @@ module.exports = class Room {
 
     player.socket.on('playerMove', (data) => {
       let canMove = true
-      logger.debug("Move player : ");
-      console.log(data)
       for (let playerId in self.players) {
-        if (self.players[playerId].position.x === data.x & self.players[playerId].position.y === data.y) {
+        if (self.players[playerId].position.x === data.x && self.players[playerId].position.y === data.y) {
           // This means there is already someone at this position
           canMove = false
         }
@@ -227,8 +225,6 @@ module.exports = class Room {
         player.position.y = data.y
 
         for (let playerId in self.players) {
-          logger.debug("Send for front : ");
-          console.log(data)
           self.players[playerId].socket.emit('playerMove', data)
         }
 
@@ -239,17 +235,6 @@ module.exports = class Room {
 
           for (var playerId in self.players) {
             self.players[playerId].socket.emit('updateGame', checkData)
-          }
-
-          // This checks for the bar before the current one
-          if (self.currentBar > 1) {
-            let checkData = self.check(player, data.barNumber)
-
-            if (checkData.isArtefactTaken) {
-              for (let playerId in self.players) {
-                this.players[playerId].socket.emit('updateGame', data)
-              }
-            }
           }
         }
       }
