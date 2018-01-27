@@ -8,6 +8,8 @@ const models = require('../models/models')
 const audio = require('../modules/audio')
 const getArrayArthefacts = require('../utils/artefacts')
 const Spectrum = require('../modules/Spectrum')
+const pwdHash = require('../modules/password')
+
 
 let db = null
 
@@ -32,14 +34,14 @@ models((err, _db) => {
         (callback) => {
           createUser({
             pseudo: 'user_test1',
-            password: 'azerty',
+            password: pwdHash('azerty'),
             rank: '29'
           }, callback)
         },
         (user, callback) => {
           createUser({
             pseudo: 'user_test2',
-            password: 'qsdfg',
+            password: pwdHash('qsdfg'),
             rank: '2'
           }, callback)
         },

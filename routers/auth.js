@@ -5,8 +5,12 @@ const db = require('../models/controllers')
 var router = express.Router();
 
 //TODO : vérifier si l'user n'est pas déjà connecté 
-router.get('/login', function(req, res) {
-    res.render('login');
+router.get('/login/:problem?', function(req, res) {
+    var data = {}
+    if (req.params.problem){
+      data.problem=req.params.problem
+    }
+    res.render('login',data);
 });
 
 router.get('/signup', function(req, res) {
@@ -21,7 +25,7 @@ router.post('/signup', passport.authenticate('local-signup', {
 
 router.post('/login', passport.authenticate('local-login', {
   successRedirect : '/', // redirect to the secure profile section
-  failureRedirect : '/login', // redirect back to the signup page if there is an error
+  failureRedirect : '/login/failure', // redirect back to the signup page if there is an error
   failureFlash : false // allow flash messages
 }));
 
