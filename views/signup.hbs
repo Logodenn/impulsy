@@ -10,6 +10,10 @@
         <section class="content">
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
+        
+            {{#if problem}}
+                <h2 class="error">Username or mail already used.</h2>
+            {{/if}}
 
             <div id="formWrapper" class="flex-row">
 
@@ -42,11 +46,6 @@
                 </form>
 
             </div>
-           
-                {{#if problem}}
-                    <h1 class="title">User name or mail already used.</h1>
-                {{/if}}
-        
 
             <div id="redirectWrapper" class="flex-row">
                 <h2 class="title">Already have an account?</h2>

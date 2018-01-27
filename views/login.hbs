@@ -11,6 +11,10 @@
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
 
+            {{#if problem}}
+                <h2 class="error">Incorrect username or password.</h2>
+            {{/if}}
+
             <div id="formWrapper" class="flex-row">
 
                 {{!-- LOGIN FORM --}}
@@ -32,9 +36,6 @@
                 </form>
 
             </div>
-            {{#if problem}}
-                <h1 class="title">Le nom d'utilisateur et le mot de passe sont incorrectes.</h1>
-            {{/if}}
 
             <div id="redirectWrapper" class="flex-row">
                 <h2 class="title">Need an account?</h2>
