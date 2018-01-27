@@ -80,8 +80,8 @@ function Player(definition) {
 	self.x			= definition.position.x;
 	self.number		= definition.number;
 	self.update 	= function() {
-		self.posX 		= started ? canvasBars[App.Players[self.number].position.x].x : 4 * blocUnit;
-		self.posY 		= Canvas.topSlot + App.Players[self.number].position.y * blocUnit;
+		self.posX 		= started ? canvasBars[self.x].x : 4 * blocUnit;
+		self.posY 		= Canvas.topSlot + self.y * blocUnit;
 		ctx = myGameArea.context;
 		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.posY, blocUnit, blocUnit);
 	}
