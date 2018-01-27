@@ -7,7 +7,7 @@ const audio = require('./audio')
 
 const gameSpeed = 500
 const positionCheckDelay = 4000
-const thHight = 10
+const thHigh = 10
 const thLow = 10
 
 module.exports = class Room {
@@ -80,15 +80,6 @@ module.exports = class Room {
 
     let sound = this.spectrum.link
     let getStream = audio.getYoutubeStream
-    // Useless ? ?
-    // let i = 0
-    // for (var playerId in this.players){
-    //   for (let elem in this.spectrum.bars){
-    //     this.play
-    //     artefactsTaken[i] = false
-    //     i++
-    //   }
-    // }
 
     // May not be the best way to check if the track is local or not
     if (sound === null) {
@@ -146,17 +137,11 @@ module.exports = class Room {
           this.stop()
         }
 
-        // Comment because win when player take the last artefact 
-        // if (this.currentBar >= this.spectrum.bars.length - 1) {
-        //   this.win()
-        // } else
-        if (this.energy <= 0) {
+        this.loseEnergy()
+
+        if (this.energy <= 0 || this.currentBar > this.spectrum.bars.length + thHigh) {
           this.lose()
         } else {
-          if (this.currentBar - thLow> 0) {
-            this.loseEnergy()
-          }
-
           for (let key in this.players) {
             const player = this.players[key]
             logger.debug("Player "+player.number+" position : x,y "+player.position.x+","+player.position.y)
@@ -194,7 +179,10 @@ module.exports = class Room {
       }
     }
 
-    this.players[clientSocket.id] = new Player(clientSocket, playerNumber, { x: 0, y: playerNumber }, clientSocket.request.user)
+    this.players[clientSocket.id] = new Player(clientSocket, playerNumber, {
+      x: 0,
+      y: playerNumber
+    }, clientSocket.request.user)
 
     this.bindPlayerEvents(this.players[clientSocket.id])
 
@@ -226,14 +214,11 @@ module.exports = class Room {
         }
       }
 
-      if (data.x < self.currentBar - thLow)
-      {
+      if (data.x < self.currentBar - thLow) {
         // GameOver unicorn touch the left side
         self.lose()
-      }
-      else if(data.x > self.currentBar+thHight)
-      {
-        // GameOver unicorn touch the speaker 
+      } else if (data.x > self.currentBar + thHigh) {
+        // GameOver unicorn touch the speaker
         self.lose()
       }
 
@@ -258,9 +243,9 @@ module.exports = class Room {
 
           // This checks for the bar before the current one
           if (self.currentBar > 1) {
-            let data = self.check(player, data.barNumber)
+            let checkData = self.check(player, data.barNumber)
 
-            if (data.isArtefactTaken) {
+            if (checkData.isArtefactTaken) {
               for (let playerId in self.players) {
                 this.players[playerId].socket.emit('updateGame', data)
               }
@@ -396,20 +381,18 @@ module.exports = class Room {
         player.artefactsTaken[barNumber] = artefactTaken
 
         if (artefactTaken) {
-          if(this.mode != "coop"){
-            if (barNumber == this.spectrum.bars.length){
+          if (this.mode !== 'coop') {
+            if (barNumber === this.spectrum.bars.length) {
               this.win()
-            }
-            else{
+            } else {
               player.takenArtefactsCount++
               this.gainEnergy()
             }
-          }else{
+          } else {
             // TODO : revoir pour coop si l'autre joueur à tout récupéré (voir si c'est le mode coop)
             player.takenArtefactsCount++
             this.gainEnergy()
           }
-          
         }
       }
     }
@@ -418,27 +401,25 @@ module.exports = class Room {
       takenArtefactsCount: this.takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,
-      y: player.position.y, // here 0, 1, 2, 3 --- 0 upper and 3 lowest      
-      x: player.position.x, // bar number 
+      y: player.position.y, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      x: player.position.x, // bar number
       playerNumber: player.number
     }
   }
 
   loseEnergy () {
-    if (this.spectrum.bars[this.currentBar].artefacts[0] !== null) {
-      switch (this.difficulty) {
-        case 'crazy':
-          this.energy = this.energy - 2
-          break
-        case 'easy':
-          this.energy = this.energy - 1
-          break
-        case 'lazy':
-          // Do stuff
-          break
-        default:
-          logger.error('Check the difficulty or the current bar something is going wrong')
-      }
+    switch (this.difficulty) {
+      case 'crazy':
+        this.energy = this.energy - 2
+        break
+      case 'easy':
+        this.energy = this.energy - 1
+        break
+      case 'lazy':
+        // Do stuff
+        break
+      default:
+        logger.error('Check the difficulty or the current bar something is going wrong')
     }
   }
 
