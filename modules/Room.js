@@ -128,6 +128,8 @@ module.exports = class Room {
     this.currentBar = -1
 
     this.countdownTimeout = setTimeout(() => {
+      this.isGameStarted = true
+
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
 
@@ -144,8 +146,10 @@ module.exports = class Room {
         } else {
           for (let key in this.players) {
             const player = this.players[key]
-            logger.debug("Player "+player.number+" position : x,y "+player.position.x+","+player.position.y)
             let data = this.check(player, player.position.x, false)
+
+            logger.debug(`Player ${player.number} - position : { x: ${player.position.x}, y: ${player.position.y}`)
+
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
             }
@@ -220,7 +224,7 @@ module.exports = class Room {
         self.lose()
       }
 
-      if (canMove) {
+      if (canMove && self.isGameStarted) {
         player.position.x = data.x
         player.position.y = data.y
 
