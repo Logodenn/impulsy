@@ -506,22 +506,26 @@ function startGame() {
 			case 65:
 				// Top
 				// App.Players[App.Player.number].y = 0;
-				App.Players[App.Player.number].position.y = 0;
+				//App.Players[App.Player.number].position.y = 0;
+				App.Player.onMove(0, players[App.Player.number].x);
 				break;
 			case 90:
 				// Midtop
 				// App.Players[App.Player.number].y = 1;
-				App.Players[App.Player.number].position.y = 1;
+				//App.Players[App.Player.number].position.y = 1;
+				App.Player.onMove(1, players[App.Player.number].x);
 				break;
 			case 69:
 				// Midbot
 				// App.Players[App.Player.number].y = 2;
-				App.Players[App.Player.number].position.y = 2;
+				//App.Players[App.Player.number].position.y = 2;
+				App.Player.onMove(2, players[App.Player.number].x);
 				break;
 			case 82:
 				// Bot
 				// App.Players[App.Player.number].y = 3;
-				App.Players[App.Player.number].position.y = 3;
+				//App.Players[App.Player.number].position.y = 3;
+				App.Player.onMove(3, players[App.Player.number].x);
 				break;
 			case 38:
 				// Up arrow
@@ -567,6 +571,7 @@ function startGame() {
 	window.onclick = function(e) {
 		// Get the canvas's positions
 		var rect = myGameArea.canvas.getBoundingClientRect();
+		var speedX;
 	
 		//  Adapt the click coordinates to the canvas
 		x = e.pageX - rect.left;
@@ -575,21 +580,24 @@ function startGame() {
 		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
-					if(x < (App.Players[App.Player.number].x - blocUnit/2)) {
-						App.Players[App.Player.number].x -= 1;
+					if(x < (players[App.Player.number].posX - blocUnit/2)) {
+						speedX = -1;
 					} 
-					else if(x > (App.Players[App.Player.number].x + 1.5*blocUnit)) {
-						App.Players[App.Player.number].x += 1;
+					else if(x > (players[App.Player.number].posX + 1.5*blocUnit)) {
+						speedX = 1;
+					} else {
+						speedX = 0;
 					}
 
-					App.Players[App.Player.number].y = i;
+					//App.Players[App.Player.number].y = i;
 					//players[App.Player.number].slot = i;
+					App.Player.onMove(i, players[App.Player.number].x + speedX);
 				}
 			}
 		}
 
 		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
+		//App.Player.onMove();
 	}
 }
 
