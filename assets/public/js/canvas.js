@@ -551,6 +551,7 @@ function startGame() {
 	window.onclick = function(e) {
 		// Get the canvas's positions
 		var rect = myGameArea.canvas.getBoundingClientRect();
+		var speedX;
 	
 		//  Adapt the click coordinates to the canvas
 		x = e.pageX - rect.left;
@@ -559,21 +560,24 @@ function startGame() {
 		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
-					if(x < (App.Players[App.Player.number].x - blocUnit/2)) {
-						App.Players[App.Player.number].x -= 1;
+					if(x < (players[App.Player.number].posX - blocUnit/2)) {
+						speedX = -1;
 					} 
-					else if(x > (App.Players[App.Player.number].x + 1.5*blocUnit)) {
-						App.Players[App.Player.number].x += 1;
+					else if(x > (players[App.Player.number].posX + 1.5*blocUnit)) {
+						speedX = 1;
+					} else {
+						speedX = 0;
 					}
 
-					App.Players[App.Player.number].y = i;
+					//App.Players[App.Player.number].y = i;
 					//players[App.Player.number].slot = i;
+					App.Player.onMove(i, players[App.Player.number].x + speedX);
 				}
 			}
 		}
 
 		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
+		//App.Player.onMove();
 	}
 }
 
