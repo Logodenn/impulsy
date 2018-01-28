@@ -102,9 +102,8 @@ var App = {
                 y: vY,
                 x: vX
             }
-            console.log("Envoi onMove : ",data);
+
             IO.playerMove(data);
-            // player.update();
         },
         
         // In case the player does not move but the position is right
