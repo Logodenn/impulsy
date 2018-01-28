@@ -80,7 +80,7 @@ function Player(definition) {
 	self.x			= definition.position.x;
 	self.number		= definition.number;
 	self.update 	= function() {
-		self.posX 		= started ? canvasBars[self.x].x : 4 * blocUnit;
+		self.posX 		= started ? canvasBars[self.x].x - blocUnit/2: 4 * blocUnit;
 		self.posY 		= Canvas.topSlot + self.y * blocUnit;
 		ctx = myGameArea.context;
 		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.posY, blocUnit, blocUnit);
@@ -526,37 +526,40 @@ function startGame() {
 			case 38:
 				// Up arrow
 				if(App.Players[App.Player.number].y != 0) {
-		
-					App.Players[App.Player.number].position.y--;
+					App.Player.onMove(players[App.Player.number].y - 1, players[App.Player.number].x);
+					//App.Players[App.Player.number].position.y--;
 					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
 				if(App.Players[App.Player.number].y != 3) {
-		
-					App.Players[App.Player.number].position.y++;
+					App.Player.onMove(players[App.Player.number].y + 1, players[App.Player.number].x);
+					//App.Players[App.Player.number].position.y++;
 					//players[App.Player.number].slot += 1;
 				}
 				break;
 			case 37:
 				// Left arrow
 				if(players[0].x > 0) {
-					App.Players[App.Player.number].position.x--;
+					console.log(players[App.Player.number].y)
+					console.log(players[App.Player.number].x -1)
+					App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x - 1);
+					//App.Players[App.Player.number].position.x--;
 					//players[0].x-=1;
 				}	
 				break;
 			case 39:
 				// Rigth arrow
 				if(players[0].x < canvasBars.length-1) {
-					App.Players[App.Player.number].position.x++;
+					App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x + 1);
+					console.log(players[App.Player.number].y)
+					console.log(players[App.Player.number].x)
+					//App.Players[App.Player.number].position.x++;
 					//players[0].x+=1;
 				}	
 				break;
 		}
-
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
 	}
 	
 	// ******************** Player movement on click event ******************** //
