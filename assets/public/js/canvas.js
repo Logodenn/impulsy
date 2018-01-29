@@ -75,15 +75,15 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 function Player(definition) {
 	var self = this;
 	self.posX 		= 4 * blocUnit;
-	self.slot		= definition.position.y;
-	self.y 			= Positions[definition.position.y];
+	self.posY 		= Positions[definition.position.y];
+	self.y			= definition.position.y;
+	self.x			= definition.position.x;
 	self.number		= definition.number;
-	self.x	= 0;
 	self.update 	= function() {
-		self.posX 		= started ? canvasArtefacts[self.x].x : 4 * blocUnit;
-		self.y 			= Canvas.topSlot + self.slot * blocUnit;
+		self.posX 		= started ? canvasBars[self.x].x - blocUnit/2: 4 * blocUnit;
+		self.posY 		= Canvas.topSlot + self.y * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(imageLoader.images["player" + self.number], self.x, self.y, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.posY, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
 
@@ -505,58 +505,65 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				App.Players[App.Player.number].y = 0;
-				//players[App.Player.number].slot = 0;
+				// App.Players[App.Player.number].y = 0;
+				//App.Players[App.Player.number].position.y = 0;
+				App.Player.onMove(0, players[App.Player.number].x);
 				break;
 			case 90:
 				// Midtop
-				App.Players[App.Player.number].y = 1;
-				//players[App.Player.number].slot = 1;
+				// App.Players[App.Player.number].y = 1;
+				//App.Players[App.Player.number].position.y = 1;
+				App.Player.onMove(1, players[App.Player.number].x);
 				break;
 			case 69:
 				// Midbot
-				App.Players[App.Player.number].y = 2;
-				//players[App.Player.number].slot = 2;
+				// App.Players[App.Player.number].y = 2;
+				//App.Players[App.Player.number].position.y = 2;
+				App.Player.onMove(2, players[App.Player.number].x);
 				break;
 			case 82:
 				// Bot
-				App.Players[App.Player.number].y = 3;
-				//players[App.Player.number].slot = 3;
+				// App.Players[App.Player.number].y = 3;
+				//App.Players[App.Player.number].position.y = 3;
+				App.Player.onMove(3, players[App.Player.number].x);
 				break;
 			case 38:
 				// Up arrow
 				if(App.Players[App.Player.number].y != 0) {
-		
-					App.Players[App.Player.number].y--;
+					App.Player.onMove(players[App.Player.number].y - 1, players[App.Player.number].x);
+					//App.Players[App.Player.number].position.y--;
 					//players[App.Player.number].slot -= 1;
 				}
 				break;
 			case 40:
 				// Down arrow
 				if(App.Players[App.Player.number].y != 3) {
-		
-					App.Players[App.Player.number].y++;
+					App.Player.onMove(players[App.Player.number].y + 1, players[App.Player.number].x);
+					//App.Players[App.Player.number].position.y++;
 					//players[App.Player.number].slot += 1;
 				}
 				break;
 			case 37:
 				// Left arrow
 				if(players[0].x > 0) {
-					App.Players[App.Player.number].x--;
+					console.log(players[App.Player.number].y)
+					console.log(players[App.Player.number].x -1)
+					App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x - 1);
+					//App.Players[App.Player.number].position.x--;
 					//players[0].x-=1;
 				}	
 				break;
 			case 39:
 				// Rigth arrow
 				if(players[0].x < canvasBars.length-1) {
-					App.Players[App.Player.number].x++;
+					App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x + 1);
+					console.log(players[App.Player.number].y)
+					console.log(players[App.Player.number].x)
+					//App.Players[App.Player.number].position.x++;
 					//players[0].x+=1;
 				}	
 				break;
 		}
-
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
 	}
 	
 	// ******************** Player movement on click event ******************** //
@@ -564,6 +571,7 @@ function startGame() {
 	window.onclick = function(e) {
 		// Get the canvas's positions
 		var rect = myGameArea.canvas.getBoundingClientRect();
+		var speedX;
 	
 		//  Adapt the click coordinates to the canvas
 		x = e.pageX - rect.left;
@@ -572,21 +580,24 @@ function startGame() {
 		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
-					if(x < (App.Players[App.Player.number].x - blocUnit/2)) {
-						App.Players[App.Player.number].x -= 1;
+					if(x < (players[App.Player.number].posX - blocUnit/2)) {
+						speedX = -1;
 					} 
-					else if(x > (App.Players[App.Player.number].x + 1.5*blocUnit)) {
-						App.Players[App.Player.number].x += 1;
+					else if(x > (players[App.Player.number].posX + 1.5*blocUnit)) {
+						speedX = 1;
+					} else {
+						speedX = 0;
 					}
 
-					App.Players[App.Player.number].y = i;
+					//App.Players[App.Player.number].y = i;
 					//players[App.Player.number].slot = i;
+					App.Player.onMove(i, players[App.Player.number].x + speedX);
 				}
 			}
 		}
 
 		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
+		//App.Player.onMove();
 	}
 }
 
