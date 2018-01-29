@@ -1,14 +1,15 @@
-const logger = require('../utils/logger')(module)
 const uuid = require('uuid/v4')
-const Player = require('./Player')
-const Spectrum = require('./Spectrum')
+const logger = require('../utils/logger')(module)
+
 const db = require('../models/controllers')
 const audio = require('./audio')
+const Player = require('./Player')
+const Spectrum = require('./Spectrum')
 
-const gameSpeed = 500
-const positionCheckDelay = 4000
-const thHigh = 10
-const thLow = 10
+const GAME_SPEED = 500
+const COUNTDOWN_DELAY = 4000
+const BAR_THRESHOLD_RIGHT = 10
+const BAR_THRESHOLD_LEFT = 10
 
 module.exports = class Room {
   constructor (_difficulty, _mode) {
@@ -133,7 +134,7 @@ module.exports = class Room {
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
 
-        this.currentBar++
+        this.currentBar += 1
 
         if (this.players.length === 0) {
           this.stop()
@@ -141,33 +142,27 @@ module.exports = class Room {
 
         this.loseEnergy()
 
-        if (this.energy <= 0 || this.currentBar > this.spectrum.bars.length + thHigh) {
+        if (this.energy <= 0) {
           this.lose()
         } else {
           for (let key in this.players) {
             const player = this.players[key]
-            let data = this.check(player, player.position.x, false)
+            let data
+
+            if (player.position.x > this.currentBar + BAR_THRESHOLD_RIGHT || player.position.x < this.currentBar - BAR_THRESHOLD_LEFT) {
+              this.lose()
+            }
 
             logger.debug(`Player ${player.number} - position : { x: ${player.position.x}, y: ${player.position.y}`)
 
+            data = this.takeArtefact(player)
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
             }
-
-            // This checks for the bar before the current one
-            if (this.currentBar > 1) {
-              let data = this.check(player, player.position.x - 1)
-
-              if (data.isArtefactTaken) {
-                for (let playerId in this.players) {
-                  this.players[playerId].socket.emit('updateGame', data)
-                }
-              }
-            }
           }
         }
-      }, gameSpeed)
-    }, positionCheckDelay)
+      }, GAME_SPEED)
+    }, COUNTDOWN_DELAY)
   }
 
   addPlayer (clientSocket) {
@@ -179,7 +174,7 @@ module.exports = class Room {
       if (playerNumber !== player.number) {
         break
       } else {
-        playerNumber++
+        playerNumber += 1
       }
     }
 
@@ -216,29 +211,37 @@ module.exports = class Room {
         }
       }
 
-      if (data.x < self.currentBar - thLow) {
-        // GameOver unicorn touch the left side
-        self.lose()
-      } else if (data.x > self.currentBar + thHigh) {
-        // GameOver unicorn touch the speaker
-        self.lose()
-      }
-
       if (canMove && self.isGameStarted) {
-        player.position.x = data.x
-        player.position.y = data.y
+        player.position = {
+          x: data.x,
+          y: data.y
+        }
+
+        logger.debug(`${self.getLeftBoundary()} | ${self.getRightBoundary()}`)
+        if (player.position.x < self.getLeftBoundary()) {
+          // GameOver unicorn touch the left side
+          self.lose()
+        } else if (player.position.x > self.getRightBoundary()) {
+          // GameOver unicorn touch the speaker
+          self.lose()
+        } else if (player.position.x > self.spectrum.bars.length) {
+          self.lose()
+        }
 
         for (let playerId in self.players) {
           self.players[playerId].socket.emit('playerMove', data)
         }
 
         // Check is we are still playing and if the loop has started
-        // self.currentBar < self.spectrum.bars.length
-        if (self.currentBar < self.spectrum.bars.length + thLow && self.loopTimer && self.currentBar >= 0) {
-          const checkData = self.check(player, data.barNumber)
+        if (self.currentBar < self.spectrum.bars.length + BAR_THRESHOLD_LEFT && self.loopTimer && self.currentBar >= 0) {
+          const checkData = self.takeArtefact(player)
 
           for (var playerId in self.players) {
             self.players[playerId].socket.emit('updateGame', checkData)
+          }
+
+          if (this.areAllArtefactsTaken()) {
+            this.win()
           }
         }
       }
@@ -249,6 +252,14 @@ module.exports = class Room {
     player.socket.on('disconnect', () => {
       self.onPlayerDisconnect(player.socket)
     })
+  }
+
+  getLeftBoundary () {
+    return this.currentBar - BAR_THRESHOLD_LEFT > 0 ? this.currentBar - BAR_THRESHOLD_LEFT : 0
+  }
+
+  getRightBoundary () {
+    return this.currentBar + BAR_THRESHOLD_RIGHT < this.spectrum.bars.length ? this.currentBar + BAR_THRESHOLD_RIGHT : this.spectrum.bars.length
   }
 
   stop () {
@@ -360,8 +371,19 @@ module.exports = class Room {
     }
   }
 
-  check (player, barNumber) {
+  areAllArtefactsTaken () {
+    let areAllArtefactsTaken = true
+
+    for (let key in this.players) {
+      const player = this.players[key]
+
+      areAllArtefactsTaken = areAllArtefactsTaken && (player.takenArtefactsCount === this.spectrum.artefactsToTakeCount)
+    }
+  }
+
+  takeArtefact (player) {
     let artefactTaken = false
+    let barNumber = player.position.x
 
     if (!player.artefactsTaken[barNumber] && barNumber >= 0) {
       artefactTaken = this.spectrum.checkArtefacts(barNumber, player)
@@ -370,21 +392,12 @@ module.exports = class Room {
         player.artefactsTaken[barNumber] = artefactTaken
 
         if (artefactTaken) {
-          if (this.mode !== 'coop') {
-            if (barNumber === this.spectrum.bars.length) {
-              this.win()
-            } else {
-              player.takenArtefactsCount++
-              this.gainEnergy()
-            }
-          } else {
-            // TODO : revoir pour coop si l'autre joueur à tout récupéré (voir si c'est le mode coop)
-            player.takenArtefactsCount++
-            this.gainEnergy()
-          }
+          player.takenArtefactsCount += 1
+          this.gainEnergy()
         }
       }
     }
+
     return {
       bar: barNumber,
       takenArtefactsCount: this.takenArtefactsCount,
@@ -433,7 +446,7 @@ module.exports = class Room {
 
     return {
       id: this.id,
-      position: player.position, 
+      position: player.position,
       playerNumber: player.number,
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
