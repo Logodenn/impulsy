@@ -144,7 +144,7 @@ module.exports = class Room {
         } else {
           for (let key in this.players) {
             const player = this.players[key]
-
+            logger.debug("Player "+player.number+" position : x,y "+player.position.x+","+player.position.y)
             let data = this.check(player, player.position.x, false)
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
@@ -205,9 +205,8 @@ module.exports = class Room {
 
     player.socket.on('playerMove', (data) => {
       let canMove = true
-
       for (let playerId in self.players) {
-        if (self.players[playerId].position.x === data.x & self.players[playerId].position.y === data.y) {
+        if (self.players[playerId].position.x === data.x && self.players[playerId].position.y === data.y) {
           // This means there is already someone at this position
           canMove = false
         }
@@ -236,17 +235,6 @@ module.exports = class Room {
 
           for (var playerId in self.players) {
             self.players[playerId].socket.emit('updateGame', checkData)
-          }
-
-          // This checks for the bar before the current one
-          if (self.currentBar > 1) {
-            let checkData = self.check(player, data.barNumber)
-
-            if (checkData.isArtefactTaken) {
-              for (let playerId in self.players) {
-                this.players[playerId].socket.emit('updateGame', data)
-              }
-            }
           }
         }
       }
@@ -393,7 +381,6 @@ module.exports = class Room {
         }
       }
     }
-
     return {
       bar: barNumber,
       takenArtefactsCount: this.takenArtefactsCount,
@@ -442,7 +429,7 @@ module.exports = class Room {
 
     return {
       id: this.id,
-      position: player.number + 1, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
+      position: player.position, 
       playerNumber: player.number,
       currentBar: 0, // TO BE DELETED
       difficulty: this.difficulty, // difficulty of the level
