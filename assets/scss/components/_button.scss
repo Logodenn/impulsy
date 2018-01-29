@@ -22,9 +22,12 @@
     transform: translateY(4px);
   }
   
-  &[state=disabled] {
+  &[state=disabled],
+  &[state=disabled]:active {
     background: $disabled;
     border: solid 3px $disabled;
+    box-shadow: none;
+    transform: translateY(0);
   }
 }
 
