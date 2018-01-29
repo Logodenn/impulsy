@@ -505,63 +505,43 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				// App.Players[App.Player.number].y = 0;
-				//App.Players[App.Player.number].position.y = 0;
 				App.Player.onMove(0, players[App.Player.number].x);
+
 				break;
 			case 90:
 				// Midtop
-				// App.Players[App.Player.number].y = 1;
-				//App.Players[App.Player.number].position.y = 1;
 				App.Player.onMove(1, players[App.Player.number].x);
+
 				break;
 			case 69:
 				// Midbot
-				// App.Players[App.Player.number].y = 2;
-				//App.Players[App.Player.number].position.y = 2;
 				App.Player.onMove(2, players[App.Player.number].x);
+
 				break;
 			case 82:
 				// Bot
-				// App.Players[App.Player.number].y = 3;
-				//App.Players[App.Player.number].position.y = 3;
 				App.Player.onMove(3, players[App.Player.number].x);
+
 				break;
 			case 38:
 				// Up arrow
-				if(App.Players[App.Player.number].y != 0) {
-					App.Player.onMove(players[App.Player.number].y - 1, players[App.Player.number].x);
-					//App.Players[App.Player.number].position.y--;
-					//players[App.Player.number].slot -= 1;
-				}
+				App.Player.onMove(players[App.Player.number].y - 1, players[App.Player.number].x);
+
 				break;
 			case 40:
 				// Down arrow
-				if(App.Players[App.Player.number].y != 3) {
-					App.Player.onMove(players[App.Player.number].y + 1, players[App.Player.number].x);
-					//App.Players[App.Player.number].position.y++;
-					//players[App.Player.number].slot += 1;
-				}
+				App.Player.onMove(players[App.Player.number].y + 1, players[App.Player.number].x);
+
 				break;
 			case 37:
 				// Left arrow
-				if(players[0].x > 0) {
-					console.log(players[App.Player.number].y)
-					console.log(players[App.Player.number].x -1)
-					App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x - 1);
-					//App.Players[App.Player.number].position.x--;
-					//players[0].x-=1;
-				}	
+				App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x - 1);
+	
 				break;
 			case 39:
 				// Rigth arrow
-				if(players[0].x < canvasBars.length-1) {
-					App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x + 1);
-					console.log(players[App.Player.number].y)
-					console.log(players[App.Player.number].x)
-					//App.Players[App.Player.number].position.x++;
-					//players[0].x+=1;
-				}	
+				App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x + 1);
+
 				break;
 		}
 	}
