@@ -28,8 +28,6 @@ module.exports = class Player {
     // Check if this position is possible
     if ([0, 1, 2, 3].includes(position.y)) {
       this._position.y = position.y
-    } else {
-      this._position.y = 1
     }
 
     // TODO : check x
