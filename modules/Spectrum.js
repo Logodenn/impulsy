@@ -19,6 +19,7 @@ module.exports = class Spectrum {
     this.link = null
     this.bars = [] // This is track information
     this.deathFlags = []
+    this.artefactsToTakeCount = 0
     // this.barsPerSeconds = 2 // Number of bars per seconds for youtube modules
   }
 
@@ -91,6 +92,7 @@ module.exports = class Spectrum {
    * @attribute {int} id id of a track
    */
   loadSpectrum (id, mode, cb) {
+    const self = this
     var coop
     db.track.get(id, (err, result) => {
       if (err) logger.error(err)
@@ -102,6 +104,11 @@ module.exports = class Spectrum {
         this.bars = result.information.map(function (barJSON) {
           let bar = new Bar()
           bar.loadBar(barJSON.amplitude, barJSON.artefacts)
+
+          if (barJSON.artefacts.length > 0) {
+            self.artefactsToTakeCount += 1
+          }
+
           return bar
         })
 
