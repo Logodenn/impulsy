@@ -217,31 +217,25 @@ module.exports = class Room {
           y: data.y
         }
 
-        logger.debug(`${self.getLeftBoundary()} | ${self.getRightBoundary()}`)
-        if (player.position.x < self.getLeftBoundary()) {
+        if (player.position.x < self.getLeftBoundary() || player.position.x >= self.getRightBoundary()) {
           // GameOver unicorn touch the left side
           self.lose()
-        } else if (player.position.x > self.getRightBoundary()) {
-          // GameOver unicorn touch the speaker
-          self.lose()
-        } else if (player.position.x > self.spectrum.bars.length) {
-          self.lose()
-        }
-
-        for (let playerId in self.players) {
-          self.players[playerId].socket.emit('playerMove', data)
-        }
-
-        // Check is we are still playing and if the loop has started
-        if (self.currentBar < self.spectrum.bars.length + BAR_THRESHOLD_LEFT && self.loopTimer && self.currentBar >= 0) {
-          const checkData = self.takeArtefact(player)
-
-          for (var playerId in self.players) {
-            self.players[playerId].socket.emit('updateGame', checkData)
+        } else {
+          for (let playerId in self.players) {
+            self.players[playerId].socket.emit('playerMove', data)
           }
-
-          if (this.areAllArtefactsTaken()) {
-            this.win()
+  
+          // Check is we are still playing and if the loop has started
+          if (self.currentBar < self.spectrum.bars.length + BAR_THRESHOLD_LEFT && self.loopTimer && self.currentBar >= 0) {
+            const checkData = self.takeArtefact(player)
+  
+            for (var playerId in self.players) {
+              self.players[playerId].socket.emit('updateGame', checkData)
+            }
+            
+            if (this.areAllArtefactsTaken()) {
+              this.win()
+            }
           }
         }
       }
@@ -379,6 +373,8 @@ module.exports = class Room {
 
       areAllArtefactsTaken = areAllArtefactsTaken && (player.takenArtefactsCount === this.spectrum.artefactsToTakeCount)
     }
+
+    return areAllArtefactsTaken
   }
 
   takeArtefact (player) {
