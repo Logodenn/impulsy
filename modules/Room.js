@@ -217,22 +217,22 @@ module.exports = class Room {
           y: data.y
         }
 
-        if (player.position.x < self.getLeftBoundary() || player.position.x >= self.getRightBoundary()) {
+        if (player.position.x < self.getLeftBoundary() || player.position.x >= self.getRightBoundary()) {
           // GameOver unicorn touch the left side
           self.lose()
         } else {
           for (let playerId in self.players) {
-            self.players[playerId].socket.emit('playerMove', data)
+            self.players[playerId].socket.emit('playerMove', { number: player.number, ...player.position })
           }
-  
+
           // Check is we are still playing and if the loop has started
           if (self.currentBar < self.spectrum.bars.length + BAR_THRESHOLD_LEFT && self.loopTimer && self.currentBar >= 0) {
             const checkData = self.takeArtefact(player)
-  
+
             for (var playerId in self.players) {
               self.players[playerId].socket.emit('updateGame', checkData)
             }
-            
+
             if (this.areAllArtefactsTaken()) {
               this.win()
             }
@@ -370,6 +370,7 @@ module.exports = class Room {
 
     for (let key in this.players) {
       const player = this.players[key]
+      console.log(`${player.takenArtefactsCount} / ${this.spectrum.artefactsToTakeCount}`)
 
       areAllArtefactsTaken = areAllArtefactsTaken && (player.takenArtefactsCount === this.spectrum.artefactsToTakeCount)
     }
