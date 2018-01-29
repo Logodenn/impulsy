@@ -105,7 +105,7 @@ module.exports = class Spectrum {
           let bar = new Bar()
           bar.loadBar(barJSON.amplitude, barJSON.artefacts)
 
-          if (barJSON.artefacts.length > 0) {
+          if (barJSON.artefacts[0]) {
             self.artefactsToTakeCount += 1
           }
 
