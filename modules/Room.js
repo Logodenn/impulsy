@@ -139,9 +139,7 @@ module.exports = class Room {
         if (this.players.length === 0) {
           this.stop()
         }
-
-        this.loseEnergy()
-
+        
         if (this.energy <= 0) {
           this.lose()
         } else {
@@ -227,7 +225,15 @@ module.exports = class Room {
 
           // Check is we are still playing and if the loop has started
           if (self.currentBar < self.spectrum.bars.length + BAR_THRESHOLD_LEFT && self.loopTimer && self.currentBar >= 0) {
-            const checkData = self.takeArtefact(player)
+            let checkData
+
+            if (player.position.x > player.maxXPosition && this.spectrum.bars[player.position.x].artefacts[0] !== null) {
+              this.loseEnergy()
+            }
+
+            player.updateMaxXPosition()
+
+            checkData = self.takeArtefact(player)
 
             for (var playerId in self.players) {
               self.players[playerId].socket.emit('updateGame', checkData)
