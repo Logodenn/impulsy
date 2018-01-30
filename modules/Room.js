@@ -139,7 +139,7 @@ module.exports = class Room {
         if (this.players.length === 0) {
           this.stop()
         }
-
+        
         if (this.energy <= 0) {
           this.lose()
         } else {
