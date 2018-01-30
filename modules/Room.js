@@ -151,8 +151,6 @@ module.exports = class Room {
               this.lose()
             }
 
-            logger.debug(`Player ${player.number} - position : { x: ${player.position.x}, y: ${player.position.y}`)
-
             data = this.takeArtefact(player)
             for (let playerId in this.players) {
               this.players[playerId].socket.emit('updateGame', data)
@@ -168,7 +166,9 @@ module.exports = class Room {
 
     let playerNumber = 0
 
-    for (let player in this.players) {
+    for (let key in this.players) {
+      let player = this.players[key]
+
       if (playerNumber !== player.number) {
         break
       } else {
@@ -376,7 +376,6 @@ module.exports = class Room {
 
     for (let key in this.players) {
       const player = this.players[key]
-      console.log(`${player.takenArtefactsCount} / ${this.spectrum.artefactsToTakeCount}`)
 
       areAllArtefactsTaken = areAllArtefactsTaken && (player.takenArtefactsCount === this.spectrum.artefactsToTakeCount)
     }

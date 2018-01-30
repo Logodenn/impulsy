@@ -3,7 +3,6 @@ const audio = require('./audio')
 const db = require('../models/controllers')
 const Bar = require('./Bar')
 
-const FREQUENCY_CHECKING = 10
 const BAR_PER_SECONDS = 2
 
 /**
@@ -20,7 +19,6 @@ module.exports = class Spectrum {
     this.bars = [] // This is track information
     this.deathFlags = []
     this.artefactsToTakeCount = 0
-    // this.barsPerSeconds = 2 // Number of bars per seconds for youtube modules
   }
 
   /**
@@ -112,13 +110,13 @@ module.exports = class Spectrum {
           return bar
         })
 
-        if (mode=='solo'){
-          coop=0
-        }else{
-          coop=1
+        if (mode === 'solo') {
+          coop = 0
+        } else {
+          coop = 1
         }
 
-        db.score.meanScore(id,coop, (err, mean) => {
+        db.score.meanScore(id, coop, (err, mean) => {
           if (err) logger.error(err)
           else {
             if (mean.length > 0) {
