@@ -40,7 +40,8 @@ var Positions = [Canvas.topSlot, Canvas.middleTopSlot, Canvas.middleTopSlot, Can
 
 var COLOR = {
 	energyBar		: "#FAC32C",
-	energyBarSlot	: "#716383"
+	energyBarSlot	: "#716383",
+	pulsers			: "#b928bd"
 }
 var r = 50;
 var g = 200;
@@ -56,6 +57,7 @@ var time = 0;
 var players 			= [];
 var energyBar;
 var pulsers 			= [];
+var leftBorder			= null;
 var canvasBars 			= [];
 var canvasArtefacts 	= [];
 var canvasArtefactsCoop	= [];
@@ -105,6 +107,24 @@ function Pulsers(i) {
 	}
 	self.ctx = myGameArea.context;
 	
+	self.update()
+}
+
+// ******************** Left Border ******************** //
+
+function LeftBorder() {
+	var self 		= this;
+	self.x 			= 0;
+	self.y 			= Canvas.topSlot;
+	self.width 		= 6;
+	self.height		= blocUnit * 4;
+	self.ctx = myGameArea.context;
+	self.update 	= function() {
+		ctx 			= myGameArea.context;
+		ctx.fillStyle 	= COLOR.pulsers;
+		console.log(self.x, self.y, self.width, self.height)
+		ctx.fillRect(self.x, self.y, self.width, self.height);
+	}
 	self.update()
 }
 
@@ -378,6 +398,8 @@ function updateGameArea() {
 		pulsers[i].update();
 	}
 
+	leftBorder.update();
+
 	for (i = 0; i < canvasDeathFlags.length; i++) {
 		canvasDeathFlags[i].update();
 	}
@@ -484,7 +506,9 @@ function startGame() {
 	for (var i = 0; i < 4; i++) {
 		var pulser = new Pulsers(i);
 		pulsers.push(pulser);
-	} 
+	}
+	
+	leftBorder = new LeftBorder();
 
 	for (var i = 0; i < 4; i++) {
 		var button = new Button(i);
@@ -585,6 +609,7 @@ function resetGame() {
 	// Maybe we should create a GameArray object that allows to loop over its arrays to reset them dynamically
 	players 			= []
 	pulsers 			= []
+	leftBorder			= null;
 	buttons 			= []
 	canvasBars 			= [];
 	canvasArtefacts 	= [];
