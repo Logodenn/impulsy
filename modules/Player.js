@@ -1,13 +1,13 @@
-const logger = require('../utils/logger')(module)
+// const logger = require('../utils/logger')(module)
 
 module.exports = class Player {
   constructor (socket, number, position, user) {
     this.id = socket.id
     this.number = number
     this.socket = socket
-    this.artefactsTaken = []
     this._position = position
-    this.takenArtefactsCount = 0
+
+    this.prepareForGame()
 
     if (user.logged_in) {
       this.user = {}
@@ -28,12 +28,18 @@ module.exports = class Player {
     // Check if this position is possible
     if ([0, 1, 2, 3].includes(position.y)) {
       this._position.y = position.y
-    } else {
-      this._position.y = this._position.y || 1
     }
 
-    // TODO : check x
-    this._position.x = position.x
+    // x position can only move by one at a time
+    if ([this.position.x - 1, this.position.x + 1].includes(position.x)) {
+      this._position.x = position.x
+    }
+  }
+
+  updateMaxXPosition () {
+    if (this.position.x > this.maxXPosition) {
+      this.maxXPosition = this.position.x
+    }
   }
 
   get position () {
@@ -44,7 +50,14 @@ module.exports = class Player {
     return {
       name: this.name,
       number: this.number,
-      position: this._position
+      position: this._position,
+      maxXPosition: this.maxXPosition
     }
+  }
+
+  prepareForGame () {
+    this.takenArtefactsCount = 0
+    this.artefactsTaken = []
+    this.maxXPosition = 0
   }
 }

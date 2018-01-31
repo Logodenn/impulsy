@@ -134,15 +134,15 @@ var IO = {
     playerMove: function(data) {
         // Notify back that self moved
         // console.log("Player " + data.number + " has movedlayer moved to: " + data.position);
-        IO.socket.emit('playerMove', data);		
+        IO.socket.emit('playerMove', data);
     },
 
     onPlayerMove: function(data) {
         // Update canvas because one player (self or the other) has moved
-        console.log("Player " + data.number + " has moved to: " + data.position);
+        console.log("Player " + data.number + " has moved to: x->" + data.x + " y-->" + data.y);
         players[data.number].y = data.y
         players[data.number].x = data.x
-        players[data.number].update();		
+        players[data.number].update();
     },
 
     // ****************************************************** //
