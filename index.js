@@ -91,24 +91,33 @@ passport.use('local-signup', new Strategy({
     }
     db.user.getUser(user.mail, true, function (err, result) {
       if (err) {
-        db.user.getUser(user.pseudo, false, function (err, result) {
+        logger.err(err)
+        return cb(err,null)        
+      } else{
+        if (!result){
+          db.user.getUser(user.pseudo, false, function (err, result) {
             if (err) {
-              db.user.create(user, function (err, result) {
-                  if (err) {
-                    throw err
-                  }
-                  
-                  return cb(null, user)
-              })
-          }
-          else{
-            return cb("Pseudo already use", null)  
-          }
-        })
+              logger.err(err) 
+              return cb(err,null)
+            } else {
+              if (!result){
+                db.user.create(user, function (err, result) {
+                    if (err) {
+                      logger.err(err)
+                      return cb(err,null)              
+                    } else {
+                      return cb(null, result)
+                    }
+                })
+              } else {
+                return cb(null, false) 
+              }
+            }
+          })
+        } else {
+          return cb(null, false)          
+        }
       }
-      else{
-      return cb("Email already use", null)
-    }
     })
   }))
 

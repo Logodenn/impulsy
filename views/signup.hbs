@@ -10,6 +10,10 @@
         <section class="content">
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
+        
+            {{#if problem}}
+                <h2 class="error">Username or mail already used.</h2>
+            {{/if}}
 
             <div id="formWrapper" class="flex-row">
 

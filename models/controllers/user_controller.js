@@ -61,7 +61,7 @@ module.exports = {
                         if (user.length != 0){
                             cb(null, user[0]);
                         }else{
-                            cb("No User", null);
+                            cb(null, null);
                         }
                         
                     }
