@@ -95,15 +95,15 @@ var App = {
         // position: 1,
         // This Player object is used to transit data through the WS
 
-		onMove : function() {
+		onMove : function(vY, vX) {
             // Notify WS
             var data = {
                 number: App.Player.number,
-                y: App.Players[App.Player.number].y,
-                x: App.Players[App.Player.number].x
+                y: vY,
+                x: vX
             }
+
             IO.playerMove(data);
-            // player.update();
         },
         
         // In case the player does not move but the position is right
