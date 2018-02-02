@@ -220,7 +220,10 @@ module.exports = class Room {
           self.lose()
         } else {
           for (let playerId in self.players) {
-            self.players[playerId].socket.emit('playerMove', { number: player.number, ...player.position })
+            self.players[playerId].socket.emit('playerMove', {
+              number: player.number,
+              ...player.position
+            })
           }
 
           // Check is we are still playing and if the loop has started
@@ -487,22 +490,16 @@ module.exports = class Room {
     this.loopTimer = null
     this.currentBar = 0
     this.audioStream = null
-    let energy = 0
-    this.spectrum.bars.forEach(bar => {
-      if (bar.artefacts[0] !== null && bar.artefacts[1] !== null) {
-        energy++
 
-        if (this.mode === 'coop') {
-          energy++
-        }
-      }
-    })
-    this.energy = energy
+    if (this.mode === 'solo') {
+      this.energy = this.spectrum.artefactsToTakeCount
+    } else {
+      this.energy = this.spectrum.artefactsToTakeCount * 2
+    }
 
     // Reset players
     for (let playerId in this.players) {
-      this.players[playerId].takenArtefactsCount = 0
-      this.players[playerId].artefactsTaken = []
+      this.players[playerId].prepareForGame()
 
       this.players[playerId].socket.emit('roomJoined', {
         roomId: this.id,

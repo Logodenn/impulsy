@@ -122,7 +122,6 @@ function LeftBorder() {
 	self.update 	= function() {
 		ctx 			= myGameArea.context;
 		ctx.fillStyle 	= COLOR.pulsers;
-		console.log(self.x, self.y, self.width, self.height)
 		ctx.fillRect(self.x, self.y, self.width, self.height);
 	}
 	self.update()
@@ -476,7 +475,6 @@ function updateBlocUnit(canvasWidth) {
 // **************************************************************************************************** //
 
 function startGame() {
-
 	// Hide buttons
 	document.querySelector("#roomMetadata").classList.add("hidden");
 	document.querySelector("#startButtons").classList.add("hidden");
@@ -616,6 +614,7 @@ function resetGame() {
 	canvasArtefactsCoop	= [];
 	canvasDeathFlags  	= [];
 	time				= 0
+	started = 0
 
 	// console.log("Below is value of var myGameArea");
 	// console.log(myGameArea);

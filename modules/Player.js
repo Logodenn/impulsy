@@ -59,5 +59,9 @@ module.exports = class Player {
     this.takenArtefactsCount = 0
     this.artefactsTaken = []
     this.maxXPosition = 0
+    this.position = {
+      x: 0,
+      y: this.number
+    }
   }
 }
