@@ -222,7 +222,8 @@ module.exports = class Room {
           for (let playerId in self.players) {
             self.players[playerId].socket.emit('playerMove', {
               number: player.number,
-              ...player.position
+              x: player.position.x,
+              y: player.position.y
             })
           }
 
