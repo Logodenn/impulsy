@@ -5,12 +5,16 @@ const router = express.Router()
 const Spectrum = require('../modules/Spectrum')
 const db = require('../models/controllers')
 
+/**
+ * Main route allowing to create new rooms
+ * Redirects to the created room
+ */
 router.post('/', (req, res) => {
   const difficulty = req.body.difficulty
   const id = req.body.track
   const mode = req.body.mode
   // console.log(req.body.gameData)
-  if (req.body.gameData){
+  if (req.body.gameData) {
     console.log(JSON.parse(req.body.gameData))
   }
   if (!difficulty || !id) {
@@ -66,11 +70,15 @@ router.post('/', (req, res) => {
   })
 })
 
+/**
+ * User can join a room by using the route and entering the gameId as a parameter
+ * If room is full or cannot be joined, user is redirected
+ */
 router.get('/:id', (req, res) => {
   const roomId = req.params.id
 
   if (RoomManager.rooms.hasOwnProperty(roomId)) {
-    const room =  RoomManager.rooms[roomId]
+    const room = RoomManager.rooms[roomId]
 
     if (room.canBeJoined()) {
       let data = {

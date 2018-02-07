@@ -5,6 +5,11 @@ const audio = require('../modules/audio')
 
 const router = express.Router()
 
+/**
+ * This route returns details about Youtube tracks that are relevant with the entered keywords
+ * Only music videos a returned from the Youtube API
+ * Be sure to set the YOUTUBE_API_KEY environment variable before using this function
+ */
 router.get('/search/:keywords', (req, res) => {
   let _tracksCount = 5
 
