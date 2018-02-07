@@ -1,4 +1,10 @@
 
+/**
+ * Toggle a specified element's (modal) display
+ * @function
+ * @param {*} element
+ * @param {*} action
+ */
 function toggleElement(element, action) {
 
     var id = "#" + element;
@@ -13,6 +19,10 @@ function toggleElement(element, action) {
     }
 }
 
+/**
+ * Apply a regex to check the validity of the mail
+ * @function
+ */
 function validateMail() {
     
     var mail = document.querySelector("#mail").value;
