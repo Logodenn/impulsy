@@ -10,7 +10,13 @@ const GAME_SPEED = 500
 const COUNTDOWN_DELAY = 4000
 const BAR_THRESHOLD_RIGHT = 10
 const BAR_THRESHOLD_LEFT = 10
-
+/**
+ * Room object manage the game. 
+ * This object exchange via websocket to the front 
+ * Notify Player objet for the movements 
+ * Notify Spectrum to check artefacts on the bars
+ * @class 
+ */
 module.exports = class Room {
   constructor (_difficulty, _mode) {
     this.id = uuid()
@@ -27,12 +33,20 @@ module.exports = class Room {
     this.audioStream = null
   }
 
+  /**
+   * Delete the room 
+   * @function
+   */
   destroy () {
     logger.info(`Room ${this.id} - Destroyed`)
 
     this.roomManager.deleteRoom(this)
   }
 
+  /**
+   * Verification if the game is in coop or solo and check the number of player(s)
+   * @function
+   */
   canBeJoined () {
     let canBeJoined = true
 
@@ -49,6 +63,10 @@ module.exports = class Room {
     return canBeJoined
   }
 
+  /** 
+   * Verification if the game can start with the number of player(s)
+   * @function
+   */
   isReadyToStart () {
     let isReadyToStart = true
 
@@ -65,6 +83,10 @@ module.exports = class Room {
     return isReadyToStart
   }
 
+  /**
+   * Start the game with a countdown and the check multiple times the position of the players 
+   * @function 
+   */
   startGame () {
     if (!this.isReadyToStart()) {
       return
@@ -161,6 +183,11 @@ module.exports = class Room {
     }, COUNTDOWN_DELAY)
   }
 
+  /**
+   * Add a player in a room on wainting room page
+   * @function
+   * @param {*} clientSocket 
+   */
   addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
 
@@ -195,6 +222,11 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Bind informations from the webSocket 
+   * @function
+   * @param {*} player 
+   */
   bindPlayerEvents (player) {
     const self = this
 
@@ -258,14 +290,26 @@ module.exports = class Room {
     })
   }
 
+  /**
+   * Get bar position of the left bound
+   * @function
+   */
   getLeftBoundary () {
     return this.currentBar - BAR_THRESHOLD_LEFT > 0 ? this.currentBar - BAR_THRESHOLD_LEFT : 0
   }
 
+  /**
+   * Get bar position of the right bound
+   * @function
+   */
   getRightBoundary () {
     return this.currentBar + BAR_THRESHOLD_RIGHT < this.spectrum.bars.length ? this.currentBar + BAR_THRESHOLD_RIGHT : this.spectrum.bars.length
   }
 
+  /**
+   * Stop the game if a player leave the page or at the end of game
+   * @function
+   */
   stop () {
     logger.info(`Room ${this.id} - Stopping game`)
 
@@ -283,6 +327,11 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * If a player leave the page make the game in pause
+   * @function
+   * @param {*} socket 
+   */
   onPlayerDisconnect (socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
 
@@ -301,6 +350,10 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Add score of the player(s) and notify front of the win
+   * @function
+   */
   win () {
     logger.info(`Game in room ${this.id} is won`)
 
@@ -321,6 +374,10 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Stop the game and notify front of the lose
+   * @function
+   */
   lose () {
     logger.info(`Game in room ${this.id} is lost`)
 
@@ -331,7 +388,7 @@ module.exports = class Room {
       let player = this.players[playerId]
 
       player.socket.emit('gameOver', {
-        'win': true,
+        'win': false,
         'score': this.takenArtefactsCount,
         'max': this.energy
       })
@@ -341,6 +398,12 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Add the score of the player 
+   * Check if it's the best 
+   * @function
+   * @param {*} player 
+   */
   addScore (player) {
     if (player.user) {
       let coop = 1
@@ -375,6 +438,10 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * check if all artefacts are taken
+   * @function
+   */
   areAllArtefactsTaken () {
     let areAllArtefactsTaken = true
 
@@ -387,6 +454,11 @@ module.exports = class Room {
     return areAllArtefactsTaken
   }
 
+  /**
+   * Look if the player can take the artefact 
+   * @function
+   * @param {*} player 
+   */
   takeArtefact (player) {
     let artefactTaken = false
     let barNumber = player.position.x
@@ -415,6 +487,9 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Decrease the energy of the game
+   */
   loseEnergy () {
     switch (this.difficulty) {
       case 'crazy':
@@ -431,6 +506,9 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Increase the energy of the game
+   */
   gainEnergy () {
     switch (this.difficulty) {
       case 'crazy':
@@ -447,6 +525,11 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Return the metadata of the game and the player
+   * @function
+   * @param {*} player 
+   */
   getMetaData (player) {
     let players = Object.keys(this.players).map(idx => this.players[idx].metadata)
 
@@ -464,14 +547,25 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Set the energy of the game
+   * @function
+   */
   set energy (energy) {
     this._energy = energy
   }
 
+  /**
+   * Return the energy of the game 
+   * @function
+   */
   get energy () {
     return this._energy > 0 ? this._energy : 0
   }
-
+  /**
+   * Return the metadata of the game (id, difficulty, mode, spectrum, energy)
+   * @function
+   */
   get metadata () {
     return {
       id: this.id,
@@ -482,6 +576,10 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Reset the game parameters and keep the player in the room 
+   * @function 
+   */
   resetGame () {
     logger.info('Game reset : ' + this.id)
 
@@ -509,6 +607,10 @@ module.exports = class Room {
     }
   }
 
+  /**
+   * Return the number of artefact taken in the game
+   * @function
+   */
   get takenArtefactsCount () {
     let takenArtefactsCount = 0
 

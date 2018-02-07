@@ -4,7 +4,6 @@ const db = require('../models/controllers')
 
 var router = express.Router();
 
-//TODO : vérifier si l'user n'est pas déjà connecté 
 router.get('/login/:problem?', function(req, res) {
     var data = {}
     if (req.params.problem){
