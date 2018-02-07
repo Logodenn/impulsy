@@ -2,6 +2,9 @@
 
 // ******************** App ******************** //
 
+/**
+ * App object handles every element needed for the game logic.
+ */
 var App = {
 
     gameId: 0,
@@ -18,27 +21,31 @@ var App = {
         App.bindEvents();
     },
 
-    // Event handlers for buttons
-    bindEvents: function () {
-		// Host
-
-        // Player
-    },
+    // Event handlers
+    bindEvents: function () {},
 
 	// ********** Host ********** //
     Host : {
 
         players : [],
-        currentCorrectAnswer: '',
         trackId: "ttEI35HVpqI",
         difficulty: "lazy",
 
+        /**
+         * Start the game if it is startable
+         * @function
+         */
 		clickStart: function () {
 			if(document.querySelector("#startGameButton").attributes.state.value != "disabled") {
                 IO.startGame();
 			}
         },
 
+        /**
+         * Initialize the game with its metadata and latency
+         * @function
+         * @param {*} data 
+         */
         gameInit: function (data) {
 
             //TODO handle if playAgain
@@ -58,9 +65,6 @@ var App = {
             var game    = data.gameMetadata;
             var latency = data.latency;
 
-            console.log(game);
-            // var track =JSON.parse(game.track.replace('j:',''));
-
             // Settings
 			App.myRole      = 'Host';
             App.latency     = latency;
@@ -78,6 +82,7 @@ var App = {
             App.Player.number           = game.playerNumber;
             App.Player.takenArtefactsCount = 0;
 
+            // Wait for another player if coop
             if(App.mode == "coop") {
                 document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for a second player...";
                 document.querySelector("#inviteMessage").classList.remove("hidden");
@@ -95,6 +100,12 @@ var App = {
         // position: 1,
         // This Player object is used to transit data through the WS
 
+        /**
+         * Notify the WS that the player has moved
+         * @function
+         * @param {*} vY 
+         * @param {*} vX 
+         */
 		onMove : function(vY, vX) {
             // Notify WS
             var data = {
@@ -106,7 +117,11 @@ var App = {
             IO.playerMove(data);
         },
         
-        // In case the player does not move but the position is right
+        /**
+         * Notify the WS that the player has not moved but its position is still right
+         * @function
+         * @param {*} data 
+         */
         onEnergy : function(data) {
             // Notify WS
             IO.playerMove(App.Player.position);
@@ -117,6 +132,11 @@ var App = {
 
 App.init();
 
+/**
+ * Add the just-played track to the player's favorites
+ * @function
+ * @param {*} button 
+ */
 function favoriteTrack(button) {
 
     var action = "/favorite/" + App.trackId;
@@ -136,6 +156,10 @@ function favoriteTrack(button) {
     xhttp.send();
 }
 
+/**
+ * Restart the same game with the same metadata
+ * @function
+ */
 function playAgain() {
     var gameData = {
         roomId      : App.gameId,
