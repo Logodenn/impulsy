@@ -7,10 +7,12 @@ const BAR_PER_SECONDS = 2
 
 /**
  * Object Spectrum is the envelop of the sound
- * @attribute {string} name name of the sound
- * @attribute {string} link link of the sound if is from Youtube
- * @attribute {array} bars array of Bar object
- * @attribute {int} barsPerSeconds int number of bar per second (speed of the song)
+ * This object is made of bar
+ * @class
+ * @param {string} name name of the sound
+ * @param {string} link link of the sound if is from Youtube
+ * @param {array} bars array of Bar object
+ * @param {int} barsPerSeconds int number of bar per second (speed of the song)
  */
 module.exports = class Spectrum {
   constructor () {
@@ -23,8 +25,9 @@ module.exports = class Spectrum {
 
   /**
    * Function createSpectrum create the envelop of the sound
-   * @attribute {string} sound link or name of the sound
-   * @attribute {bool} local False if is from Youtube, True if is from local storage
+   * @function
+   * @param {string} sound link or name of the sound
+   * @param {bool} local False if is from Youtube, True if is from local storage
    */
   createSpectrum (sound, local, cb) {
     let getStream = audio.getYoutubeStream
@@ -87,7 +90,10 @@ module.exports = class Spectrum {
 
   /**
    * Function loadSpectrum load a spectrum from an id of a track
-   * @attribute {int} id id of a track
+   * @function
+   * @param {int} id id of a track
+   * @param mode if it's a solo or coop game
+   * @param cb callback
    */
   loadSpectrum (id, mode, cb) {
     const self = this
@@ -138,7 +144,12 @@ module.exports = class Spectrum {
       }
     })
   }
-
+  /**
+   * Function checkArtefacts use to check if the player take the artefact of the bar in params 
+   * @function
+   * @param {int} barNumber
+   * @param {Player} player
+   */
   checkArtefacts (barNumber, player) {
     return this.bars[barNumber].checkArtefact(player)
   }

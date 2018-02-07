@@ -7,13 +7,22 @@ const AMPLITUDE_MAX = 1
 const BASE_LOWER_BOUND = 1
 const BASE_UPPPER_BOUND = 2
 const MINIMUM_AMPLITUDE = 0.05
-
+/**
+ * Bar object it define a bar with the amplitude and its artefact 
+ * @class
+ * 
+ */
 module.exports = class Bar {
   constructor () {
     this.amplitude = null
     this.artefacts = [] // artefact position
   }
 
+  /**
+   * Check artefact for this bar
+   * @function
+   * @param {Player} player
+   */
   checkArtefact (player) {
     if (this.artefacts[player.number] !== null) {
       if (this.artefacts[player.number] === player.position.y) {
@@ -30,6 +39,7 @@ module.exports = class Bar {
    * Function create generate an artefact in function of the amplitude of the sound
    * Attention if barSize is less than one, the randomNumber generated can be less than 0
    * We can change baseLowerBound and baseUpperBound to modify the base position
+   * @function
    * @param {float} barAmplitude amplitude of the bar
    * @param {int} number position of the bar in this spectrum
    */
@@ -72,6 +82,12 @@ module.exports = class Bar {
     }
   }
 
+  /**
+   * Load information in param to add these à this bar
+   * @function
+   * @param amplitude - Amplitude for this bar
+   * @param artefacts - Artefacts position for this bar
+   */
   loadBar (amplitude, artefacts) {
     this.amplitude = amplitude
     this.artefacts = artefacts
