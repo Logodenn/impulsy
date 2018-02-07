@@ -26,7 +26,7 @@ const getInfo = (_videoId, _callback) => {
       title: info.title,
       duration: info.length_seconds,
       id: info.video_id,
-      thumbnailUrl: info.iurlhq
+      thumbnailUrl: info.thumbnail_url
     }
 
     _callback(null, data)
