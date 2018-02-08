@@ -8,7 +8,7 @@ const Spectrum = require('./Spectrum')
 
 const GAME_SPEED = 500
 const COUNTDOWN_DELAY = 4000
-const BAR_THRESHOLD_RIGHT = 10
+const BAR_THRESHOLD_RIGHT = 9
 const BAR_THRESHOLD_LEFT = 10
 /**
  * Room object manage the game.
@@ -153,6 +153,14 @@ module.exports = class Room {
     this.countdownTimeout = setTimeout(() => {
       this.isGameStarted = true
 
+      if (this.spectrum.bars[0].artefacts[0] !== null) {
+        this.loseEnergy()
+
+        if (this.mode === 'coop') {
+          this.loseEnergy()
+        }
+      }
+
       this.loopTimer = setInterval(() => {
         logger.debug(`Loop - currentBar ${this.currentBar} - ${this.spectrum.bars.length} - energy ${this.energy}`)
 
@@ -260,7 +268,7 @@ module.exports = class Room {
           }
 
           // Check is we are still playing and if the loop has started
-          if (self.currentBar < self.getRightBoundary() && self.loopTimer && self.currentBar >= 0) {
+          if (self.loopTimer && self.currentBar >= 0) {
             let checkData
 
             if (player.position.x > player.maxXPosition && this.spectrum.bars[player.position.x].artefacts[0] !== null) {
