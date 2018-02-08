@@ -29,7 +29,7 @@
 
             <!-- ********** MOST PLAYED TRACKS ********** -->
             {{#if userConnected}}
-                <section id="mostPlayedTracks" class="flex-col">
+                <section id="mostPlayedTracks" class="flex-col mainSegment">
                     <h2 class="title">Your most played tracks</h2>
                     <div class="track-list flex-row">
                         {{#each userMostPlayed}}
@@ -42,7 +42,7 @@
 
                 <!-- ********** FAVORITE TRACKS ********** -->
 
-                <section id="favorites" class="flex-col hidden">
+                <section id="favorites" class="flex-col hidden mainSegment">
                     <h2 class="title">Favorite tracks</h2>
                     <div class="track-list flex-row">
                         {{#each userFavorite}}
@@ -56,7 +56,7 @@
 
             <!-- ********** YOUTUBE SEARCH BAR ********** -->
 
-            <section id="ytSearch" class="flex-col">
+            <section id="ytSearch" class="flex-col mainSegment">
                 <h2 class="title">Search a track through YouTube</h2>
 
                 <div id="ytBrowser" class="inputWrapper flex-row">
@@ -70,7 +70,7 @@
 
             <!-- ********** TREND TRACKS ********** -->
 
-            <section id="trendings" class="flex-col">
+            <section id="trendings" class="flex-col mainSegment">
                 <h2 class="title">Trend tracks</h2>
                 <div class="track-list flex-row">
                     {{#each trend}}
