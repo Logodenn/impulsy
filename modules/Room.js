@@ -366,7 +366,7 @@ module.exports = class Room {
       player.socket.emit('gameOver', {
         'win': true,
         'score': this.takenArtefactsCount,
-        'max': this.energy
+        'max': this.spectrum.artefactsToTakeCount
       })
 
       // This is, for now, done sytematically. It might be better to ask the user before adding the score
@@ -390,7 +390,7 @@ module.exports = class Room {
       player.socket.emit('gameOver', {
         'win': false,
         'score': this.takenArtefactsCount,
-        'max': this.energy
+        'max': this.spectrum.artefactsToTakeCount
       })
 
       // This is, for now, done sytematically. It might be better to ask the user before adding the score
@@ -615,11 +615,9 @@ module.exports = class Room {
     let takenArtefactsCount = 0
 
     for (let player in this.players) {
-      console.log('player' + this.players[player].takenArtefactsCount)
       takenArtefactsCount += this.players[player].takenArtefactsCount
     }
 
-    console.log(takenArtefactsCount)
     return takenArtefactsCount
   }
 }
