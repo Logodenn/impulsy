@@ -11,11 +11,11 @@ const COUNTDOWN_DELAY = 4000
 const BAR_THRESHOLD_RIGHT = 10
 const BAR_THRESHOLD_LEFT = 10
 /**
- * Room object manage the game. 
- * This object exchange via websocket to the front 
- * Notify Player objet for the movements 
+ * Room object manage the game.
+ * This object exchange via websocket to the front
+ * Notify Player objet for the movements
  * Notify Spectrum to check artefacts on the bars
- * @class 
+ * @class
  */
 module.exports = class Room {
   constructor (_difficulty, _mode) {
@@ -34,7 +34,7 @@ module.exports = class Room {
   }
 
   /**
-   * Delete the room 
+   * Delete the room
    * @function
    */
   destroy () {
@@ -63,7 +63,7 @@ module.exports = class Room {
     return canBeJoined
   }
 
-  /** 
+  /**
    * Verification if the game can start with the number of player(s)
    * @function
    */
@@ -84,8 +84,8 @@ module.exports = class Room {
   }
 
   /**
-   * Start the game with a countdown and the check multiple times the position of the players 
-   * @function 
+   * Start the game with a countdown and the check multiple times the position of the players
+   * @function
    */
   startGame () {
     if (!this.isReadyToStart()) {
@@ -169,7 +169,7 @@ module.exports = class Room {
             const player = this.players[key]
             let data
 
-            if (player.position.x > this.currentBar + BAR_THRESHOLD_RIGHT || player.position.x < this.currentBar - BAR_THRESHOLD_LEFT) {
+            if (player.position.x > this.getRightBoundary() || player.position.x < this.getLeftBoundary()) {
               this.lose()
             }
 
@@ -186,7 +186,7 @@ module.exports = class Room {
   /**
    * Add a player in a room on wainting room page
    * @function
-   * @param {*} clientSocket 
+   * @param {*} clientSocket
    */
   addPlayer (clientSocket) {
     logger.info(`Room ${this.id} - New player ${clientSocket.id}`)
@@ -223,9 +223,9 @@ module.exports = class Room {
   }
 
   /**
-   * Bind informations from the webSocket 
+   * Bind informations from the webSocket
    * @function
-   * @param {*} player 
+   * @param {*} player
    */
   bindPlayerEvents (player) {
     const self = this
@@ -260,7 +260,7 @@ module.exports = class Room {
           }
 
           // Check is we are still playing and if the loop has started
-          if (self.currentBar < self.spectrum.bars.length + BAR_THRESHOLD_LEFT && self.loopTimer && self.currentBar >= 0) {
+          if (self.currentBar < self.getRightBoundary() && self.loopTimer && self.currentBar >= 0) {
             let checkData
 
             if (player.position.x > player.maxXPosition && this.spectrum.bars[player.position.x].artefacts[0] !== null) {
@@ -330,7 +330,7 @@ module.exports = class Room {
   /**
    * If a player leave the page make the game in pause
    * @function
-   * @param {*} socket 
+   * @param {*} socket
    */
   onPlayerDisconnect (socket) {
     logger.info(`Room ${this.id} - Client ${socket.id} is disconnected`)
@@ -399,10 +399,10 @@ module.exports = class Room {
   }
 
   /**
-   * Add the score of the player 
-   * Check if it's the best 
+   * Add the score of the player
+   * Check if it's the best
    * @function
-   * @param {*} player 
+   * @param {*} player
    */
   addScore (player) {
     if (player.user) {
@@ -455,9 +455,9 @@ module.exports = class Room {
   }
 
   /**
-   * Look if the player can take the artefact 
+   * Look if the player can take the artefact
    * @function
-   * @param {*} player 
+   * @param {*} player
    */
   takeArtefact (player) {
     let artefactTaken = false
@@ -478,7 +478,7 @@ module.exports = class Room {
 
     return {
       bar: barNumber,
-      takenArtefactsCount: this.takenArtefactsCount,
+      takenArtefactsCount: player.takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,
       y: player.position.y, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
@@ -528,7 +528,7 @@ module.exports = class Room {
   /**
    * Return the metadata of the game and the player
    * @function
-   * @param {*} player 
+   * @param {*} player
    */
   getMetaData (player) {
     let players = Object.keys(this.players).map(idx => this.players[idx].metadata)
@@ -556,7 +556,7 @@ module.exports = class Room {
   }
 
   /**
-   * Return the energy of the game 
+   * Return the energy of the game
    * @function
    */
   get energy () {
@@ -577,8 +577,8 @@ module.exports = class Room {
   }
 
   /**
-   * Reset the game parameters and keep the player in the room 
-   * @function 
+   * Reset the game parameters and keep the player in the room
+   * @function
    */
   resetGame () {
     logger.info('Game reset : ' + this.id)
@@ -615,9 +615,11 @@ module.exports = class Room {
     let takenArtefactsCount = 0
 
     for (let player in this.players) {
+      console.log('player' + this.players[player].takenArtefactsCount)
       takenArtefactsCount += this.players[player].takenArtefactsCount
     }
 
+    console.log(takenArtefactsCount)
     return takenArtefactsCount
   }
 }
