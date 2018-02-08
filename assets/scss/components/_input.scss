@@ -22,3 +22,11 @@
         color: $background;
     }
 }
+
+@media (max-width: 640px) {
+
+    .input {
+        width: 80%;
+    }
+
+}
