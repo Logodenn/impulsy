@@ -30,11 +30,6 @@ var Canvas = {
 // Used to move the player according to its numerical position, from 0 to 3
 var Positions = [Canvas.topSlot, Canvas.middleTopSlot, Canvas.middleTopSlot, Canvas.botSlot];
 
-// var energyBar = {
-//     height  : blocUnit * 0.5,
-//     width   : null,
-//     y		: blocUnit * 0
-// }
 
 // ******************** Colors ******************** //
 
@@ -74,18 +69,39 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 
 // ******************** Player ******************** //
 
+
+/**
+* Class to display a player
+*
+* @class Player
+* @constructor
+* @param {Object} definition object contening positions on the x and y axes
+*/
 function Player(definition) {
 	var self = this;
+	self.img		= "unicorn-2"
+	self.state		= 2;
+	self.cpt		= 0;
 	self.posX 		= 4 * blocUnit;
 	self.posY 		= Positions[definition.position.y];
 	self.y			= definition.position.y;
 	self.x			= definition.position.x;
 	self.number		= definition.number;
 	self.update 	= function() {
-		self.posX 		= started ? canvasBars[self.x].x - blocUnit/2: 4 * blocUnit;
+		if(started){
+			self.posX 	= canvasBars[self.x].x - blocUnit/2;
+			self.img 		= "player" + self.number;
+		} else {
+			self.cpt	+= 1;
+			self.posX 	= self.cpt * (4 * blocUnit / 427);
+			if(self.cpt % 20 == 0){
+				self.state  = (self.state == 3) ? 2 : 3;
+			}
+			self.img	= "unicorn" + self.state;
+		}
 		self.posY 		= Canvas.topSlot + self.y * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(imageLoader.images["player" + self.number], self.posX, self.posY, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images[self.img], self.posX, self.posY, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
 
@@ -93,7 +109,13 @@ function Player(definition) {
 }
 
 // ******************** Pulsers ******************** //
-
+/**
+* Class to display a pulser
+*
+* @class Pulser
+* @constructor
+* @param {int} i index from 0 to 3 to determine the y position
+*/
 function Pulsers(i) {
 	var self 		= this;
 	self.index		= i;
@@ -111,12 +133,17 @@ function Pulsers(i) {
 }
 
 // ******************** Left Border ******************** //
-
+/**
+* Class to display the left border
+*
+* @class LefBorder
+* @constructor
+*/
 function LeftBorder() {
 	var self 		= this;
 	self.x 			= 0;
 	self.y 			= Canvas.topSlot;
-	self.width 		= 6;
+	self.width 		= blocUnit / 9;
 	self.height		= blocUnit * 4;
 	self.ctx = myGameArea.context;
 	self.update 	= function() {
@@ -127,7 +154,34 @@ function LeftBorder() {
 	self.update()
 }
 
+// ******************** Start game messages ******************** //
+function Message(){
+	var self = this;
+	self.posX = blocUnit;
+	self.posY = Canvas.middleBotSlot;
+	self.cpt = 0;
+	self.update 	= function() {
+		self.cpt += 1;
+		ctx = myGameArea.context;
+		if(self.cpt * (4 * blocUnit / 427) < blocUnit){
+			ctx.drawImage(imageLoader.images.message1, self.posX, self.posY, 2*blocUnit, 2*blocUnit);
+		} else if(self.cpt * (4 * blocUnit / 427) < 3*blocUnit & self.cpt * (4 * blocUnit / 427) > 2*blocUnit) {
+			ctx.drawImage(imageLoader.images.message1, self.posX, self.posY, 2*blocUnit, 2*blocUnit);
+		} else if(self.cpt * (4 * blocUnit / 427) > 4*blocUnit & self.cpt * (4 * blocUnit / 427) < 6*blocUnit) {
+			ctx.drawImage(imageLoader.images.message2, self.posX, self.posY, 2*blocUnit, 2*blocUnit);
+		}
+	}
+	self.ctx = myGameArea.context;
+}
+
 // ******************** Death flags ******************** //
+/**
+* Class to display a death flag
+*
+* @class Player
+* @constructor
+* @param {int} type 0 to display an avarage death flag or 1 to display a best score death flag
+*/
 function DeathFlag(type) {
 	var self 		= this;
 	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
@@ -150,6 +204,13 @@ function DeathFlag(type) {
 
 
 // ********************* Button ********************* //
+/**
+* Class to create a button area
+*
+* @class Button
+* @constructor
+* @param {int} y index from 0 to 3 to determine the y position
+*/
 function Button(y) {
 	var self      	= this;
 	self.slot		= y;
@@ -176,7 +237,14 @@ function Button(y) {
 }
 
 // ******************** Artefact ******************** //
-
+/**
+* Class to display an artefact
+*
+* @class Artefact
+* @constructor
+* @param {int} i index from 0 to 3 to determine the y position
+* @param {int} playerNumber 0 or 1 to determine the player associated to the artefact
+*/
 function Artefact(slot, playerNumber) {
 	var self 		= this;
 	self.isArtefactTaken	= false;
@@ -230,7 +298,13 @@ function Artefact(slot, playerNumber) {
 }
 
 // ******************** Amplitude ******************** //
-
+/**
+* Class to display an amplitude
+*
+* @class Amplitude
+* @constructor
+* @param {Object} barDefinition informations related to the bar
+*/
 function Amplitude(barDefinition) {
 	var self = this;
 	switch (tabColorToChange[counterForColorTab]) {
@@ -290,23 +364,25 @@ function Amplitude(barDefinition) {
 }
 
 // ******************** EnergyBarSlot ******************** //
-
+/**
+* Class to display an energy bar slot
+*
+* @class EnergyBarSlot
+* @constructor
+*/
 function EnergyBarSlot() {
 
 	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
 	
 	this.color 		= COLOR.energyBarSlot;
 	this.width 		= App.Host.energy * energyBarCoefficient;
-	this.height 	= blocUnit * 0.5;
-	// this.x 			= Canvas.width / 10;
+	this.height 	= blocUnit * 0.3;
 	this.x			= computedX;
-	this.y 			= blocUnit * 0;
+	this.y 			= blocUnit * 0.5;
 	this.update 	= function() {
 		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-		// this.width 		= App.Host.energy * energyBarCoefficient;
-		this.height 	= blocUnit * 0.5;
-		// this.x			= computedX;
-		this.y 			= blocUnit * 0;
+		this.height 	= blocUnit * 0.3;
+		this.y 			= blocUnit * 0.5;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -317,24 +393,29 @@ function EnergyBarSlot() {
 }
 
 // ******************** EnergyBar ******************** //
-
+/**
+* Class to display the energy bar
+*
+* @class EnergyBar
+* @constructor
+*/
 function EnergyBar() {
 
 	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
 
 	this.color 		= COLOR.energyBar;
 	this.width 		= App.Host.energy * energyBarCoefficient;
-	this.height 	= blocUnit * 0.5;
+	this.height 	= blocUnit * 0.3;
 	this.x			= computedX;
-	this.y 			= blocUnit * 0;
+	this.y 			= blocUnit * 0.5;
 	this.update 	= function() {
 		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
 		// computedX = Canvas.width * 0.5;
 
 		this.width 		= App.Host.energy * energyBarCoefficient;
-		this.height 	= blocUnit * 0.5;
+		this.height 	= blocUnit * 0.3;
 		// this.x			= computedX;
-		this.y 			= blocUnit  * 0;
+		this.y 			= blocUnit  * 0.5;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -347,7 +428,12 @@ function EnergyBar() {
 // ********************************************************************************************* //
 // **************************************** GAME LOGIC **************************************** //
 // ******************************************************************************************* //
-
+/**
+* Class to display an energy bar slot
+*
+* @class EnergyBarSlot
+* @constructor
+*/
 var myGameArea = {
 	canvas : document.createElement("canvas"),
 	start : function() {
@@ -382,6 +468,11 @@ var myGameArea = {
 	}
 }
 
+/**
+* Update the game by clearing the canvas and call the update method of all the objects displayed
+*
+* @method updateGameArea
+*/
 function updateGameArea() {
 	myGameArea.clear();
 
@@ -411,8 +502,15 @@ function updateGameArea() {
 		energyBarSlot.update();
 		energyBar.update();
 	}
+
+	startGameMessage.update();
 }
 
+/**
+* Display a new bar from the spectrum and it artefact(s) associated
+*
+* @method addAmplitudeAndArtefact
+*/
 function addAmplitudeAndArtefact() {
 	// console.log(App.Host.audioSpectrum[time]);
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
@@ -429,7 +527,6 @@ function addAmplitudeAndArtefact() {
 	}
 
 	if(App.mode == "solo") {
-		// TODO check for coop mode (it is actually a dirty fix)
 
 		// Average death
 		if(App.Host.deathFlags[0]) {	
@@ -454,6 +551,12 @@ function addAmplitudeAndArtefact() {
 	}
 }
 
+/**
+* Update the blocunit value and all the associated variables 
+*
+* @method updateBlocUnit
+* @param canvasWidth current width of the canvas 
+*/
 function updateBlocUnit(canvasWidth) {
 	blocUnit = canvasWidth/ 10;
 	
@@ -465,15 +568,18 @@ function updateBlocUnit(canvasWidth) {
 	Canvas.middleTopSlot	= 3 * blocUnit;
 	Canvas.middleBotSlot	= 4 * blocUnit;
 	Canvas.botSlot			= 5 * blocUnit;
-
-	// energyBar.height  	= blocUnit * 0.5;
-    // energyBar.y			= blocUnit * 0;
 }
 
 // ****************************************************************************************************** //
 // **************************************** GAME INITIALIZATION **************************************** //
 // **************************************************************************************************** //
 
+/**
+* Update the blocunit value and all the associated variables 
+*
+* @method updateBlocUnit
+* @param canvasWidth current width of the canvas 
+*/
 function startGame() {
 	// Hide buttons
 	document.querySelector("#roomMetadata").classList.add("hidden");
@@ -507,6 +613,8 @@ function startGame() {
 	}
 	
 	leftBorder = new LeftBorder();
+
+	startGameMessage = new Message();
 
 	for (var i = 0; i < 4; i++) {
 		var button = new Button(i);
