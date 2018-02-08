@@ -2,7 +2,6 @@
 
 var blocUnit = 0;
 var visualCoefficient = 50;
-var energyBarCoefficient = 10;
 var pulserWidth = 165;
 const imgPath = "../img/canvas/";
 var started = 0;
@@ -370,18 +369,16 @@ function Amplitude(barDefinition) {
 * @class EnergyBarSlot
 * @constructor
 */
-function EnergyBarSlot() {
-
-	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-	
+function EnergyBarSlot() {	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.Host.energy * energyBarCoefficient;
+	this.width 		= blocUnit * 6;
 	this.height 	= blocUnit * 0.3;
-	this.x			= computedX;
+	this.x			= (Canvas.width * 0.5) - blocUnit * 3;
 	this.y 			= blocUnit * 0.5;
 	this.update 	= function() {
-		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
+		this.width 		= blocUnit * 6;
 		this.height 	= blocUnit * 0.3;
+		this.x			= (Canvas.width * 0.5) - blocUnit * 3;
 		this.y 			= blocUnit * 0.5;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
@@ -399,22 +396,17 @@ function EnergyBarSlot() {
 * @class EnergyBar
 * @constructor
 */
-function EnergyBar() {
-
-	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-
+function EnergyBar() {	
 	this.color 		= COLOR.energyBar;
-	this.width 		= App.Host.energy * energyBarCoefficient;
+	this.width 		= blocUnit * 6;
 	this.height 	= blocUnit * 0.3;
-	this.x			= computedX;
+	this.x			= (Canvas.width * 0.5) - blocUnit * 3;
 	this.y 			= blocUnit * 0.5;
+	this.energyBarCoefficient = this.width / App.Host.energy;
 	this.update 	= function() {
-		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-		// computedX = Canvas.width * 0.5;
-
-		this.width 		= App.Host.energy * energyBarCoefficient;
+		this.width 		= App.Host.energy * this.energyBarCoefficient;
 		this.height 	= blocUnit * 0.3;
-		// this.x			= computedX;
+		this.x			= (Canvas.width * 0.5) - blocUnit * 3;
 		this.y 			= blocUnit  * 0.5;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
