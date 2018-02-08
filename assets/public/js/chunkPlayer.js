@@ -1,3 +1,5 @@
+/* global FileReader, Blob */
+
 var chunkPlayer = {
   _audioContext: undefined,
   _audioBuffer: [],
@@ -9,11 +11,19 @@ var chunkPlayer = {
   _playing: false,
   _blob: undefined,
 
-  _onAudioChunk: function (chunk) {
+  /**
+   * Pushes a new chunk into the audio buffer
+   * @function
+   */
+  _onAudioChunk: function onAudioChunk (chunk) {
     chunkPlayer._audioBuffer.push(chunk)
   },
 
-  _stop: function () {
+  /**
+   * Stop playing audio and clear audio data
+   * @function
+   */
+  _stop: function stop () {
     clearInterval(chunkPlayer._timer)
 
     chunkPlayer._audioBuffer = []
@@ -26,7 +36,11 @@ var chunkPlayer = {
     }
   },
 
-  _start: function () {
+  /**
+   * Start playing the recorded audio
+   * @function
+   */
+  _start: function start () {
     chunkPlayer._audioContext = new (window.AudioContext || window.webkitAudioContext)()
     chunkPlayer._startTime = chunkPlayer._audioContext.currentTime
 
@@ -34,7 +48,11 @@ var chunkPlayer = {
     chunkPlayer._timer = setInterval(chunkPlayer._playNextChunk, 500)
   },
 
-  _playNextChunk: function () {
+  /**
+   * Plays a chunk of audio
+   * @function
+   */
+  _playNextChunk: function playNextChunk () {
     if (chunkPlayer._playedChunk > chunkPlayer._audioBuffer.length) {
       clearInterval(chunkPlayer._timer)
     } else {
