@@ -785,13 +785,13 @@ function endGame (data) {
 		energyBar.update();
 	}
 
-	if(data.win) {
+	// if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
-		document.querySelector("#gameState").innerHTML = data.score;
-	} else {
+	document.querySelector("#gameState").innerHTML = data.score;
+	// } else {
 		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Host.energy + " artefacts!";
-	}
+	// }
 
 	// Taunt on social media
 	document.querySelector("#tauntFacebook").innerHTML = '<a href="/share?service=facebook&title=I got a score of '+data.score+' in Impulsy! Can you do better? Come and play! http://impulsy.fr&url='+window.location.href+' target="_blank"><button class="button button-small" state="passive"><img src="../img/trololof.svg" alt="Facebook Logo" width="30px" height="30px"></button></a>'                	
