@@ -478,7 +478,7 @@ module.exports = class Room {
 
     return {
       bar: barNumber,
-      takenArtefactsCount: player.takenArtefactsCount,
+      takenArtefactsCount: this.takenArtefactsCount,
       energy: this.energy,
       isArtefactTaken: artefactTaken,
       y: player.position.y, // here 0, 1, 2, 3 --- 0 upper and 3 lowest
