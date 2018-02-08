@@ -15,12 +15,20 @@ var IO = {
     // ********************************************************** //
     isBinded : false,
 
+    /**
+     * Connect to the socket and initialize the join-room process
+     * @function
+     */
     init: function() {
         IO.socket = io.connect();
         IO.bindEvents();
         IO.joinRoom();
     },
 
+    /**
+     * Bind socket events
+     * @function
+     */
     bindEvents : function() {
         IO.socket.on('connected', IO.onConnected);
         IO.socket.on('roomJoined', IO.onRoomJoined);
@@ -33,6 +41,10 @@ var IO = {
     // ******************** CONNECTION EVENTS ******************** //
     // ********************************************************** //
 
+    /**
+     * Store the sessionId
+     * @function
+     */
     onConnected : function() {
         // Cache a copy of the client's socket.IO session ID on the App
         App.mySocketId = IO.socket.sessionid;
@@ -43,8 +55,12 @@ var IO = {
     // ******************** ROOM EVENTS ******************** //
     // **************************************************** //
 
+    /**
+     * Notify the server that the web client wants to join the room
+     * @function
+     */
     joinRoom : function() {
-        // TODO: we might want to add the sessionId (fro the cookie) to be able to authenticate the user in the back
+        // TODO: we might want to add the sessionId (from the cookie) to be able to authenticate the user in the back
         var data = {
             roomId: window.location.pathname.split('/')[2] // window.location.path vaut '/room/{roomId}'
         }
@@ -52,11 +68,15 @@ var IO = {
         IO.socket.emit('joinRoom', data);
     },
 
+    /**
+     * Initialize the game and its WS events
+     * @function
+     * @param {*} data 
+     */
     onRoomJoined: function (data) {
         // This is where we have to setup game events listeners
         console.log('Successfully joined room ' + data.roomId);
 
-        // TODO recieve gameMetada
         // console.log('Game metadata is: ', data);
         App.Host.gameInit(data);
 
@@ -74,6 +94,7 @@ var IO = {
             IO.isBinded = true
         }
 
+        // If coop, wait for the other player
         if (data.gameMetadata.players.length == 2) {
             document.querySelector("#startGameButton").attributes.state.value = "passive";
             document.querySelector("#waitingRoomMessage").innerHTML = data.gameMetadata.players[0].name + " is waiting for you!";
@@ -84,16 +105,23 @@ var IO = {
     // ******************** START EVENTS ******************** //
     // ***************************************************** //
 
+    /**
+     * Initialize the game and its WS events
+     * @function
+     * @param {*} data 
+     */
     onNewPlayer: function(data) {
         console.log(data.name + " has joined the room");
-        // TODO create a waiting/ready process
-        // But for now start right away the game
         // Enable startGame button
         App.Players.push(data);
         document.querySelector("#startGameButton").attributes.state.value = "passive";
         document.querySelector("#waitingRoomMessage").innerHTML = data.name + " is waiting for you!";
     },
 
+    /**
+     * Stop the game and the music chunk player
+     * @function
+     */
     onPlayerDisconnected: function () {
         document.querySelector("#startGameButton").attributes.state.value = "disabled";
         document.querySelector("#waitingRoomMessage").innerHTML = "Waiting for another player...";
@@ -106,11 +134,20 @@ var IO = {
         }
     },
 
+    /**
+     * Notify the server that the player as clicked the start game button
+     * @function
+     */
     startGame: function() {
         // console.log("Game starting");
         IO.socket.emit('startGame');
     },
 
+    /**
+     * Start the game and the audio chunk player
+     * @function
+     * @param {*} data 
+     */
     onGameStarted: function(data) {
         // TODO start countdown
         // startCountdown()
@@ -123,6 +160,11 @@ var IO = {
         }
     },
 
+    /**
+     * Notify the server that the player has clicked the play again button
+     * @function
+     * @param {*} data 
+     */
     playAgain: function(data) {
         IO.socket.emit('playAgain', data)
     },
@@ -131,12 +173,22 @@ var IO = {
     // ******************** PLAYER EVENTS ******************** //
     // ****************************************************** //
 
+    /**
+     * Notify the server that the player has moved
+     * @function
+     * @param {*} data 
+     */
     playerMove: function(data) {
         // Notify back that self moved
         // console.log("Player " + data.number + " has movedlayer moved to: " + data.position);
         IO.socket.emit('playerMove', data);
     },
 
+    /**
+     * Update the canvas when a player moves
+     * @function
+     * @param {*} data 
+     */
     onPlayerMove: function(data) {
         // Update canvas because one player (self or the other) has moved
         console.log("Player " + data.number + " has moved to: x->" + data.x + " y-->" + data.y);
@@ -149,6 +201,11 @@ var IO = {
     // ******************** GAME EVENTS ******************** //
     // **************************************************** //
 
+    /**
+     * Update the score and the canvas
+     * @function
+     * @param {*} data 
+     */
     onUpdateGame: function(data) {
         // console.log(data);
         App.Host.energy = data.energy;
@@ -158,16 +215,17 @@ var IO = {
         updateGameScene(data);
     },
 
-    onMissedArtefact: function(data) {
-        // TODO
-        // do something I DUNNO
-    },
+    onMissedArtefact: function(data) {},
     
+    /**
+     * End the game and stop the audio chunk player
+     * @function
+     * @param {*} data 
+     */
 	onEndOfGame: function (data) {
         endGame(data);
 
         chunkPlayer._stop()
-		// TODO
 		// remove listeners
     },
 
@@ -175,6 +233,11 @@ var IO = {
     // ******************** AUDIO EVENTS ******************** //
     // ***************************************************** //
 
+    /**
+     * Add the audio chunk
+     * @function
+     * @param {*} data 
+     */
 	onAudioChunk: function(data) {
         chunkPlayer._onAudioChunk(data.chunk);
     },
