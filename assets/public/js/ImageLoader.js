@@ -10,7 +10,11 @@ var canvasImagesNames = [
   'player1.png',
   'pulser.png',
   'deathFlagBest.png',
-  'deathFlagsAverage.png'
+  'deathFlagsAverage.png',
+  'message1.png',
+  'message2.png',
+  'unicorn2.png',
+  'unicorn3.png'
 ]
 
 function ImageLoader () {
