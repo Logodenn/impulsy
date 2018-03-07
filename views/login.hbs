@@ -11,6 +11,10 @@
 
             <h1 class="catchPhrase">Impulsy - Ride the music</h1>
 
+            {{#if problem}}
+                <h2 class="error">Incorrect username or password.</h2>
+            {{/if}}
+
             <div id="formWrapper" class="flex-row">
 
                 {{!-- LOGIN FORM --}}

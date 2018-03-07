@@ -47,3 +47,15 @@ h2.title {
     /* width: 200px;
     height: 52px; */
 }
+
+@media (max-width: 640px) {
+
+    .mainSegment {
+        width: 80%;
+    }
+
+    .track-list {
+        flex-direction: column;
+    }
+
+}

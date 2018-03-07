@@ -24,6 +24,7 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io').listen(http)
 const hbs = require('hbs')
+const pwdHash = require('./modules/password')
 
 /* ROOMS */
 
@@ -68,7 +69,7 @@ passport.use('local-login', new Strategy({
       if (!result) {
         return cb(null, false)
       }
-      if (result.password !== password) { // TODO salt password with username/email   ?
+      if (result.password !== pwdHash(password)) { 
         return cb(null, false)
       }
       return cb(null, result)
@@ -85,28 +86,38 @@ passport.use('local-signup', new Strategy({
     var user = {
       pseudo: req.body.username,
       mail: req.body.mail,
-      password: req.body.password, // TODO : salt password
+      password: pwdHash(req.body.password), 
       rank: -1
     }
     db.user.getUser(user.mail, true, function (err, result) {
       if (err) {
-        db.user.getUser(user.pseudo, false, function (err, result) {
+        logger.err(err)
+        return cb(err,null)        
+      } else{
+        if (!result){
+          db.user.getUser(user.pseudo, false, function (err, result) {
             if (err) {
-              db.user.create(user, function (err, result) {
-                  if (err) {
-                    throw err
-                  }
-                  return cb(null, user)
-              })
-          }
-          else{
-            return cb("Pseudo already use", null)  
-          }
-        })
+              logger.err(err) 
+              return cb(err,null)
+            } else {
+              if (!result){
+                db.user.create(user, function (err, result) {
+                    if (err) {
+                      logger.err(err)
+                      return cb(err,null)              
+                    } else {
+                      return cb(null, result)
+                    }
+                })
+              } else {
+                return cb(null, false) 
+              }
+            }
+          })
+        } else {
+          return cb(null, false)          
+        }
       }
-      else{
-      return cb("Email already use", null)
-    }
     })
   }))
 

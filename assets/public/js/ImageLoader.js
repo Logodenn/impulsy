@@ -4,12 +4,17 @@ var canvasImagesPath = '../img/canvas/'
 var canvasImagesNames = [
   'artefact0.png',
   'artefact1.png',
+  'artefactCoop.png',
   'artefactTaken.png',
   'player0.png',
   'player1.png',
   'pulser.png',
   'deathFlagBest.png',
-  'deathFlagsAverage.png'
+  'deathFlagsAverage.png',
+  'message1.png',
+  'message2.png',
+  'unicorn2.png',
+  'unicorn3.png'
 ]
 
 function ImageLoader () {

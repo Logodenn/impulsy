@@ -1,4 +1,8 @@
-
+/**
+ * Select a track from the index page to play
+ * @function
+ * @param {*} data 
+ */
 function selectTrack(element) {
     document.querySelector("#selectedTrack").value = element.getAttribute('data-id');
 
@@ -9,6 +13,11 @@ function selectTrack(element) {
     }
 }
 
+/**
+ * Search tracks through YouTube with the Enter key
+ * @function
+ * @param {*} e 
+ */
 function searchThroughYouTubeBis(e) {
     if (e.keyCode == 13) {
         searchThroughYouTube();
@@ -16,6 +25,10 @@ function searchThroughYouTubeBis(e) {
     }
 }
 
+/**
+ * Search tracks through YouTube
+ * @function
+ */
 function searchThroughYouTube() {
 
     // Flush the previous result for animation
@@ -53,8 +66,6 @@ function searchThroughYouTube() {
                 // trackWrapper.classList.add("blurred");
                 trackWrapper.style.backgroundImage = "url(" + jsonResponse[i].thumbnailUrl + ")";
                 trackWrapper.setAttribute('data-id', jsonResponse[i].id);
-
-                // TODO href
                 
                 // ********** TITLE ********** //
                 var titleSpan = document.createElement("span");
@@ -86,6 +97,11 @@ function searchThroughYouTube() {
     xhttp.send();
 }
 
+/**
+ * Set the game difficulty
+ * @function
+ * @param {*} difficulty 
+ */
 function setDifficulty(difficulty) {
     // Reset state
     document.querySelector("#lazy").attributes.state.value = "passive";
@@ -113,6 +129,11 @@ function setDifficulty(difficulty) {
     }
 }
 
+/**
+ * Set the game mode (solo or coop)
+ * @function
+ * @param {*} mode 
+ */
 function setMode(mode) {
     // Reset state
     document.querySelector("#solo").attributes.state.value = "passive";

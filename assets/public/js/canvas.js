@@ -2,9 +2,9 @@
 
 var blocUnit = 0;
 var visualCoefficient = 50;
-var energyBarCoefficient = 10;
 var pulserWidth = 165;
 const imgPath = "../img/canvas/";
+var started = 0;
 
 // How to read blocUnit
 // 0 * blocUnit energyBar and deathFlags
@@ -29,17 +29,13 @@ var Canvas = {
 // Used to move the player according to its numerical position, from 0 to 3
 var Positions = [Canvas.topSlot, Canvas.middleTopSlot, Canvas.middleTopSlot, Canvas.botSlot];
 
-// var energyBar = {
-//     height  : blocUnit * 0.5,
-//     width   : null,
-//     y		: blocUnit * 0
-// }
 
 // ******************** Colors ******************** //
 
 var COLOR = {
 	energyBar		: "#FAC32C",
-	energyBarSlot	: "#716383"
+	energyBarSlot	: "#716383",
+	pulsers			: "#b928bd"
 }
 var r = 50;
 var g = 200;
@@ -52,14 +48,13 @@ var tabColorToChange = ["g-", "r+", "r-", "g+"];
 // ******************** Game variables ******************** //
 
 var time = 0;
-
-// ******************** Components ******************** //
-
 var players 			= [];
 var energyBar;
 var pulsers 			= [];
+var leftBorder			= null;
 var canvasBars 			= [];
 var canvasArtefacts 	= [];
+var canvasArtefactsCoop	= [];
 var canvasDeathFlags  	= [];
 var buttons				= [];
 
@@ -73,17 +68,39 @@ imgArtefactTaken.src = imgPath + "artefactTaken.png";
 
 // ******************** Player ******************** //
 
+
+/**
+* Class to display a player
+*
+* @class Player
+* @constructor
+* @param {Object} definition object contening positions on the x and y axes
+*/
 function Player(definition) {
 	var self = this;
-	self.x 			= 4 * blocUnit;
-	self.slot		= definition.position;
-	self.y 			= Positions[definition.position];
+	self.img		= "unicorn-2"
+	self.state		= 2;
+	self.cpt		= 0;
+	self.posX 		= 4 * blocUnit;
+	self.posY 		= Positions[definition.position.y];
+	self.y			= definition.position.y;
+	self.x			= definition.position.x;
 	self.number		= definition.number;
 	self.update 	= function() {
-		self.x 			= 4 * blocUnit;
-		self.y 			= Canvas.topSlot + self.slot * blocUnit;
+		if(started){
+			self.posX 	= canvasBars[self.x].x - blocUnit/2;
+			self.img 		= "player" + self.number;
+		} else {
+			self.cpt	+= 1;
+			self.posX 	= self.cpt * (4 * blocUnit / 427);
+			if(self.cpt % 20 == 0){
+				self.state  = (self.state == 3) ? 2 : 3;
+			}
+			self.img	= "unicorn" + self.state;
+		}
+		self.posY 		= Canvas.topSlot + self.y * blocUnit;
 		ctx = myGameArea.context;
-		ctx.drawImage(imageLoader.images["player" + self.number], self.x, self.y, blocUnit, blocUnit);
+		ctx.drawImage(imageLoader.images[self.img], self.posX, self.posY, blocUnit, blocUnit);
 	}
 	self.ctx = myGameArea.context;
 
@@ -91,7 +108,13 @@ function Player(definition) {
 }
 
 // ******************** Pulsers ******************** //
-
+/**
+* Class to display a pulser
+*
+* @class Pulser
+* @constructor
+* @param {int} i index from 0 to 3 to determine the y position
+*/
 function Pulsers(i) {
 	var self 		= this;
 	self.index		= i;
@@ -108,7 +131,56 @@ function Pulsers(i) {
 	self.update()
 }
 
+// ******************** Left Border ******************** //
+/**
+* Class to display the left border
+*
+* @class LefBorder
+* @constructor
+*/
+function LeftBorder() {
+	var self 		= this;
+	self.x 			= 0;
+	self.y 			= Canvas.topSlot;
+	self.width 		= blocUnit / 9;
+	self.height		= blocUnit * 4;
+	self.ctx = myGameArea.context;
+	self.update 	= function() {
+		ctx 			= myGameArea.context;
+		ctx.fillStyle 	= COLOR.pulsers;
+		ctx.fillRect(self.x, self.y, self.width, self.height);
+	}
+	self.update()
+}
+
+// ******************** Start game messages ******************** //
+function Message(){
+	var self = this;
+	self.posX = blocUnit;
+	self.posY = Canvas.middleBotSlot;
+	self.cpt = 0;
+	self.update 	= function() {
+		self.cpt += 1;
+		ctx = myGameArea.context;
+		if(self.cpt * (4 * blocUnit / 427) < blocUnit){
+			ctx.drawImage(imageLoader.images.message1, self.posX, self.posY, 2*blocUnit, 2*blocUnit);
+		} else if(self.cpt * (4 * blocUnit / 427) < 3*blocUnit & self.cpt * (4 * blocUnit / 427) > 2*blocUnit) {
+			ctx.drawImage(imageLoader.images.message1, self.posX, self.posY, 2*blocUnit, 2*blocUnit);
+		} else if(self.cpt * (4 * blocUnit / 427) > 4*blocUnit & self.cpt * (4 * blocUnit / 427) < 6*blocUnit) {
+			ctx.drawImage(imageLoader.images.message2, self.posX, self.posY, 2*blocUnit, 2*blocUnit);
+		}
+	}
+	self.ctx = myGameArea.context;
+}
+
 // ******************** Death flags ******************** //
+/**
+* Class to display a death flag
+*
+* @class Player
+* @constructor
+* @param {int} type 0 to display an avarage death flag or 1 to display a best score death flag
+*/
 function DeathFlag(type) {
 	var self 		= this;
 	self.x 			= myGameArea.canvas.width - 2 * blocUnit;
@@ -131,6 +203,13 @@ function DeathFlag(type) {
 
 
 // ********************* Button ********************* //
+/**
+* Class to create a button area
+*
+* @class Button
+* @constructor
+* @param {int} y index from 0 to 3 to determine the y position
+*/
 function Button(y) {
 	var self      	= this;
 	self.slot		= y;
@@ -157,7 +236,14 @@ function Button(y) {
 }
 
 // ******************** Artefact ******************** //
-
+/**
+* Class to display an artefact
+*
+* @class Artefact
+* @constructor
+* @param {int} i index from 0 to 3 to determine the y position
+* @param {int} playerNumber 0 or 1 to determine the player associated to the artefact
+*/
 function Artefact(slot, playerNumber) {
 	var self 		= this;
 	self.isArtefactTaken	= false;
@@ -211,7 +297,13 @@ function Artefact(slot, playerNumber) {
 }
 
 // ******************** Amplitude ******************** //
-
+/**
+* Class to display an amplitude
+*
+* @class Amplitude
+* @constructor
+* @param {Object} barDefinition informations related to the bar
+*/
 function Amplitude(barDefinition) {
 	var self = this;
 	switch (tabColorToChange[counterForColorTab]) {
@@ -271,23 +363,23 @@ function Amplitude(barDefinition) {
 }
 
 // ******************** EnergyBarSlot ******************** //
-
-function EnergyBarSlot() {
-
-	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-	
+/**
+* Class to display an energy bar slot
+*
+* @class EnergyBarSlot
+* @constructor
+*/
+function EnergyBarSlot() {	
 	this.color 		= COLOR.energyBarSlot;
-	this.width 		= App.Host.energy * energyBarCoefficient;
-	this.height 	= blocUnit * 0.5;
-	// this.x 			= Canvas.width / 10;
-	this.x			= computedX;
-	this.y 			= blocUnit * 0;
+	this.width 		= blocUnit * 6;
+	this.height 	= blocUnit * 0.3;
+	this.x			= (Canvas.width * 0.5) - blocUnit * 3;
+	this.y 			= blocUnit * 0.5;
 	this.update 	= function() {
-		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-		// this.width 		= App.Host.energy * energyBarCoefficient;
-		this.height 	= blocUnit * 0.5;
-		// this.x			= computedX;
-		this.y 			= blocUnit * 0;
+		this.width 		= blocUnit * 6;
+		this.height 	= blocUnit * 0.3;
+		this.x			= (Canvas.width * 0.5) - blocUnit * 3;
+		this.y 			= blocUnit * 0.5;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -298,24 +390,24 @@ function EnergyBarSlot() {
 }
 
 // ******************** EnergyBar ******************** //
-
-function EnergyBar() {
-
-	var computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-
+/**
+* Class to display the energy bar
+*
+* @class EnergyBar
+* @constructor
+*/
+function EnergyBar() {	
 	this.color 		= COLOR.energyBar;
-	this.width 		= App.Host.energy * energyBarCoefficient;
-	this.height 	= blocUnit * 0.5;
-	this.x			= computedX;
-	this.y 			= blocUnit * 0;
+	this.width 		= blocUnit * 6;
+	this.height 	= blocUnit * 0.3;
+	this.x			= (Canvas.width * 0.5) - blocUnit * 3;
+	this.y 			= blocUnit * 0.5;
+	this.energyBarCoefficient = this.width / App.Host.energy;
 	this.update 	= function() {
-		computedX = (Canvas.width * 0.5) - (App.Host.energy * 0.5 * energyBarCoefficient);
-		// computedX = Canvas.width * 0.5;
-
-		this.width 		= App.Host.energy * energyBarCoefficient;
-		this.height 	= blocUnit * 0.5;
-		// this.x			= computedX;
-		this.y 			= blocUnit  * 0;
+		this.width 		= App.Host.energy * this.energyBarCoefficient;
+		this.height 	= blocUnit * 0.3;
+		this.x			= (Canvas.width * 0.5) - blocUnit * 3;
+		this.y 			= blocUnit  * 0.5;
 		ctx = myGameArea.context;
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -328,7 +420,12 @@ function EnergyBar() {
 // ********************************************************************************************* //
 // **************************************** GAME LOGIC **************************************** //
 // ******************************************************************************************* //
-
+/**
+* Class to display an energy bar slot
+*
+* @class EnergyBarSlot
+* @constructor
+*/
 var myGameArea = {
 	canvas : document.createElement("canvas"),
 	start : function() {
@@ -343,7 +440,7 @@ var myGameArea = {
 		document.querySelector("#canvasWrapper").appendChild(this.canvas);
 
 		// ******************** Interval setup ******************** //
-
+		setTimeout(function() {started = 1;}, 4270);
 		this.intervalAddAmplitude 	= setInterval(addAmplitudeAndArtefact,500);
 		this.intervalUpdate 		= setInterval(updateGameArea, 10);
 
@@ -363,17 +460,27 @@ var myGameArea = {
 	}
 }
 
+/**
+* Update the game by clearing the canvas and call the update method of all the objects displayed
+*
+* @method updateGameArea
+*/
 function updateGameArea() {
 	myGameArea.clear();
 
 	for (i = 0; i < canvasBars.length; i++) {
 		canvasBars[i].update();
 		canvasArtefacts[i].update();
+		if(App.mode == "coop") {
+			canvasArtefactsCoop[i].update();
+		}
 	}
 
 	for (i = 0; i < pulsers.length; i++) {
 		pulsers[i].update();
 	}
+
+	leftBorder.update();
 
 	for (i = 0; i < canvasDeathFlags.length; i++) {
 		canvasDeathFlags[i].update();
@@ -387,8 +494,15 @@ function updateGameArea() {
 		energyBarSlot.update();
 		energyBar.update();
 	}
+
+	startGameMessage.update();
 }
 
+/**
+* Display a new bar from the spectrum and it artefact(s) associated
+*
+* @method addAmplitudeAndArtefact
+*/
 function addAmplitudeAndArtefact() {
 	// console.log(App.Host.audioSpectrum[time]);
 	var amplitude  = new Amplitude(App.Host.audioSpectrum[time]);
@@ -397,8 +511,14 @@ function addAmplitudeAndArtefact() {
 	var artefact = new Artefact(App.Host.audioSpectrum[time].artefacts[App.Player.number], App.Player.number);
 	canvasArtefacts.push(artefact);
 
+	if(App.mode == "coop") {
+		var otherPlayer = App.Player.number == 0 ? 1 : 0;
+		 
+		var artefactCoop = new Artefact(App.Host.audioSpectrum[time].artefacts[otherPlayer], "Coop");
+		canvasArtefactsCoop.push(artefactCoop);
+	}
+
 	if(App.mode == "solo") {
-		// TODO check for coop mode (it is actually a dirty fix)
 
 		// Average death
 		if(App.Host.deathFlags[0]) {	
@@ -423,6 +543,12 @@ function addAmplitudeAndArtefact() {
 	}
 }
 
+/**
+* Update the blocunit value and all the associated variables 
+*
+* @method updateBlocUnit
+* @param canvasWidth current width of the canvas 
+*/
 function updateBlocUnit(canvasWidth) {
 	blocUnit = canvasWidth/ 10;
 	
@@ -434,17 +560,19 @@ function updateBlocUnit(canvasWidth) {
 	Canvas.middleTopSlot	= 3 * blocUnit;
 	Canvas.middleBotSlot	= 4 * blocUnit;
 	Canvas.botSlot			= 5 * blocUnit;
-
-	// energyBar.height  	= blocUnit * 0.5;
-    // energyBar.y			= blocUnit * 0;
 }
 
 // ****************************************************************************************************** //
 // **************************************** GAME INITIALIZATION **************************************** //
 // **************************************************************************************************** //
 
+/**
+* Update the blocunit value and all the associated variables 
+*
+* @method updateBlocUnit
+* @param canvasWidth current width of the canvas 
+*/
 function startGame() {
-
 	// Hide buttons
 	document.querySelector("#roomMetadata").classList.add("hidden");
 	document.querySelector("#startButtons").classList.add("hidden");
@@ -474,7 +602,11 @@ function startGame() {
 	for (var i = 0; i < 4; i++) {
 		var pulser = new Pulsers(i);
 		pulsers.push(pulser);
-	} 
+	}
+	
+	leftBorder = new LeftBorder();
+
+	startGameMessage = new Message();
 
 	for (var i = 0; i < 4; i++) {
 		var button = new Button(i);
@@ -495,44 +627,45 @@ function startGame() {
 		switch (key) {
 			case 65:
 				// Top
-				App.Players[App.Player.number].position = 0;
-				//players[App.Player.number].slot = 0;
+				App.Player.onMove(0, players[App.Player.number].x);
+
 				break;
 			case 90:
 				// Midtop
-				App.Players[App.Player.number].position = 1;
-				//players[App.Player.number].slot = 1;
+				App.Player.onMove(1, players[App.Player.number].x);
+
 				break;
 			case 69:
 				// Midbot
-				App.Players[App.Player.number].position = 2;
-				//players[App.Player.number].slot = 2;
+				App.Player.onMove(2, players[App.Player.number].x);
+
 				break;
 			case 82:
 				// Bot
-				App.Players[App.Player.number].position = 3;
-				//players[App.Player.number].slot = 3;
+				App.Player.onMove(3, players[App.Player.number].x);
+
 				break;
 			case 38:
 				// Up arrow
-				if(App.Players[App.Player.number].position != 0) {
-		
-					App.Players[App.Player.number].position--;
-					//players[App.Player.number].slot -= 1;
-				}
+				App.Player.onMove(players[App.Player.number].y - 1, players[App.Player.number].x);
+
 				break;
 			case 40:
 				// Down arrow
-				if(App.Players[App.Player.number].position != 3) {
-		
-					App.Players[App.Player.number].position++;
-					//players[App.Player.number].slot += 1;
-				}
+				App.Player.onMove(players[App.Player.number].y + 1, players[App.Player.number].x);
+
+				break;
+			case 37:
+				// Left arrow
+				App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x - 1);
+	
+				break;
+			case 39:
+				// Rigth arrow
+				App.Player.onMove(players[App.Player.number].y, players[App.Player.number].x + 1);
+
 				break;
 		}
-
-		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
 	}
 	
 	// ******************** Player movement on click event ******************** //
@@ -540,6 +673,7 @@ function startGame() {
 	window.onclick = function(e) {
 		// Get the canvas's positions
 		var rect = myGameArea.canvas.getBoundingClientRect();
+		var speedX;
 	
 		//  Adapt the click coordinates to the canvas
 		x = e.pageX - rect.left;
@@ -548,25 +682,39 @@ function startGame() {
 		if (x > 0 && x < Canvas.width && y > 0 && y < Canvas.height) {
 			for (var i = 0; i < 4; i++) {
 				if(buttons[i].clicked(y) == true) {
-					App.Players[App.Player.number].position = i;
+					if(x < (players[App.Player.number].posX - blocUnit/2)) {
+						speedX = -1;
+					} 
+					else if(x > (players[App.Player.number].posX + 1.5*blocUnit)) {
+						speedX = 1;
+					} else {
+						speedX = 0;
+					}
+
+					//App.Players[App.Player.number].y = i;
 					//players[App.Player.number].slot = i;
+					App.Player.onMove(i, players[App.Player.number].x + speedX);
 				}
 			}
 		}
 
 		// ******************** Notify websocket ******************** //
-		App.Player.onMove();
+		//App.Player.onMove();
 	}
 }
 
 function resetGame() {
+	// Maybe we should create a GameArray object that allows to loop over its arrays to reset them dynamically
 	players 			= []
 	pulsers 			= []
+	leftBorder			= null;
 	buttons 			= []
 	canvasBars 			= [];
 	canvasArtefacts 	= [];
+	canvasArtefactsCoop	= [];
 	canvasDeathFlags  	= [];
 	time				= 0
+	started = 0
 
 	// console.log("Below is value of var myGameArea");
 	// console.log(myGameArea);
@@ -593,7 +741,11 @@ function updateGameScene(data) {
 	if(gameState.isArtefactTaken) {
 		// App.Player.artefactsTaken.push(App.Player.artefactsToTake[gameState.bar]);
 		// Update artefact visual
-		canvasArtefacts[gameState.bar].isTaken()
+		if (App.Player.number === gameState.playerNumber) {
+			canvasArtefacts[gameState.bar].isTaken()
+		} else {
+			canvasArtefactsCoop[gameState.bar].isTaken()
+		}
 	}
 }
 
@@ -625,13 +777,13 @@ function endGame (data) {
 		energyBar.update();
 	}
 
-	if(data.win) {
+	// if(data.win) {
 		// document.querySelector("#gameState").innerHTML = "Congrats, you gathered all the artefacts!";
 		// document.querySelector("#gameState").innerHTML = App.Player.artefactsTaken.length
-		document.querySelector("#gameState").innerHTML = data.score;
-	} else {
+	document.querySelector("#gameState").innerHTML = data.score;
+	// } else {
 		// document.querySelector("#gameState").innerHTML = "You gathered " + App.Player.artefactsTaken + " out of " + App.Host.energy + " artefacts!";
-	}
+	// }
 
 	// Taunt on social media
 	document.querySelector("#tauntFacebook").innerHTML = '<a href="/share?service=facebook&title=I got a score of '+data.score+' in Impulsy! Can you do better? Come and play! http://impulsy.fr&url='+window.location.href+' target="_blank"><button class="button button-small" state="passive"><img src="../img/trololof.svg" alt="Facebook Logo" width="30px" height="30px"></button></a>'                	

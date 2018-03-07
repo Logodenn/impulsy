@@ -12,7 +12,7 @@
 #score {
 	position: fixed;
     top: 50px;
-	right: 50px;
+	margin: 0 auto;
 	color: $focus;
 
 	#artefactsTaken {
@@ -27,6 +27,10 @@
 
 #canvasWrapper {
 	position: fixed;
+	canvas {
+		// border-radius: $br;
+		// border: solid 5px $background-light;
+	}
 }
 
 /********** Code for tablet **********/
@@ -39,6 +43,16 @@
 }
 
 /********** Endgame popup **********/
+
+#disconnectedUserLayer {
+	position: fixed;
+	text-align: center;
+	width: 400px;
+	padding: 20px 30px;
+	border-radius: $br;
+	@include shadow($shadow);
+	background: $background-dark;
+}
 
 #endGameLayer {
 	position: fixed;
@@ -56,7 +70,7 @@
 
 @media (max-width: 640px) {
 	
-	#endGameLayer {
+	#endGameLayer, #disconnectedUserLayer {
 		width: auto;
 	}
 }

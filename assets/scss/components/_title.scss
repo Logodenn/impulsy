@@ -15,6 +15,13 @@
 	background-clip: text; */
 }
 
+.error {
+	color: $background;
+	background: $focus;
+	border-radius: $br;
+	padding: 5px 10px;
+}
+
 // @keyframes rainbow { 
 //     0%{background-position:0% 82%}
 //     50%{background-position:100% 19%}

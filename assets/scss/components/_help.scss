@@ -1,0 +1,57 @@
+
+#questionMark {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    background: transparent;
+    border-color: transparent;
+    z-index: $menuIndex - 1;
+}
+
+.help {
+    position: fixed;
+    z-index: $menuIndex;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100vh;
+    background: $background-dark;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    transition: right 0.1s;
+    border-left: solid 3px $font-light;
+    @include shadow($shadow);
+
+    &[state=closed] {
+        right: calc(-250px - 20px * 2 - 3px); /* Self-width minus its padding minus its border */
+        transition: right 0.1s;
+    }
+
+    .closer {
+        align-self: right;
+        cursor: pointer;
+    }
+
+    p {
+        font-family: "Calibri";
+        font-size: 1rem;        
+    }
+}
+
+@media (max-width: 640px) {
+
+    #questionMark {
+        top: 0;
+        right: 0;
+    }
+
+    .help {
+        width: 180px;
+    
+        &[state=closed] {
+            right: calc(-180px - 20px * 2 - 3px); /* Self-width minus its padding minus its border */
+        }
+    }
+}

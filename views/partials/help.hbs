@@ -1,0 +1,39 @@
+
+{{!-- Help --}}
+
+<button id="questionMark" class="button button-small" onclick="toggleElement('help','open')">
+    <img src="../img/help.svg" alt="Help" width="30px" height="30px">
+</button>
+
+{{!-- Modal --}}
+
+<section id="help" class="help" state="closed">
+    <div class="button-small closer" onclick="toggleElement('help','close')">X</div>
+    {{#if index}}
+        <p>
+            Select a track to play! You can use the YouTube search.
+        </p>
+        <p>
+            Then, choose a difficulty. If you choose "crazy", your score will be kept and you can choose to play solo or with a friend!
+        </p>
+    {{else if game}}
+        <p>
+            Try to get as much artefacts as possible! You can miss any in lazy mode, a few in easy mode and none in crazy mode!
+        </p>
+        <p>
+            Use arrows to move the unicorn in any directions or AZER keys to move vertically. You can even touch the spectrum to move the unicorn!
+        </p>
+    {{else if hall}}
+        <p>
+            This is the Hall of Fame! If you signed up, you can save your score. Your cumulated score is the sum of the score of every track you've played.
+        </p>
+        <p>
+            If you regularly play with a friend, your team score is also saved!
+        </p>
+    {{else}}
+        <p>
+            Impulsy is a fantastic game which allows you to play a unicorn through a musical rainbow! How better can it be?
+        </p>
+    {{/if}}
+
+</section>
